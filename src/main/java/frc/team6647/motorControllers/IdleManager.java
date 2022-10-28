@@ -2,10 +2,12 @@ package frc.team6647.motorControllers;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.revrobotics.CANSparkMax.IdleMode;
+
 /*
- * Global class for SuperMotorController idle modes
+ * Global class to manage the idle mode of all motors
+ * This is to make it easier to manage motor states
  */
-public class SuperIdleMode {
+public class IdleManager {
     public enum GlobalIdleMode {
         Coast, brake
     }
