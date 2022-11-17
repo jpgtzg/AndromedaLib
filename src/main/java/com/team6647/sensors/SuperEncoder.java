@@ -1,4 +1,4 @@
-package frc.team6647.sensors;
+package com.team6647.sensors;
 
 public class SuperEncoder {
     

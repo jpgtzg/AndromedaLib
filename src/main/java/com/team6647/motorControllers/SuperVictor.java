@@ -1,9 +1,9 @@
-package frc.team6647.motorControllers;
+package com.team6647.motorControllers;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
+import com.team6647.motorControllers.IdleManager.GlobalIdleMode;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.team6647.motorControllers.IdleManager.GlobalIdleMode;
 
 public class SuperVictor extends WPI_VictorSPX implements HyperMotorController {
 

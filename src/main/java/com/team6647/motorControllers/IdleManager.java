@@ -1,4 +1,4 @@
-package frc.team6647.motorControllers;
+package com.team6647.motorControllers;
 
 import com.ctre.phoenix.motorcontrol.NeutralMode;
 import com.revrobotics.CANSparkMax.IdleMode;

@@ -1,6 +1,6 @@
-package frc.team6647.motorControllers;
+package com.team6647.motorControllers;
 
-import frc.team6647.motorControllers.IdleManager.GlobalIdleMode;
+import com.team6647.motorControllers.IdleManager.GlobalIdleMode;
 
 /** 
  * Interface to implement the same functions and

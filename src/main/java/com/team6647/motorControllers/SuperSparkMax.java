@@ -1,9 +1,9 @@
-package frc.team6647.motorControllers;
+package com.team6647.motorControllers;
 
 import com.revrobotics.CANSparkMax;
+import com.team6647.motorControllers.IdleManager.GlobalIdleMode;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
-import frc.team6647.motorControllers.IdleManager.GlobalIdleMode;
 
 public class SuperSparkMax extends CANSparkMax implements HyperMotorController {
 
