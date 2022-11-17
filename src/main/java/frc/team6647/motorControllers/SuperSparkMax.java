@@ -5,7 +5,7 @@ import com.revrobotics.CANSparkMax;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import frc.team6647.motorControllers.IdleManager.GlobalIdleMode;
 
-public class SuperSparkMax extends CANSparkMax implements SuperMotorController{
+public class SuperSparkMax extends CANSparkMax implements HyperMotorController {
 
     private double currentLimit = 1;
 
@@ -24,12 +24,13 @@ public class SuperSparkMax extends CANSparkMax implements SuperMotorController{
         setMode(idleMode);
         setInverted(isInverted);
         setSmartCurrentLimit(currentLimit);
-        sisData();
+        outputTelemetry();
     }
 
-
-    public void sisData() {
-        SmartDashboard.putNumber("Voltage:", getBusVoltage());
+    @Override
+    public void outputTelemetry() {
+        SmartDashboard.putNumber("NEO Motor " + getDeviceId() + "Voltage:", getBusVoltage());
+        SmartDashboard.putNumber("NEO Motor " + getDeviceId() + "Temperature", getMotorTemperature());
     }
 
     @Override
@@ -42,10 +43,9 @@ public class SuperSparkMax extends CANSparkMax implements SuperMotorController{
         this.currentLimit = currentLimit;
     }
 
-
     @Override
     public void setMode(GlobalIdleMode idleMode) {
         setIdleMode(IdleManager.neutralToIdle(idleMode));
-        
+
     }
 }
