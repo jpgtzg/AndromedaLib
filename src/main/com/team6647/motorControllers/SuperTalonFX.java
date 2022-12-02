@@ -31,19 +31,34 @@ public class SuperTalonFX extends WPI_TalonFX implements HyperMotorController {
         SmartDashboard.putNumber("TalonFX Motor " + getBaseID() + "Temperature", getTemperature());
     }
 
+    /**
+     * Sets the idle mode of the motor controller
+     * 
+     * @param idleMode - Idle mode of the motor controller
+     */
     @Override
     public void setMode(GlobalIdleMode idleMode) {
         setNeutralMode(IdleManager.idleToNeutral(idleMode));
     }
 
-    @Override
-    public double getLimit() {
-        return currentLimit;
-    }
-
+    /**
+     * Sets the current limit of the motor controller
+     * 
+     * @param currentLimit - Current limit of the motor controller in amps
+     */
     @Override
     public void setLimit(int currentLimit) {
         this.currentLimit = currentLimit;
+    }
+
+    /**
+     * Gets the current limit of the motor controller
+     * 
+     * @return the current limit of the motor controller
+     */
+    @Override
+    public double getLimit() {
+        return currentLimit;
     }
 
     /**

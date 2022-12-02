@@ -31,19 +31,46 @@ public class SuperVictor extends WPI_VictorSPX implements HyperMotorController {
         SmartDashboard.putNumber("Victor Motor " + getBaseID() + "Temperature", getTemperature());
     }
 
+    /**
+     * Sets the idle mode of the motor controller
+     * 
+     * @param idleMode - Idle mode of the motor controller
+     */
     @Override
     public void setMode(GlobalIdleMode idleMode) {
         setNeutralMode(IdleManager.idleToNeutral(idleMode));
     }
 
+    /**
+     * Sets the current limit of the motor controller
+     * 
+     * @param currentLimit - Current limit of the motor controller in amps
+     */
+    @Override
+    public void setLimit(int currentLimit) {
+        this.currentLimit = currentLimit;
+    }
+
+    /**
+     * Gets the current limit of the motor controller
+     * 
+     * @return the current limit of the motor controller
+     */
     @Override
     public double getLimit() {
         return currentLimit;
     }
 
-    @Override
-    public void setLimit(int currentLimit) {
-        this.currentLimit = currentLimit;
+    /**
+     * Gets the velocity of the motor controller
+     * 
+     * @param conversionFactor - Conversion factor to convert encoder ticks to
+     *                         desired units
+     * 
+     * @return the velocity of the motor deisred units
+     */
+    public double getVelocity(double conversionFactor) {
+        return getSelectedSensorVelocity() * conversionFactor;
     }
 
     /**
@@ -58,15 +85,4 @@ public class SuperVictor extends WPI_VictorSPX implements HyperMotorController {
         return getSelectedSensorPosition() * conversionFactor;
     }
 
-    /**
-     * Gets the velocity of the motor controller
-     * 
-     * @param conversionFactor - Conversion factor to convert encoder ticks to
-     *                         desired units
-     * 
-     * @return the velocity of the motor deisred units
-     */
-    public double getVelocity(double conversionFactor) {
-        return getSelectedSensorVelocity() * conversionFactor;
-    }
 }

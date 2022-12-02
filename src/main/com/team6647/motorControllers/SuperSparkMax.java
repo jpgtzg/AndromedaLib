@@ -33,19 +33,34 @@ public class SuperSparkMax extends CANSparkMax implements HyperMotorController {
         SmartDashboard.putNumber("NEO Motor " + getDeviceId() + "Temperature", getMotorTemperature());
     }
 
+    /**
+     * Sets the idle mode of the motor controller
+     * 
+     * @param idleMode - Idle mode of the motor controller
+     */
     @Override
-    public double getLimit() {
-        return currentLimit;
+    public void setMode(GlobalIdleMode idleMode) {
+        setIdleMode(IdleManager.neutralToIdle(idleMode));
     }
 
+    /**
+     * Sets the current limit of the motor controller
+     * 
+     * @param currentLimit - Current limit of the motor controller in amps
+     */
     @Override
     public void setLimit(int currentLimit) {
         this.currentLimit = currentLimit;
     }
 
+    /**
+     * Gets the current limit of the motor controller
+     * 
+     * @return the current limit of the motor controller
+     */
     @Override
-    public void setMode(GlobalIdleMode idleMode) {
-        setIdleMode(IdleManager.neutralToIdle(idleMode));
-
+    public double getLimit() {
+        return currentLimit;
     }
+
 }

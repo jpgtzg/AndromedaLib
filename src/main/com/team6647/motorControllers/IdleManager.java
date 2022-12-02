@@ -12,12 +12,20 @@ public class IdleManager {
         Coast, brake
     }
 
-    /* Converts from GlobalIdle mode to corresponding NeutralMode */
+    /**
+     * Converts from GlobalIdle mode to corresponding NeutralMode
+     * 
+     * @param mode The GlobalIdleMode to convert
+     */
     static NeutralMode idleToNeutral(GlobalIdleMode idleMode) {
         return NeutralMode.values()[idleMode.ordinal() + 1];
     }
 
-    /* Converts from GlobalIdle mode to corresponding IdleMode */
+    /**
+     * Converts from GlobalIdle mode to corresponding IdleMode
+     * 
+     * @param idleMode The GlobalIdleMode to convert
+     */
     static IdleMode neutralToIdle(GlobalIdleMode idleMode) {
         return IdleMode.values()[idleMode.ordinal()];
     }
