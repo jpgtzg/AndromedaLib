@@ -99,7 +99,7 @@ public class Conversions {
      * @return Falcon position in meters
      */
     public static double falconToMeters(double velocityCount, double circumference, double gearRatio) {
-        return velocityCount * ((circumference * Math.PI) / (gearRatio * 2048.0));
+        return velocityCount * ((circumference) / (gearRatio * 2048.0));
     }
 
     /**
