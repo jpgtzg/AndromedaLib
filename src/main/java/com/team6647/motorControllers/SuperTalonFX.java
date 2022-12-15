@@ -23,11 +23,11 @@ public class SuperTalonFX extends WPI_TalonFX implements HyperMotorController {
      * @param inverted     Inverted state of the motor controller
      * @param currentLimit Current limit of the motor controller in amps
      */
-    public SuperTalonFX(int motorID, GlobalIdleMode idleMode, TalonFXInvertType invertType, int currentLimit) {
+    public SuperTalonFX(int motorID, GlobalIdleMode idleMode, Boolean isInverted, int currentLimit) {
         super(motorID);
         configFactoryDefault();
         setMode(idleMode);
-        setInverted(invertType);
+        setInverted(isInverted);
         // TODO SET CURRENT LIMIT
     }
 
