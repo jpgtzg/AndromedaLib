@@ -2,16 +2,31 @@ package com.team6647.motorControllers;
 
 import com.team6647.motorControllers.IdleManager.GlobalIdleMode;
 
-/** 
+/**
  * Interface to implement the same functions and
  * variables on all motor controllers
  */
 interface HyperMotorController {
-    
+
+    /**
+     * Sets the idle mode of the motor controller
+     * 
+     * @param idleMode Idle mode of the motor controller
+     */
     public void setMode(GlobalIdleMode idleMode);
 
+    /**
+     * Gets the current limit of the motor controller
+     * 
+     * @return the current limit of the motor controller
+     */
     public double getLimit();
 
+    /**
+     * Sets the current limit of the motor controller
+     * 
+     * @param currentLimit Current limit of the motor controller in amps
+     */
     public void setLimit(int currentLimit);
 
     /*
@@ -19,5 +34,8 @@ interface HyperMotorController {
      */
     public void outputTelemetry();
 
+    /**
+     * Resets the encoder of the motor controller
+     */
     public void resetEncoder();
 }
