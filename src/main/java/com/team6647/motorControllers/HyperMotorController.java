@@ -18,4 +18,6 @@ interface HyperMotorController {
      * Outputs Telemetry to SmartDashboard
      */
     public void outputTelemetry();
+
+    public void resetEncoder();
 }
