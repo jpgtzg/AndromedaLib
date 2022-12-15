@@ -1,5 +1,6 @@
 package com.team6647.motorControllers;
 
+import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.team6647.math.Conversions;
 import com.team6647.motorControllers.IdleManager.GlobalIdleMode;
@@ -22,11 +23,11 @@ public class SuperTalonFX extends WPI_TalonFX implements HyperMotorController {
      * @param inverted     Inverted state of the motor controller
      * @param currentLimit Current limit of the motor controller in amps
      */
-    public SuperTalonFX(int motorID, GlobalIdleMode idleMode, boolean isInverted, int currentLimit) {
+    public SuperTalonFX(int motorID, GlobalIdleMode idleMode, TalonFXInvertType invertType, int currentLimit) {
         super(motorID);
         configFactoryDefault();
         setMode(idleMode);
-        setInverted(isInverted);
+        setInverted(invertType);
         // TODO SET CURRENT LIMIT
     }
 
