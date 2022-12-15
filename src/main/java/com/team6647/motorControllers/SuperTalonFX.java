@@ -1,6 +1,5 @@
 package com.team6647.motorControllers;
 
-import com.ctre.phoenix.motorcontrol.TalonFXInvertType;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 import com.team6647.math.Conversions;
 import com.team6647.motorControllers.IdleManager.GlobalIdleMode;
