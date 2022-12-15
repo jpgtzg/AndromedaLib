@@ -7,7 +7,7 @@ import edu.wpi.first.wpilibj2.command.button.Button;
 import edu.wpi.first.wpilibj.XboxController.Axis;
 
 /*
- * Class that creates an from a button
+ * Button Wrapper that creates an from a button
  * Copied over and mofiied from 
  * https://github.com/Spectrum3847/SpectrumLib/blob/main/src/main/java/frc/SpectrumLib/gamepads/AxisButton.java
  */

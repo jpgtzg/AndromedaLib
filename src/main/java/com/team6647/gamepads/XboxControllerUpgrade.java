@@ -5,7 +5,7 @@ import com.team6647.gamepads.AxisButton.*;
 import edu.wpi.first.wpilibj.XboxController;
 
 /**
- * XboxController class that extends the WPI XboxController class
+ * XboxController wrapper that extends the WPI XboxController class
  * 
  * Copied over and modified from
  * https://github.com/Spectrum3847/SpectrumLib/blob/main/src/main/java/frc/SpectrumLib/gamepads/XboxGamepad.java
