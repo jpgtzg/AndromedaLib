@@ -1,6 +1,7 @@
 package com.team6647.motorControllers;
 
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
+import com.team6647.math.Conversions;
 import com.team6647.motorControllers.IdleManager.GlobalIdleMode;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -22,7 +23,7 @@ public class SuperTalonFX extends WPI_TalonFX implements HyperMotorController {
         configFactoryDefault();
         setMode(idleMode);
         setInverted(isInverted);
-        // TODo SET CURRENT LIMIT
+        // TODO SET CURRENT LIMIT
     }
 
     @Override
@@ -64,24 +65,32 @@ public class SuperTalonFX extends WPI_TalonFX implements HyperMotorController {
     /**
      * Gets the position of the motor controller
      * 
-     * @param conversionFactor - Conversion factor to convert encoder ticks to
-     *                         desired units
+     * @param circumference - Circumference of the wheel in meters
+     * @param gearRatio     - Gear ratio of the motor controller
      * 
-     * @return the position of the motor in desired units
+     * @return the position of the motor in meters
      */
-    public double getPosition(double conversionFactor) {
-        return getSelectedSensorPosition() * conversionFactor;
+    public double getPosition(double circumference, double gearRatio) {
+        return Conversions.falconToMeters(getSelectedSensorPosition(), circumference, gearRatio);
     }
 
     /**
      * Gets the velocity of the motor controller
      * 
-     * @param conversionFactor - Conversion factor to convert encoder ticks to
-     *                         desired units
+     * @param circumference - Circumference of the wheel in meters
+     * @param gearRatio     - Gear ratio of the motor controller
      * 
-     * @return the velocity of the motor deisred units
+     * @return the velocity of the motor in meters per second
      */
-    public double getVelocity(double conversionFactor) {
-        return getSelectedSensorVelocity() * conversionFactor;
+    public double getVelocity(double circumference, double gearRatio) {
+        return Conversions.MPSToMeterPerSecond(getSelectedSensorVelocity(), circumference, gearRatio);
+    }
+
+    /**
+     * Resets the encoder of the motor controller
+     */
+    @Override
+    public void resetEncoder() {
+        setSelectedSensorPosition(0);
     }
 }

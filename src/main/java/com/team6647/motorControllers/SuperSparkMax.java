@@ -63,4 +63,9 @@ public class SuperSparkMax extends CANSparkMax implements HyperMotorController {
         return currentLimit;
     }
 
+    @Override
+    public void resetEncoder(){
+        getEncoder().setPosition(0);
+    }
+
 }
