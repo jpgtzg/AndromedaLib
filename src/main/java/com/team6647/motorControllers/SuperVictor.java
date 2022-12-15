@@ -70,6 +70,7 @@ public class SuperVictor extends WPI_VictorSPX implements HyperMotorController {
      * @return the velocity of the motor deisred units
      */
     public double getVelocity(double conversionFactor) {
+        //TODO FINISH
         return getSelectedSensorVelocity() * conversionFactor;
     }
 
@@ -82,7 +83,13 @@ public class SuperVictor extends WPI_VictorSPX implements HyperMotorController {
      * @return the position of the motor in desired units
      */
     public double getPosition(double conversionFactor) {
+        //TODO FINISH
         return getSelectedSensorPosition() * conversionFactor;
+    }
+
+    @Override
+    public void resetEncoder(){
+        //TODO COMPLETE
     }
 
 }
