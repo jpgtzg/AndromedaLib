@@ -5,6 +5,10 @@ import com.team6647.motorControllers.IdleManager.GlobalIdleMode;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
+/*
+ * Wrapper for the WPI_VictorSPX class
+ * That  implements the HyperMotorController interface
+ */
 public class SuperVictor extends WPI_VictorSPX implements HyperMotorController {
 
     private double currentLimit = 1;
@@ -12,10 +16,10 @@ public class SuperVictor extends WPI_VictorSPX implements HyperMotorController {
     /**
      * Configures SuperVictor motor controller
      * 
-     * @param id           - ID of the motor controller
-     * @param idleMode     - Idle mode of the motor controller
-     * @param inverted     - Inverted state of the motor controller
-     * @param currentLimit - Current limit of the motor controller in amps
+     * @param id           ID of the motor controller
+     * @param idleMode     Idle mode of the motor controller
+     * @param inverted     Inverted state of the motor controller
+     * @param currentLimit Current limit of the motor controller in amps
      */
     public SuperVictor(int motorID, GlobalIdleMode idleMode, boolean isInverted, int currentLimit) {
         super(motorID);
@@ -34,7 +38,7 @@ public class SuperVictor extends WPI_VictorSPX implements HyperMotorController {
     /**
      * Sets the idle mode of the motor controller
      * 
-     * @param idleMode - Idle mode of the motor controller
+     * @param idleMode Idle mode of the motor controller
      */
     @Override
     public void setMode(GlobalIdleMode idleMode) {
@@ -44,7 +48,7 @@ public class SuperVictor extends WPI_VictorSPX implements HyperMotorController {
     /**
      * Sets the current limit of the motor controller
      * 
-     * @param currentLimit - Current limit of the motor controller in amps
+     * @param currentLimit Current limit of the motor controller in amps
      */
     @Override
     public void setLimit(int currentLimit) {
@@ -64,7 +68,7 @@ public class SuperVictor extends WPI_VictorSPX implements HyperMotorController {
     /**
      * Gets the velocity of the motor controller
      * 
-     * @param conversionFactor - Conversion factor to convert encoder ticks to
+     * @param conversionFactor Conversion factor to convert encoder ticks to
      *                         desired units
      * 
      * @return the velocity of the motor deisred units
@@ -77,7 +81,7 @@ public class SuperVictor extends WPI_VictorSPX implements HyperMotorController {
     /**
      * Gets the position of the motor controller
      * 
-     * @param conversionFactor - Conversion factor to convert encoder ticks to
+     * @param conversionFactor Conversion factor to convert encoder ticks to
      *                         desired units
      * 
      * @return the position of the motor in desired units

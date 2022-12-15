@@ -6,6 +6,10 @@ import com.team6647.motorControllers.IdleManager.GlobalIdleMode;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
+/*
+ * Wrapper for the WPI_TalonFX class
+ * That  implements the HyperMotorController interface
+ */
 public class SuperTalonFX extends WPI_TalonFX implements HyperMotorController {
 
     private double currentLimit = 1;
@@ -13,10 +17,10 @@ public class SuperTalonFX extends WPI_TalonFX implements HyperMotorController {
     /**
      * Configures SuperVictor motor controller
      * 
-     * @param id           - ID of the motor controller
-     * @param idleMode     - Idle mode of the motor controller
-     * @param inverted     - Inverted state of the motor controller
-     * @param currentLimit - Current limit of the motor controller in amps
+     * @param id           ID of the motor controller
+     * @param idleMode     Idle mode of the motor controller
+     * @param inverted     Inverted state of the motor controller
+     * @param currentLimit Current limit of the motor controller in amps
      */
     public SuperTalonFX(int motorID, GlobalIdleMode idleMode, boolean isInverted, int currentLimit) {
         super(motorID);
@@ -35,7 +39,7 @@ public class SuperTalonFX extends WPI_TalonFX implements HyperMotorController {
     /**
      * Sets the idle mode of the motor controller
      * 
-     * @param idleMode - Idle mode of the motor controller
+     * @param idleMode Idle mode of the motor controller
      */
     @Override
     public void setMode(GlobalIdleMode idleMode) {
@@ -45,7 +49,7 @@ public class SuperTalonFX extends WPI_TalonFX implements HyperMotorController {
     /**
      * Sets the current limit of the motor controller
      * 
-     * @param currentLimit - Current limit of the motor controller in amps
+     * @param currentLimit Current limit of the motor controller in amps
      */
     @Override
     public void setLimit(int currentLimit) {
@@ -65,8 +69,8 @@ public class SuperTalonFX extends WPI_TalonFX implements HyperMotorController {
     /**
      * Gets the position of the motor controller
      * 
-     * @param circumference - Circumference of the wheel in meters
-     * @param gearRatio     - Gear ratio of the motor controller
+     * @param circumference Circumference of the wheel in meters
+     * @param gearRatio     Gear ratio of the motor controller
      * 
      * @return the position of the motor in meters
      */
@@ -77,8 +81,8 @@ public class SuperTalonFX extends WPI_TalonFX implements HyperMotorController {
     /**
      * Gets the velocity of the motor controller
      * 
-     * @param circumference - Circumference of the wheel in meters
-     * @param gearRatio     - Gear ratio of the motor controller
+     * @param circumference Circumference of the wheel in meters
+     * @param gearRatio     Gear ratio of the motor controller
      * 
      * @return the velocity of the motor in meters per second
      */
