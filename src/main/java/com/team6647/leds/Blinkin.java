@@ -20,6 +20,7 @@ public class Blinkin extends SubsystemBase {
    */
   public Blinkin(int pwmPort) {
     blinkin = new Spark(pwmPort);
+    solidBlack();
   }
 
   /**
@@ -37,31 +38,52 @@ public class Blinkin extends SubsystemBase {
 
   }
 
+  /*
+   * Sets the LED to breathe blue
+   */
   public void breathBlue() {
     blinkin.set(-0.15);
 
   }
 
+  /*
+   * Sets the LED to dark green
+   */
   public void darkGreen() {
     blinkin.set(0.75);
   }
 
+  /*
+   * Sets the LED to hearbeat fast
+   */
   public void Heartbeatfast() {
     blinkin.set(0.07);
   }
 
+  /*
+   * Sets the LED to light chase blue
+   */
   public void LightChaseBlue() {
     blinkin.set(-0.29);
   }
 
+  /*
+   * Sets the LED to larson scanner red
+   */
   public void larsonScannerRed() {
     blinkin.set(-0.35);
   }
 
+  /*
+   * Sets the LED to strobe gold
+   */
   public void strobeGold() {
     blinkin.set(-0.07);
   }
 
+  /*
+   * Sets the LED to the alliance color
+   */
   public void allianceColor() {
     boolean isRed = NetworkTableInstance.getDefault().getTable("FMSInfo").getEntry("IsRedAlliance").getBoolean(true);
     if (isRed == true) {
