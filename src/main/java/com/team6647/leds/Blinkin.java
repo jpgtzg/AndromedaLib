@@ -16,7 +16,7 @@ public class Blinkin extends SubsystemBase {
   public static Spark blinkin;
 
   /**
-   * Setsup the Blinkin LED controller
+   * Setup the Blinkin LED controller
    */
   public Blinkin(int pwmPort) {
     blinkin = new Spark(pwmPort);
