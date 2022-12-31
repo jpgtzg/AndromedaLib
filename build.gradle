@@ -19,7 +19,7 @@ publishing {
       maven(MavenPublication) {
          groupId = 'com.AndromedaHelix.AndromedaLib'
          artifactId = 'library'
-         version = "${version}"
+         version = "1.0"
 
          from components.java
       }
