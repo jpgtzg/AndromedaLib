@@ -1,6 +1,7 @@
 package com.team6647.motorControllers;
 
 import com.revrobotics.CANSparkMax;
+import com.revrobotics.RelativeEncoder;
 import com.team6647.motorControllers.IdleManager.GlobalIdleMode;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -12,6 +13,8 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 public class SuperSparkMax extends CANSparkMax implements HyperMotorController {
 
     private double currentLimit = 1;
+
+    RelativeEncoder encoder = getEncoder();
 
     /**
      * Configures SuperSparkMax motor controller
@@ -67,9 +70,49 @@ public class SuperSparkMax extends CANSparkMax implements HyperMotorController {
         return currentLimit;
     }
 
+    /**
+     * Sets the position ƒconversion factor for the encoder
+     * 
+     * @param conversionFactor Conversion factor for the encoder
+     */
+    public void setPositionConversionFactor(double conversionFactor) {
+        encoder.setPositionConversionFactor(conversionFactor);
+    }
+
+    /**
+     * Sets the velocity conversion factor for the encoder
+     * 
+     * @param conversionFactor Conversion factor for the encoder
+     */
+    public void setVelocityConversionFactor(double conversionFactor) {
+        encoder.setVelocityConversionFactor(conversionFactor);
+    }
+
+    /**
+     * Gets the position of the encoder
+     * 
+     * @return the position of the encoder 
+     */
+    public double getPosition() {
+        return encoder.getPosition();
+    }
+
+    /**
+     * Gets the velocity of the encoder
+     * 
+     * @return the velocity of the encoder
+     */
+    public double getVelocity() {
+        return encoder.getVelocity();
+    }
+
+    /**
+     * Sets the encoder position to 0
+     * 
+     */
     @Override
     public void resetEncoder() {
-        getEncoder().setPosition(0);
+        encoder.setPosition(0);
     }
 
 }
