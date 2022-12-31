@@ -12,19 +12,14 @@ def ROBOT_MAIN_CLASS = "com.team6647.Main"
 apply plugin: 'maven-publish'
 group = 'com.github.AndromedaHelix'
 
-version = '1.0'
-
-repositories {
-    mavenCentral()
-    maven { url "https://jitpack.io" }
-}
+version = '-SNAPSHOT'
 
 publishing {
    publications {
       maven(MavenPublication) {
          groupId = 'com.AndromedaHelix.AndromedaLib'
          artifactId = 'library'
-         version = "1.0"
+         version = "-SNAPSHOT"
 
          from components.java
       }
