@@ -90,8 +90,6 @@ dependencies {
 
     testImplementation 'junit:junit:4.12'
 
-    implementation 'com.github.AndromedaHelix:AndromedaLib:main-SNAPSHOT'
-
 }
 
 // Simulation configuration (e.g. environment variables).
