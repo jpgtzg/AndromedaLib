@@ -10,7 +10,7 @@ targetCompatibility = JavaVersion.VERSION_11
 def ROBOT_MAIN_CLASS = "com.team6647.Main"
 
 apply plugin: 'maven-publish'
-group = 'com.github.AndromedaHelix'
+group = 'com.AndromedaHelix'
 
 version = '-SNAPSHOT'
 
