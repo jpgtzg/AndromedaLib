@@ -4,9 +4,6 @@
 
 package com.team6647.odometry;
 
-import com.team6647.motorControllers.SuperSparkMax;
-import com.team6647.motorControllers.IdleManager.GlobalIdleMode;
-
 import edu.wpi.first.math.estimator.DifferentialDrivePoseEstimator;
 import edu.wpi.first.math.geometry.Pose2d;
 import edu.wpi.first.math.geometry.Rotation2d;
