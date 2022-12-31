@@ -23,6 +23,19 @@ public class Blinkin extends SubsystemBase {
     solidBlack();
   }
 
+  @Override
+  public void periodic() {
+  }
+
+  /**
+   * Sets the LED to a decired pattern
+   * 
+   * @param pwmSignal The PWM signal to set the LED to
+   */
+  public void set(double pwmSignal) {
+    blinkin.set(pwmSignal);
+  }
+
   /**
    * Sets the LED to fire
    */
