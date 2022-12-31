@@ -1,12 +1,16 @@
 plugins {
     id "java"
     id "edu.wpi.first.GradleRIO" version "2022.4.1"
+    id 'maven-publish'
 }
 
 sourceCompatibility = JavaVersion.VERSION_11
 targetCompatibility = JavaVersion.VERSION_11
 
 def ROBOT_MAIN_CLASS = "com.team6647.Main"
+
+apply plugin: 'maven-publish'
+group = 'com.github.AndromedaHelix'
 
 repositories{
     
