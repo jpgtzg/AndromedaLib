@@ -1,6 +1,6 @@
-package com.team6647.gamepads;
+package com.andromedalib.gamepads;
 
-import com.team6647.gamepads.AxisButton.*;
+import com.andromedalib.gamepads.AxisButton.*;
 
 import edu.wpi.first.wpilibj.XboxController;
 

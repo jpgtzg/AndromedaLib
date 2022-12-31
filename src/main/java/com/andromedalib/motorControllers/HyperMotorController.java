@@ -1,6 +1,6 @@
-package com.team6647.motorControllers;
+package com.andromedalib.motorControllers;
 
-import com.team6647.motorControllers.IdleManager.GlobalIdleMode;
+import com.andromedalib.motorControllers.IdleManager.GlobalIdleMode;
 
 /**
  * Interface to implement the same functions and

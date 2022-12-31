@@ -1,7 +1,7 @@
-package com.team6647.motorControllers;
+package com.andromedalib.motorControllers;
 
+import com.andromedalib.motorControllers.IdleManager.GlobalIdleMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
-import com.team6647.motorControllers.IdleManager.GlobalIdleMode;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 

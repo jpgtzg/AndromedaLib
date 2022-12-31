@@ -1,4 +1,4 @@
-package com.team6647.gamepads;
+package com.andromedalib.gamepads;
 
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;

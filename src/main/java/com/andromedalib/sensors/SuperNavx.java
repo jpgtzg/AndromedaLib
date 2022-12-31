@@ -1,4 +1,4 @@
-package com.team6647.sensors;
+package com.andromedalib.sensors;
 
 import com.kauailabs.navx.frc.AHRS;
 

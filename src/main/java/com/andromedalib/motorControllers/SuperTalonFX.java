@@ -1,8 +1,8 @@
-package com.team6647.motorControllers;
+package com.andromedalib.motorControllers;
 
+import com.andromedalib.math.Conversions;
+import com.andromedalib.motorControllers.IdleManager.GlobalIdleMode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
-import com.team6647.math.Conversions;
-import com.team6647.motorControllers.IdleManager.GlobalIdleMode;
 
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 

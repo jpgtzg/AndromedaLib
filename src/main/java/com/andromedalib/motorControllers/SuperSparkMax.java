@@ -1,10 +1,10 @@
-package com.team6647.motorControllers;
+package com.andromedalib.motorControllers;
 
+import com.andromedalib.leds.Blinkin;
+import com.andromedalib.motorControllers.IdleManager.GlobalIdleMode;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.REVLibError;
 import com.revrobotics.RelativeEncoder;
-import com.team6647.leds.Blinkin;
-import com.team6647.motorControllers.IdleManager.GlobalIdleMode;
 
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -142,6 +142,10 @@ public class SuperSparkMax extends CANSparkMax implements HyperMotorController {
         encoder.setPosition(0);
     }
 
+    /**
+     * Sets the LED to the {@link REVLibError} error
+     * in the motor controller
+     */
     public void setErrorLED() {
         error = getLastError();
         switch (error) {
@@ -211,7 +215,7 @@ public class SuperSparkMax extends CANSparkMax implements HyperMotorController {
                 break;
         }
 
-        if(error != REVLibError.kOk) {
+        if (error != REVLibError.kOk) {
             DriverStation.reportError("SparkMax Error: " + error + " , in motor " + getDeviceId(), false);
         }
     }

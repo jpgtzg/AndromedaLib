@@ -1,4 +1,4 @@
-package com.team6647.math;
+package com.andromedalib.math;
 
 /**
  * Class that manages falcon conversions
