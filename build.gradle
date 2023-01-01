@@ -4,24 +4,23 @@ plugins {
     id 'maven-publish'
 }
 
-sourceCompatibility = 1.8
-targetCompatibility = 1.8
+sourceCompatibility = JavaVersion.VERSION_11
+targetCompatibility = JavaVersion.VERSION_11
+
 
 def ROBOT_MAIN_CLASS = "com.team6647.Main"
 
 apply plugin: 'maven-publish'
+group = 'com.github.AndromedaHelix'
 
 publishing {
    publications {
       maven(MavenPublication) {
-        groupId = 'org.AndromedaHelix'
+        groupId = 'com.AndromedaHelix.AndromedaLib'
         artifactId = 'library'
         version = "SNAPSHOT"
         from components.java
 
-        pom {
-            description = 'A description of my library'
-        }
       }
    }
 }
