@@ -10,19 +10,18 @@ targetCompatibility = JavaVersion.VERSION_11
 def ROBOT_MAIN_CLASS = "com.team6647.Main"
 
 apply plugin: 'maven-publish'
-group = 'com.AndromedaHelix'
+group = 'com.github.AndromedaHelix'
 
-version = '-SNAPSHOT'
+version = 'SNAPSHOT'
 
 publishing {
    publications {
       maven(MavenPublication) {
-
-         from components.java
+        groupId = 'org.AndromedaHelix'
+        artifactId = 'library'
+        version = "SNAPSHOT"
+        from components.java
       }
-   }
-   repositories {
-    mavenLocal()
    }
 }
 
