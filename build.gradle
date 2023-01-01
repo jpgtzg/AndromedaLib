@@ -24,6 +24,9 @@ publishing {
          from components.java
       }
    }
+   repositories {
+    mavenLocal()
+   }
 }
 
 // Define my targets (RoboRIO) and artifacts (deployable files)
