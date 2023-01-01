@@ -17,9 +17,6 @@ version = '-SNAPSHOT'
 publishing {
    publications {
       maven(MavenPublication) {
-         groupId = 'com.AndromedaHelix.AndromedaLib'
-         artifactId = 'library'
-         version = "-SNAPSHOT"
 
          from components.java
       }
