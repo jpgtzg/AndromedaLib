@@ -17,7 +17,7 @@ publishing {
       maven(MavenPublication) {
         groupId = 'com.AndromedaHelix.AndromedaLib'
         artifactId = 'library'
-        version = "SNAPSHOT"
+        version = "1.0.0"
         from components.java
 
       }
