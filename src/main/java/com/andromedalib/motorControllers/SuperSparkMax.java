@@ -9,9 +9,9 @@ import com.revrobotics.RelativeEncoder;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-/*
+/**
  * Wrapper for the CANSparkMax class
- * That  implements the HyperMotorController interface
+ * That implements the HyperMotorController interface
  */
 public class SuperSparkMax extends CANSparkMax implements HyperMotorController {
 
@@ -44,11 +44,46 @@ public class SuperSparkMax extends CANSparkMax implements HyperMotorController {
     /**
      * Configures SuperSparkMax motor controller
      * 
-     * @param id           ID of the motor controller
-     * @param type         Type of the motor controller
-     * @param idleMode     Idle mode of the motor controller
-     * @param inverted     Inverted state of the motor controller
-     * @param currentLimit Current limit of the motor controller in amps
+     * @param id       ID of the motor controller
+     * @param type     Type of the motor controller
+     * @param idleMode Idle mode of the motor controller
+     * @param inverted Inverted state of the motor controller
+     */
+    public SuperSparkMax(int motorID, MotorType type, GlobalIdleMode idleMode, boolean isInverted) {
+        super(motorID, type);
+        restoreFactoryDefaults();
+        setMode(idleMode);
+        setInverted(isInverted);
+        outputTelemetry();
+    }
+
+    /**
+     * Configures SuperSparkMax motor controller
+     * 
+     * @param id             ID of the motor controller
+     * @param type           Type of the motor controller
+     * @param idleMode       Idle mode of the motor controller
+     * @param inverted       Inverted state of the motor controller
+     * @param blinkinPWMPort PWM port of the blinkin
+     */
+    public SuperSparkMax(int motorID, MotorType type, GlobalIdleMode idleMode, boolean isInverted, double blinkinPWMPort) {
+        super(motorID, type);
+        restoreFactoryDefaults();
+        setMode(idleMode);
+        setInverted(isInverted);
+        outputTelemetry();
+        blinkin = new Blinkin((int)blinkinPWMPort);
+    }
+
+    /**
+     * Configures SuperSparkMax motor controller
+     * 
+     * @param id             ID of the motor controller
+     * @param type           Type of the motor controller
+     * @param idleMode       Idle mode of the motor controller
+     * @param inverted       Inverted state of the motor controller
+     * @param currentLimit   Current limit of the motor controller in amps
+     * @param blinkinPWMPort PWM port of the blinkin
      */
     public SuperSparkMax(int motorID, MotorType type, GlobalIdleMode idleMode, boolean isInverted, int currentLimit,
             int blinkinPWMPort) {
