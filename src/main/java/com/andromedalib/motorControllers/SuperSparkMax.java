@@ -66,13 +66,14 @@ public class SuperSparkMax extends CANSparkMax implements HyperMotorController {
      * @param inverted       Inverted state of the motor controller
      * @param blinkinPWMPort PWM port of the blinkin
      */
-    public SuperSparkMax(int motorID, MotorType type, GlobalIdleMode idleMode, boolean isInverted, double blinkinPWMPort) {
+    public SuperSparkMax(int motorID, MotorType type, GlobalIdleMode idleMode, boolean isInverted,
+            double blinkinPWMPort) {
         super(motorID, type);
         restoreFactoryDefaults();
         setMode(idleMode);
         setInverted(isInverted);
         outputTelemetry();
-        blinkin = new Blinkin((int)blinkinPWMPort);
+        blinkin = new Blinkin((int) blinkinPWMPort);
     }
 
     /**
@@ -179,79 +180,79 @@ public class SuperSparkMax extends CANSparkMax implements HyperMotorController {
 
     /**
      * Sets the LED to the {@link REVLibError} error
-     * in the motor controller
+     * in the motor controller. You must start running this method 
+     * in your Subsystem's periodic method. 
      */
     public void setErrorLED() {
         error = getLastError();
-        switch (error) {
-            case kError:
-
-                break;
-            case kTimeout:
-
-                break;
-            case kNotImplemented:
-
-                break;
-
-            case kHALError:
-
-                break;
-            case kCantFindFirmware:
-
-                break;
-            case kFirmwareTooOld:
-
-                break;
-            case kFirmwareTooNew:
-
-                break;
-            case kParamInvalidID:
-
-                break;
-            case kParamMismatchType:
-
-                break;
-            case kParamAccessMode:
-
-                break;
-            case kParamInvalid:
-
-                break;
-            case kParamNotImplementedDeprecated:
-
-                break;
-            case kFollowConfigMismatch:
-
-                break;
-            case kInvalid:
-
-                break;
-            case kSetpointOutOfRange:
-
-                break;
-            case kUnknown:
-
-                break;
-            case kCANDisconnected:
-
-                break;
-            case kDuplicateCANId:
-
-                break;
-            case kInvalidCANId:
-
-                break;
-            case kSparkMaxDataPortAlreadyConfiguredDifferently:
-
-                break;
-            default:
-
-                break;
-        }
-
         if (error != REVLibError.kOk) {
             DriverStation.reportError("SparkMax Error: " + error + " , in motor " + getDeviceId(), false);
+            switch (error) {
+                case kError:
+
+                    break;
+                case kTimeout:
+
+                    break;
+                case kNotImplemented:
+
+                    break;
+
+                case kHALError:
+
+                    break;
+                case kCantFindFirmware:
+
+                    break;
+                case kFirmwareTooOld:
+
+                    break;
+                case kFirmwareTooNew:
+
+                    break;
+                case kParamInvalidID:
+
+                    break;
+                case kParamMismatchType:
+
+                    break;
+                case kParamAccessMode:
+
+                    break;
+                case kParamInvalid:
+
+                    break;
+                case kParamNotImplementedDeprecated:
+
+                    break;
+                case kFollowConfigMismatch:
+
+                    break;
+                case kInvalid:
+
+                    break;
+                case kSetpointOutOfRange:
+
+                    break;
+                case kUnknown:
+
+                    break;
+                case kCANDisconnected:
+
+                    break;
+                case kDuplicateCANId:
+
+                    break;
+                case kInvalidCANId:
+
+                    break;
+                case kSparkMaxDataPortAlreadyConfiguredDifferently:
+
+                    break;
+                default:
+
+                    break;
+            }
         }
     }
 }
