@@ -52,7 +52,6 @@ public class LimelightLowLevel {
      * The pipeline’s latency contribution (ms) Add at least 11ms for image capture
      * latency.
      */
-
     public final NetworkTableEntry latency;
 
     /**
