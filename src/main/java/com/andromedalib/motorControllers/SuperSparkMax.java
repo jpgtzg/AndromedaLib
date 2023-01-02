@@ -183,6 +183,7 @@ public class SuperSparkMax extends CANSparkMax implements HyperMotorController {
      * in the motor controller. You must start running this method 
      * in your Subsystem's periodic method. 
      */
+    @Override
     public void setErrorLED() {
         error = getLastError();
         if (error != REVLibError.kOk) {
@@ -250,7 +251,6 @@ public class SuperSparkMax extends CANSparkMax implements HyperMotorController {
 
                     break;
                 default:
-
                     break;
             }
         }
