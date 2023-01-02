@@ -140,6 +140,7 @@ public class LimelightLowLevel {
      */
     public LimelightLowLevel(String name) {
         tableInstance = NetworkTableInstance.getDefault();
+        
         table = tableInstance.getTable(name);
 
         validTarget = table.getEntry("tv");
