@@ -4,7 +4,7 @@ import com.kauailabs.navx.frc.AHRS;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 
-/*
+/**
  * Wrapper for the AHRS Navx class
  */
 public class SuperNavx extends AHRS {
@@ -51,5 +51,4 @@ public class SuperNavx extends AHRS {
     public Rotation2d getRotation() {
         return getRotation2d().times(-1);
     }
-
 }
