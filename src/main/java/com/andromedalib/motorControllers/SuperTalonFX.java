@@ -1,21 +1,28 @@
 package com.andromedalib.motorControllers;
 
+import com.andromedalib.leds.Blinkin;
 import com.andromedalib.math.Conversions;
 import com.andromedalib.motorControllers.IdleManager.GlobalIdleMode;
+import com.ctre.phoenix.ErrorCode;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-/*
+/**
  * Wrapper for the WPI_TalonFX class
- * That  implements the HyperMotorController interface
+ * That implements the HyperMotorController interface
  */
 public class SuperTalonFX extends WPI_TalonFX implements HyperMotorController {
 
     private double currentLimit = 1;
 
+    Blinkin blinkin;
+
+    ErrorCode error;
+
     /**
-     * Configures SuperVictor motor controller
+     * Configures SuperTalonFX motor controller
      * 
      * @param id           ID of the motor controller
      * @param idleMode     Idle mode of the motor controller
@@ -28,6 +35,55 @@ public class SuperTalonFX extends WPI_TalonFX implements HyperMotorController {
         setMode(idleMode);
         setInverted(isInverted);
         // TODO SET CURRENT LIMIT
+    }
+
+    /**
+     * Configures SuperTalonFX motor controller
+     * 
+     * @param motorID    ID of the motor controller
+     * @param idleMode   Idle mode of the motor controller
+     * @param isInverted Inverted state of the motor controller
+     */
+    public SuperTalonFX(int motorID, GlobalIdleMode idleMode, Boolean isInverted) {
+        super(motorID);
+        configFactoryDefault();
+        setMode(idleMode);
+        setInverted(isInverted);
+    }
+
+    /**
+     * Configures SuperTalonFX motor controller
+     * 
+     * @param motorID       ID of the motor controller
+     * @param idleMode      Idle mode of the motor controller
+     * @param isInverted    Inverted state of the motor controller
+     * @param currentLimit  Current limit of the motor controller in amps
+     * @param blinkinPWMPort PWM port of the blinkin
+     */
+    public SuperTalonFX(int motorID, GlobalIdleMode idleMode, Boolean isInverted, int currentLimit,
+            int blinkinPWMPort) {
+        super(motorID);
+        configFactoryDefault();
+        setMode(idleMode);
+        setInverted(isInverted);
+        blinkin = new Blinkin(blinkinPWMPort);
+    }
+
+    /**
+     * Configures SuperTalonFX motor controller
+     * 
+     * @param motorID       ID of the motor controller
+     * @param idleMode      Idle mode of the motor controller
+     * @param isInverted    Inverted state of the motor controller
+     * @param blinkinPWMPort PWM port of the blinkin
+     */
+    public SuperTalonFX(int motorID, GlobalIdleMode idleMode, Boolean isInverted,
+            double blinkinPWMPort) {
+        super(motorID);
+        configFactoryDefault();
+        setMode(idleMode);
+        setInverted(isInverted);
+        blinkin = new Blinkin((int) blinkinPWMPort);
     }
 
     @Override
@@ -96,5 +152,68 @@ public class SuperTalonFX extends WPI_TalonFX implements HyperMotorController {
     @Override
     public void resetEncoder() {
         setSelectedSensorPosition(0);
+    }
+
+    /**
+     * Sets the LED to the {@link ErrorCode} error
+     * in the motor controller. You must start running this method 
+     * in your Subsystem's periodic method. 
+     */
+    @Override
+    public void setErrorLED() {
+        error = getLastError();
+        if (error != ErrorCode.OK) {
+            DriverStation.reportError("FalconFX Error: " + error + " , in motor " + getDeviceID(), false);
+            switch (error) {
+                case CAN_MSG_STALE:
+
+                    break;
+                case CAN_TX_FULL:
+
+                    break;
+                case TxFailed:
+
+                    break;
+
+                case InvalidParamValue:
+
+                    break;
+                case CAN_INVALID_PARAM:
+
+                    break;
+                case RxTimeout:
+
+                    break;
+                case CAN_MSG_NOT_FOUND:
+
+                    break;
+                case TxTimeout:
+
+                    break;
+                case CAN_NO_MORE_TX_JOBS:
+
+                    break;
+                case UnexpectedArbId:
+
+                    break;
+                case CAN_NO_SESSIONS_AVAIL:
+
+                    break;
+                case BufferFull:
+
+                    break;
+                case CAN_OVERFLOW:
+
+                    break;
+                case SensorNotPresent:
+
+                    break;
+                case FirmwareTooOld:
+
+                    break;
+                default:
+                    break;
+            }
+        }
     }
 }
