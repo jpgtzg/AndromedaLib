@@ -16,89 +16,89 @@ public class LimelightLowLevel {
     /**
      * Global {@link NetworkTableInstance}
      */
-    final NetworkTableInstance tableInstance;
+    public final NetworkTableInstance tableInstance;
 
     /**
      * {@link NetworkTable} for the Limelight
      */
-    final NetworkTable table;
+    public final NetworkTable table;
 
     /**
      * Set to 1 if the limelight has any valid targets (0 if no valid targets)
      */
-    final NetworkTableEntry validTarget;
+    public final NetworkTableEntry validTarget;
 
     /**
      * Horizontal Offset From Crosshair To Target (-27 degrees to 27 degrees)
      */
-    final NetworkTableEntry targetX;
+    public final NetworkTableEntry targetX;
 
     /**
      * Vertical Offset From Crosshair To Target (-20.5 degrees to 20.5 degrees)
      */
-    final NetworkTableEntry targetY;
+    public final NetworkTableEntry targetY;
 
     /**
      * Target Area (0% of image to 100% of image)
      */
-    final NetworkTableEntry targetArea;
+    public final NetworkTableEntry targetArea;
 
     /**
      * Skew or rotation (-90 degrees to 0 degrees)
      */
-    final NetworkTableEntry targetSkew;
+    public final NetworkTableEntry targetSkew;
 
     /**
      * The pipeline’s latency contribution (ms) Add at least 11ms for image capture
      * latency.
      */
 
-    final NetworkTableEntry latency;
+    public final NetworkTableEntry latency;
 
     /**
      * The shortest side of the fitted bounding box (pixels)
      */
-    final NetworkTableEntry shortSideLength;
+    public final NetworkTableEntry shortSideLength;
 
     /**
      * The longest side of the fitted bounding box (pixels)
      */
-    final NetworkTableEntry longSideLength;
+    public final NetworkTableEntry longSideLength;
 
     /**
      * Horizontal sidelength of the rough bounding box (0 - 320 pixels)
      */
-    final NetworkTableEntry horizontalLenght;
+    public final NetworkTableEntry horizontalLenght;
 
     /**
      * Vertical sidelength of the rough bounding box (0 - 320 pixels)
      */
-    final NetworkTableEntry verticalLength;
+    public final NetworkTableEntry verticalLength;
 
     /**
      * The index of the current pipeline (0 .. 9)
      */
-    final NetworkTableEntry pipelineIndex;
+    public final NetworkTableEntry pipelineIndex;
 
     /**
      * Value to set the pipeline to (0 .. 9)
      */
-    final NetworkTableEntry setPipeline;
+    public final NetworkTableEntry setPipeline;
 
     /**
      * Number array of corner X coordinates
      */
-    final NetworkTableEntry xCorners;
+    public final NetworkTableEntry xCorners;
 
     /**
      * Number array of corner Y coordinates
      */
-    final NetworkTableEntry yCorners;
+    public final NetworkTableEntry yCorners;
 
     /**
      * Result of 3D position solution: Translation (x,y,y) Rotation(pitch,yaw,roll)
      */
-    final NetworkTableEntry cam3Dsol;
+    public final NetworkTableEntry cam3Dsol;
 
     /**
      * Sets limelight’s LED state
@@ -107,14 +107,14 @@ public class LimelightLowLevel {
      * 2 = force blink
      * 3 = force on
      */
-    final NetworkTableEntry ledMode;
+    public final NetworkTableEntry ledMode;
 
     /**
      * Sets limelight’s operation mode
      * 0 = Vision Processor
      * 1 = Driver Camera (Increases exposure, disables vision processing)
      */
-    final NetworkTableEntry camMode;
+    public final NetworkTableEntry camMode;
 
     /**
      * Sets limelight’s streaming mode
@@ -124,14 +124,14 @@ public class LimelightLowLevel {
      * 2 = PiP Secondary - The primary camera stream is placed in the lower-right
      * corner of the secondary camera stream
      */
-    final NetworkTableEntry camStream;
+    public final NetworkTableEntry camStream;
 
     /**
      * Sets limelight to take a snapshot
      * 0 = Stop taking snapshots
      * 1 = Take two snapshots per second
      */
-    final NetworkTableEntry snapshot;
+    public final NetworkTableEntry snapshot;
 
     /**
      * Creates a new LimelightCamera object
@@ -140,7 +140,7 @@ public class LimelightLowLevel {
      */
     public LimelightLowLevel(String name) {
         tableInstance = NetworkTableInstance.getDefault();
-        
+
         table = tableInstance.getTable(name);
 
         validTarget = table.getEntry("tv");
