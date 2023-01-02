@@ -38,4 +38,6 @@ interface HyperMotorController {
      * Resets the encoder of the motor controller
      */
     public void resetEncoder();
+
+    public void setErrorLED();
 }
