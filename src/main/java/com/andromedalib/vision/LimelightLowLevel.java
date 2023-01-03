@@ -97,7 +97,7 @@ public class LimelightLowLevel {
     /**
      * Result of 3D position solution: Translation (x,y,y) Rotation(pitch,yaw,roll)
      */
-    public final NetworkTableEntry cam3Dsol;
+    public final NetworkTableEntry cam3DSol;
 
     /**
      * Sets limelight’s LED state
@@ -170,7 +170,7 @@ public class LimelightLowLevel {
 
         yCorners = table.getEntry("tcorny");
 
-        cam3Dsol = table.getEntry("camtran");
+        cam3DSol = table.getEntry("camtran");
 
         ledMode = table.getEntry("ledMode");
 
