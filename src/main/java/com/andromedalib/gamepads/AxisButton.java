@@ -14,6 +14,7 @@ import edu.wpi.first.wpilibj.XboxController.Axis;
  * Copied over and mofiied from 
  * https://github.com/Spectrum3847/SpectrumLib/blob/main/src/main/java/frc/SpectrumLib/gamepads/AxisButton.java
  */
+//TODO: REMOVE DEPRECATED
 public class AxisButton extends Trigger {
     private final GenericHID joy;
     private final int axis;
