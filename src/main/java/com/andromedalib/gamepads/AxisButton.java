@@ -1,9 +1,12 @@
 package com.andromedalib.gamepads;
 
+import java.util.function.BooleanSupplier;
+
 import edu.wpi.first.wpilibj.GenericHID;
 import edu.wpi.first.wpilibj.Joystick;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.button.Button;
+import edu.wpi.first.wpilibj2.command.button.Trigger;
 import edu.wpi.first.wpilibj.XboxController.Axis;
 
 /*
@@ -11,7 +14,7 @@ import edu.wpi.first.wpilibj.XboxController.Axis;
  * Copied over and mofiied from 
  * https://github.com/Spectrum3847/SpectrumLib/blob/main/src/main/java/frc/SpectrumLib/gamepads/AxisButton.java
  */
-public class AxisButton extends Button {
+public class AxisButton extends Trigger {
     private final GenericHID joy;
     private final int axis;
     private double targetVal;
@@ -19,7 +22,7 @@ public class AxisButton extends Button {
     
     public static enum ThresholdType
     {
-            LESS_THAN, GREATER_THAN, EXACT, POV, DEADBAND;	
+        LESS_THAN, GREATER_THAN, EXACT, POV, DEADBAND;	
     }
 
     public AxisButton(GenericHID joystick, int axis, double threshold, ThresholdType thresholdType) {
