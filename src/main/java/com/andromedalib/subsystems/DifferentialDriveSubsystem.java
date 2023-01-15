@@ -12,28 +12,16 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class DifferentialDriveSubsystem extends SubsystemBase {
-  private static DifferentialDriveSubsystem chassisInstance;
-
-  private MotorControllerGroup leftMotorController;
-  private MotorControllerGroup rightMotorController;
+  private MotorControllerGroup leftMotorController = new MotorControllerGroup(null);
+  private MotorControllerGroup rightMotorController = new MotorControllerGroup(null);
 
   private double leftSpeed;
   private double rightSpeed;
 
   private DifferentialDrive drive;
 
-  private DifferentialDriveSubsystem(SuperTalonFX[] leftMotors, SuperTalonFX[] rightMotors) {
-    leftMotorController = new MotorControllerGroup(leftMotors);
-    rightMotorController = new MotorControllerGroup(rightMotors);
-
+  public DifferentialDriveSubsystem() {
     drive = new DifferentialDrive(leftMotorController, rightMotorController);
-  }
-
-  public static DifferentialDriveSubsystem getInstance(SuperTalonFX[] leftMotors, SuperTalonFX[] rightMotors) {
-    if (chassisInstance == null)
-      chassisInstance = new DifferentialDriveSubsystem(leftMotors, rightMotors);
-
-    return chassisInstance;
   }
 
   @Override
@@ -50,6 +38,7 @@ public class DifferentialDriveSubsystem extends SubsystemBase {
    */
   public void addLeftMotor(SuperTalonFX... talon) {
     leftMotorController = new MotorControllerGroup(talon);
+    drive = new DifferentialDrive(leftMotorController, rightMotorController);
   }
 
   /**
@@ -59,6 +48,7 @@ public class DifferentialDriveSubsystem extends SubsystemBase {
    */
   public void addRightMotor(SuperTalonFX... talon) {
     rightMotorController = new MotorControllerGroup(talon);
+    drive = new DifferentialDrive(leftMotorController, rightMotorController);
   }
 
   /**
