@@ -5,6 +5,7 @@ import com.andromedalib.math.Conversions;
 import com.andromedalib.motorControllers.IdleManager.GlobalIdleMode;
 import com.ctre.phoenix.ErrorCode;
 import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
+import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import edu.wpi.first.wpilibj.DriverStation;
@@ -59,7 +60,7 @@ public class SuperTalonFX extends WPI_TalonFX implements HyperMotorController {
      * @param motorID        ID of the motor controller
      * @param idleMode       Idle mode of the motor controller
      * @param isInverted     Inverted state of the motor controller
-     * @param configuration Stator current limit configuration
+     * @param configuration  Stator current limit configuration
      * @param blinkinPWMPort PWM port of the blinkin
      */
     public SuperTalonFX(int motorID, GlobalIdleMode idleMode, Boolean isInverted,
@@ -71,6 +72,23 @@ public class SuperTalonFX extends WPI_TalonFX implements HyperMotorController {
         setInverted(isInverted);
         configStatorCurrentLimit(configuration);
         blinkin = new Blinkin(blinkinPWMPort);
+    }
+
+    /**
+     * Configures a SuperTalonFX with the {@link NeutralMode} as Cosat, and a new
+     * {@link Blinkin} at PWM port 0
+     * 
+     * @param motorID
+     * @param isInverted
+     * @param configuration
+     */
+    public SuperTalonFX(int motorID, boolean isInverted, StatorCurrentLimitConfiguration configuration) {
+        super(motorID);
+        configFactoryDefault();
+        setMode(GlobalIdleMode.Coast);
+        setInverted(isInverted);
+        configStatorCurrentLimit(configuration);
+        blinkin = new Blinkin(0);
     }
 
     /**
