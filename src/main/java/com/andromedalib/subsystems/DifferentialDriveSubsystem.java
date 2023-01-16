@@ -82,6 +82,12 @@ public class DifferentialDriveSubsystem extends SubsystemBase {
     drive.curvatureDrive(leftSpeed, rightSpeed, true);
   }
 
+  /**
+   * Returns whether the drive is inverted or not. Useful for the tank drive
+   * inverted commands
+   * 
+   * @return Current inverted state
+   */
   public boolean isInverted() {
     return driveInverted;
   }
