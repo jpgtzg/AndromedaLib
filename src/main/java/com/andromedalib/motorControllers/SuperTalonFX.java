@@ -70,7 +70,7 @@ public class SuperTalonFX extends WPI_TalonFX implements HyperMotorController {
         setMode(idleMode);
         setInverted(isInverted);
         configStatorCurrentLimit(configuration);
-        blinkin = new Blinkin(blinkinPWMPort);
+        blinkin = Blinkin.getInstance(blinkinPWMPort);
     }
 
     /**
@@ -87,7 +87,7 @@ public class SuperTalonFX extends WPI_TalonFX implements HyperMotorController {
         setMode(GlobalIdleMode.Coast);
         setInverted(isInverted);
         configStatorCurrentLimit(configuration);
-        blinkin = new Blinkin(0);
+        blinkin = Blinkin.getInstance(0);
     }
 
     /**
@@ -104,7 +104,7 @@ public class SuperTalonFX extends WPI_TalonFX implements HyperMotorController {
         configFactoryDefault();
         setMode(idleMode);
         setInverted(isInverted);
-        blinkin = new Blinkin((int) blinkinPWMPort);
+        blinkin = Blinkin.getInstance((int) blinkinPWMPort);
     }
 
     @Override

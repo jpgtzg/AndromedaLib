@@ -73,7 +73,7 @@ public class SuperSparkMax extends CANSparkMax implements HyperMotorController {
         setMode(idleMode);
         setInverted(isInverted);
         outputTelemetry();
-        blinkin = new Blinkin((int) blinkinPWMPort);
+        blinkin = Blinkin.getInstance((int) blinkinPWMPort);
     }
 
     /**
@@ -94,7 +94,7 @@ public class SuperSparkMax extends CANSparkMax implements HyperMotorController {
         setInverted(isInverted);
         setSmartCurrentLimit(currentLimit);
         outputTelemetry();
-        blinkin = new Blinkin(blinkinPWMPort);
+        blinkin = Blinkin.getInstance((int) blinkinPWMPort);
     }
 
     @Override
