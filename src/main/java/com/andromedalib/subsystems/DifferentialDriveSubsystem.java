@@ -12,43 +12,38 @@ import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class DifferentialDriveSubsystem extends SubsystemBase {
-  private MotorControllerGroup leftMotorController = new MotorControllerGroup(null);
-  private MotorControllerGroup rightMotorController = new MotorControllerGroup(null);
+  private MotorControllerGroup leftMotorController;
+  private MotorControllerGroup rightMotorController;
 
   private double leftSpeed;
   private double rightSpeed;
 
   private DifferentialDrive drive;
 
-  public DifferentialDriveSubsystem() {
+  public boolean driveInverted = false;
+
+  public DifferentialDriveSubsystem(SuperTalonFX[] leftMotors, SuperTalonFX[] rightMotors) {
+    leftMotorController = new MotorControllerGroup(leftMotors);
+    rightMotorController = new MotorControllerGroup(rightMotors);
     drive = new DifferentialDrive(leftMotorController, rightMotorController);
   }
 
+  /**
+   * Publishes data and information to SmartDashboard
+   */
   @Override
   public void periodic() {
     SmartDashboard.putNumber("Left Drive Speed", leftSpeed);
     SmartDashboard.putNumber("Right Drive Speed", rightSpeed);
-
+    SmartDashboard.putData(drive);
+    outputTelemetry();
   }
 
   /**
-   * Adds a motor to the {@link DifferentialDrive} left side
-   * 
-   * @param talon Motor to add
+   * Publishes data and information to SmartDashboard. Override this method to
+   * include custom information
    */
-  public void addLeftMotor(SuperTalonFX... talon) {
-    leftMotorController = new MotorControllerGroup(talon);
-    drive = new DifferentialDrive(leftMotorController, rightMotorController);
-  }
-
-  /**
-   * Adds a motor to the {@link DifferentialDrive} right side
-   * 
-   * @param talon Motor to add
-   */
-  public void addRightMotor(SuperTalonFX... talon) {
-    rightMotorController = new MotorControllerGroup(talon);
-    drive = new DifferentialDrive(leftMotorController, rightMotorController);
+  public void outputTelemetry() {
   }
 
   /**
@@ -85,5 +80,9 @@ public class DifferentialDriveSubsystem extends SubsystemBase {
     this.leftSpeed = linearSpeed;
     this.rightSpeed = rotSpeed;
     drive.curvatureDrive(leftSpeed, rightSpeed, true);
+  }
+
+  public boolean isInverted() {
+    return driveInverted;
   }
 }
