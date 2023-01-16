@@ -13,14 +13,23 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
  */
 public class Blinkin extends SubsystemBase {
 
-  public static Spark blinkin;
+  static Blinkin instance;
+
+  private static Spark blinkin;
 
   /**
    * Setup the Blinkin LED controller
    */
-  public Blinkin(int pwmPort) {
+  private Blinkin(int pwmPort) {
     blinkin = new Spark(pwmPort);
     solidBlack();
+  }
+
+  public static Blinkin getInstance(int pwmPort) {
+    if (instance == null) {
+      instance = new Blinkin(pwmPort);
+    }
+    return instance;
   }
 
   @Override
