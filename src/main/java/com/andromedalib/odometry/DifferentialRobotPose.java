@@ -12,7 +12,6 @@ import edu.wpi.first.wpilibj.smartdashboard.Field2d;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
-
 //TODO: Not ready for use
 /**
  * Class used to calculate the robot's position on the field
@@ -28,16 +27,20 @@ public class DifferentialRobotPose extends SubsystemBase {
   /**
    * Creates a new DifferentialRobotPose.
    */
-  public DifferentialRobotPose() {}
+  public DifferentialRobotPose() {
+  }
 
   @Override
   public void periodic() {
     field2d.setRobotPose(getEstimatedPosition());
-  }
-
-  public void outputTelemetry() {
     SmartDashboard.putData(field2d);
   }
+
+  /**
+   * Publishes data and information to SmartDashboard. Override this method to
+   * include custom information
+   */
+  public void outputTelemetry() {}
 
   /**
    * Gets the estimated position of the robot
@@ -64,7 +67,7 @@ public class DifferentialRobotPose extends SubsystemBase {
   public void updatePoseEstimator(Rotation2d gyroAngle, DifferentialDriveWheelSpeeds wheelSpeeds, double leftDistance,
       double rightDistance) {
 
-    //poseEstimator.update(gyroAngle, wheelSpeeds, leftDistance, rightDistance);
+    // poseEstimator.update(gyroAngle, wheelSpeeds, leftDistance, rightDistance);
 
   }
 

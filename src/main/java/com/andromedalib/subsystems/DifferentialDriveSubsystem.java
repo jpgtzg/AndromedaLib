@@ -43,8 +43,7 @@ public class DifferentialDriveSubsystem extends SubsystemBase {
    * Publishes data and information to SmartDashboard. Override this method to
    * include custom information
    */
-  public void outputTelemetry() {
-  }
+  public void outputTelemetry() {}
 
   /**
    * Tank drive
