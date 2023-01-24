@@ -4,9 +4,8 @@
 
 package com.andromedalib.subsystems;
 
-import com.andromedalib.motorControllers.SuperTalonFX;
-
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
+import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -22,7 +21,7 @@ public class DifferentialDriveSubsystem extends SubsystemBase {
 
   public boolean driveInverted = false;
 
-  public DifferentialDriveSubsystem(SuperTalonFX[] leftMotors, SuperTalonFX[] rightMotors) {
+  public DifferentialDriveSubsystem(MotorController[] leftMotors, MotorController[] rightMotors) {
     leftMotorController = new MotorControllerGroup(leftMotors);
     rightMotorController = new MotorControllerGroup(rightMotors);
     drive = new DifferentialDrive(leftMotorController, rightMotorController);
