@@ -97,6 +97,25 @@ public class SuperSparkMax extends CANSparkMax implements HyperMotorController {
         blinkin = Blinkin.getInstance((int) blinkinPWMPort);
     }
 
+    /**
+     * Configures SuperSparkMax motor controller with the {@link IdleMode} set to
+     * Coast, the {@link MotorType} set to brushless, and {@link Blinkin} connected
+     * to PWM port 0
+     *
+     * @param motorID      ID of the motor controller
+     * @param inverted     Inverted state of the motor controller
+     * @param currentLimit Current limit of the motor controller in amps
+     */
+    public SuperSparkMax(int motorID, boolean isInverted, int currentLimit) {
+        super(motorID, MotorType.kBrushless);
+        restoreFactoryDefaults();
+        setMode(GlobalIdleMode.Coast);
+        setInverted(isInverted);
+        setSmartCurrentLimit(currentLimit);
+        outputTelemetry();
+        blinkin = Blinkin.getInstance(0);
+    }
+
     @Override
     public void outputTelemetry() {
         SmartDashboard.putNumber("NEO Motor " + getDeviceId() + "Voltage:", getBusVoltage());
@@ -180,8 +199,8 @@ public class SuperSparkMax extends CANSparkMax implements HyperMotorController {
 
     /**
      * Sets the LED to the {@link REVLibError} error
-     * in the motor controller. You must start running this method 
-     * in your Subsystem's periodic method. 
+     * in the motor controller. You must start running this method
+     * in your Subsystem's periodic method.
      */
     @Override
     public void setErrorLED() {
