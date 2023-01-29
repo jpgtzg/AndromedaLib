@@ -116,6 +116,24 @@ public class SuperSparkMax extends CANSparkMax implements HyperMotorController {
         blinkin = Blinkin.getInstance(0);
     }
 
+
+    /**
+     * Configures SuperSparkMax motor controller without a current limit. The {@link IdleMode} set to
+     * Coast, the {@link MotorType} set to brushless, and {@link Blinkin} connected
+     * to PWM port 0
+     *
+     * @param motorID      ID of the motor controller
+     * @param inverted     Inverted state of the motor controller
+     */
+    public SuperSparkMax(int motorID, boolean isInverted) {
+        super(motorID, MotorType.kBrushless);
+        restoreFactoryDefaults();
+        setMode(GlobalIdleMode.Coast);
+        setInverted(isInverted);
+        outputTelemetry();
+        blinkin = Blinkin.getInstance(0);
+    }
+
     @Override
     public void outputTelemetry() {
         SmartDashboard.putNumber("NEO Motor " + getDeviceId() + "Voltage:", getBusVoltage());
