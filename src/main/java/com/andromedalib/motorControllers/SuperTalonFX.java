@@ -25,7 +25,7 @@ public class SuperTalonFX extends WPI_TalonFX implements HyperMotorController {
     /**
      * Configures SuperTalonFX motor controller
      * 
-     * @param id            ID of the motor controller
+     * @param motorID            ID of the motor controller
      * @param idleMode      Idle mode of the motor controller
      * @param inverted      Inverted state of the motor controller
      * @param configuration Stator current limit configuration
@@ -184,7 +184,8 @@ public class SuperTalonFX extends WPI_TalonFX implements HyperMotorController {
     public void setErrorLED() {
         error = getLastError();
         if (error != ErrorCode.OK) {
-            DriverStation.reportError("FalconFX Error: " + error + " , in motor " + getDeviceID(), false);
+            DriverStation.reportError("FalconFX Error: " + error + " , in motor " +
+                    getDeviceID(), false);
             switch (error) {
                 case CAN_MSG_STALE:
 
@@ -236,5 +237,6 @@ public class SuperTalonFX extends WPI_TalonFX implements HyperMotorController {
                     break;
             }
         }
+
     }
 }
