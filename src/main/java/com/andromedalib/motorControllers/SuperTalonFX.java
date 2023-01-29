@@ -74,7 +74,7 @@ public class SuperTalonFX extends WPI_TalonFX implements HyperMotorController {
     }
 
     /**
-     * Configures a SuperTalonFX with the {@link NeutralMode} as Cosat, and a new
+     * Configures a SuperTalonFX with the {@link NeutralMode} as Coast, and a new
      * {@link Blinkin} at PWM port 0
      * 
      * @param motorID
