@@ -4,6 +4,7 @@
 
 package com.andromedalib.subsystems;
 
+import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
@@ -21,9 +22,19 @@ public class DifferentialDriveSubsystem extends SubsystemBase {
 
   public boolean driveInverted = false;
 
-  public DifferentialDriveSubsystem(MotorController[] leftMotors, MotorController[] rightMotors) {
+  public DifferentialDriveSubsystem(MotorController[] leftMotors, MotorController[] rightMotors, String invertedSide) {
     leftMotorController = new MotorControllerGroup(leftMotors);
     rightMotorController = new MotorControllerGroup(rightMotors);
+    switch (invertedSide) {
+      case "Left":
+        leftMotorController.setInverted(true);
+        break;
+      case "Right":
+        break;
+      default:
+        DriverStation.reportError("DifferentialDrive, inverted command not found", false);
+        break;
+    }
     drive = new DifferentialDrive(leftMotorController, rightMotorController);
   }
 
@@ -42,7 +53,8 @@ public class DifferentialDriveSubsystem extends SubsystemBase {
    * Publishes data and information to SmartDashboard. Override this method to
    * include custom information
    */
-  public void outputTelemetry() {}
+  public void outputTelemetry() {
+  }
 
   /**
    * Tank drive
