@@ -91,6 +91,22 @@ public class SuperTalonFX extends WPI_TalonFX implements HyperMotorController {
     }
 
     /**
+     * Configures a SuperTalonFX with the {@link NeutralMode} as Coast, a new
+     * {@link Blinkin} at PWM port 0, and without an inversion
+     * 
+     * @param motorID
+     * @param isInverted
+     * @param configuration
+     */
+    public SuperTalonFX(int motorID, StatorCurrentLimitConfiguration configuration) {
+        super(motorID);
+        configFactoryDefault();
+        setMode(GlobalIdleMode.Coast);
+        configStatorCurrentLimit(configuration);
+        blinkin = Blinkin.getInstance(0);
+    }
+
+    /**
      * Configures SuperTalonFX motor controller
      * 
      * @param motorID        ID of the motor controller
