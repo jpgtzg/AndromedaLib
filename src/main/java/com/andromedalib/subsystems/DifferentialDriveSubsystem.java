@@ -22,6 +22,13 @@ public class DifferentialDriveSubsystem extends SubsystemBase {
 
   public boolean driveInverted = false;
 
+  /**
+   * Initializes the DifferentialDriveSubsystem with one side inverted
+   * 
+   * @param leftMotors   Array of left side motors
+   * @param rightMotors  Array of right side motors
+   * @param invertedSide Side which will be inverted. Left/Right. Case sensitive
+   */
   public DifferentialDriveSubsystem(MotorController[] leftMotors, MotorController[] rightMotors, String invertedSide) {
     leftMotorController = new MotorControllerGroup(leftMotors);
     rightMotorController = new MotorControllerGroup(rightMotors);
