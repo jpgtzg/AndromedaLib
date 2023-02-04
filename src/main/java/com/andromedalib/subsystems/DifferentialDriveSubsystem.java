@@ -37,6 +37,7 @@ public class DifferentialDriveSubsystem extends SubsystemBase {
         leftMotorController.setInverted(true);
         break;
       case "Right":
+        rightMotorController.setInverted(true);
         break;
       default:
         DriverStation.reportError("DifferentialDrive, inverted command not found", false);
