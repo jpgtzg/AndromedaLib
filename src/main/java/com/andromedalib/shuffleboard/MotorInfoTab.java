@@ -13,7 +13,7 @@ public class MotorInfoTab extends ShuffleboardTabBase {
      * Initializes a new {@link MotorInfoTab}
      * 
      * @param name Name of the ShuffleboardTab
-     * @return {@link ShuffleboardInteractions} singleton instance
+     * @return {@link MotorInfoTab} singleton instance
      */
     public static MotorInfoTab getInstance(String name) {
         if (instance == null) {
@@ -28,7 +28,7 @@ public class MotorInfoTab extends ShuffleboardTabBase {
      * Initializes a new {@link MotorInfoTab}
      * 
      * @param shuffleTab ShuffleboardTab to be used
-     * @return {@link ShuffleboardInteractions} singleton instance
+     * @return {@link MotorInfoTab} singleton instance
      */
     public static MotorInfoTab getInstance(ShuffleboardTab shuffleTab) {
         if (instance == null) {
@@ -39,9 +39,9 @@ public class MotorInfoTab extends ShuffleboardTabBase {
     }
 
     /**
-     * Returns the {@link ShuffleboardInteractions} instance
+     * Returns the {@link MotorInfoTab} instance
      * 
-     * @return {@link ShuffleboardInteractions} singleton instance
+     * @return {@link MotorInfoTab} singleton instance
      */
     public static MotorInfoTab getInstance() {
         return instance;
