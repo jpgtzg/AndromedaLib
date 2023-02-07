@@ -2,11 +2,11 @@ package com.andromedalib.motorControllers;
 
 import com.andromedalib.math.Conversions;
 import com.andromedalib.motorControllers.IdleManager.GlobalIdleMode;
+import com.andromedalib.shuffleboard.MotorInfoTab;
 import com.ctre.phoenix.ErrorCode;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * Wrapper for the {@link WPI_VictorSPX} class
@@ -50,8 +50,8 @@ public class SuperVictor extends WPI_VictorSPX implements HyperMotorController {
 
     @Override
     public void outputTelemetry() {
-        SmartDashboard.putNumber("Victor Motor " + getBaseID() + "Voltage:", getBusVoltage());
-        SmartDashboard.putNumber("Victor Motor " + getBaseID() + "Temperature", getTemperature());
+        MotorInfoTab.getInstance().addData("Victor Motor " + getBaseID() + "Voltage:", getBusVoltage());
+        MotorInfoTab.getInstance().addData("Victor Motor " + getBaseID() + "Temperature", getTemperature());
     }
 
     /**

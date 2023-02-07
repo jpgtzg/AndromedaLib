@@ -4,11 +4,12 @@
 
 package com.andromedalib.subsystems;
 
+import com.andromedalib.shuffleboard.ShuffleboardInteractions;
+
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class DifferentialDriveSubsystem extends SubsystemBase {
@@ -51,9 +52,9 @@ public class DifferentialDriveSubsystem extends SubsystemBase {
    */
   @Override
   public void periodic() {
-    SmartDashboard.putNumber("Left Drive Speed", leftSpeed);
-    SmartDashboard.putNumber("Right Drive Speed", rightSpeed);
-    SmartDashboard.putData(drive);
+    ShuffleboardInteractions.getInstance().addData("Left Drive Speed", leftSpeed);
+    ShuffleboardInteractions.getInstance().addData("Right Drive Speed", rightSpeed);
+    ShuffleboardInteractions.getInstance().addData("Differential Drive", drive);
     outputTelemetry();
   }
 

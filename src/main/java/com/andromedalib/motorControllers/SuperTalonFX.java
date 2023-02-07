@@ -3,12 +3,12 @@ package com.andromedalib.motorControllers;
 import com.andromedalib.leds.Blinkin;
 import com.andromedalib.math.Conversions;
 import com.andromedalib.motorControllers.IdleManager.GlobalIdleMode;
+import com.andromedalib.shuffleboard.MotorInfoTab;
 import com.ctre.phoenix.ErrorCode;
 import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * Wrapper for the WPI_TalonFX class
@@ -125,8 +125,8 @@ public class SuperTalonFX extends WPI_TalonFX implements HyperMotorController {
 
     @Override
     public void outputTelemetry() {
-        SmartDashboard.putNumber("TalonFX Motor " + getBaseID() + "Voltage:", getBusVoltage());
-        SmartDashboard.putNumber("TalonFX Motor " + getBaseID() + "Temperature", getTemperature());
+        MotorInfoTab.getInstance().addData("TalonFX Motor " + getBaseID() + "Voltage:", getBusVoltage());
+        MotorInfoTab.getInstance().addData("TalonFX Motor " + getBaseID() + "Temperature", getTemperature());
     }
 
     /**

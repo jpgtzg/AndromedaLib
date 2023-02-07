@@ -2,12 +2,12 @@ package com.andromedalib.motorControllers;
 
 import com.andromedalib.leds.Blinkin;
 import com.andromedalib.motorControllers.IdleManager.GlobalIdleMode;
+import com.andromedalib.shuffleboard.MotorInfoTab;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.REVLibError;
 import com.revrobotics.RelativeEncoder;
 
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 /**
  * Wrapper for the CANSparkMax class
@@ -136,8 +136,8 @@ public class SuperSparkMax extends CANSparkMax implements HyperMotorController {
 
     @Override
     public void outputTelemetry() {
-        SmartDashboard.putNumber("NEO Motor " + getDeviceId() + "Voltage:", getBusVoltage());
-        SmartDashboard.putNumber("NEO Motor " + getDeviceId() + "Temperature", getMotorTemperature());
+        MotorInfoTab.getInstance().addData("NEO Motor " + getDeviceId() + "Voltage:", getBusVoltage());
+        MotorInfoTab.getInstance().addData("NEO Motor " + getDeviceId() + "Temperature", getMotorTemperature());
     }
 
     /**
