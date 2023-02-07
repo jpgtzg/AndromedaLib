@@ -3,25 +3,21 @@ package com.andromedalib.shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 
-public class ShuffleboardInteractions extends ShuffleboardTabBase {
+public class MotorInfoTab extends ShuffleboardTabBase {
+    private static MotorInfoTab instance;
 
-    public static ShuffleboardInteractions instance;
-
-    /**
-     * Private Constructor
-     */
-    private ShuffleboardInteractions() {
+    private MotorInfoTab() {
     }
 
     /**
-     * Initializes a new {@link ShuffleboardInteractions}
+     * Initializes a new {@link MotorInfoTab}
      * 
      * @param name Name of the ShuffleboardTab
      * @return {@link ShuffleboardInteractions} singleton instance
      */
-    public static ShuffleboardInteractions getInstance(String name) {
+    public static MotorInfoTab getInstance(String name) {
         if (instance == null) {
-            instance = new ShuffleboardInteractions();
+            instance = new MotorInfoTab();
             tabName = name;
             tab = Shuffleboard.getTab(tabName);
         }
@@ -29,14 +25,14 @@ public class ShuffleboardInteractions extends ShuffleboardTabBase {
     }
 
     /**
-     * Initializes a new {@link ShuffleboardInteractions}
+     * Initializes a new {@link MotorInfoTab}
      * 
      * @param shuffleTab ShuffleboardTab to be used
      * @return {@link ShuffleboardInteractions} singleton instance
      */
-    public static ShuffleboardInteractions getInstance(ShuffleboardTab shuffleTab) {
+    public static MotorInfoTab getInstance(ShuffleboardTab shuffleTab) {
         if (instance == null) {
-            instance = new ShuffleboardInteractions();
+            instance = new MotorInfoTab();
             tab = shuffleTab;
         }
         return instance;
@@ -47,7 +43,7 @@ public class ShuffleboardInteractions extends ShuffleboardTabBase {
      * 
      * @return {@link ShuffleboardInteractions} singleton instance
      */
-    public static ShuffleboardInteractions getInstance() {
+    public static MotorInfoTab getInstance() {
         return instance;
     }
 
