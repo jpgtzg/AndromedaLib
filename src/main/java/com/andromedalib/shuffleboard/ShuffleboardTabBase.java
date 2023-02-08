@@ -3,8 +3,8 @@ package com.andromedalib.shuffleboard;
 import edu.wpi.first.util.sendable.Sendable;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 
-public class ShuffleboardTabBase {
-    
+public abstract class ShuffleboardTabBase {
+
     protected static String tabName;
     protected static ShuffleboardTab tab;
 
@@ -79,4 +79,9 @@ public class ShuffleboardTabBase {
     public void addData(String name, Sendable sendable, int width, int height, int x, int y) {
         tab.add(name, sendable).withSize(width, height).withPosition(x, y);
     }
+
+    /**
+     * Updates published telemetry
+     */
+    public abstract void updateTelemetry();
 }

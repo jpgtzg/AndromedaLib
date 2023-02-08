@@ -4,8 +4,6 @@
 
 package com.andromedalib.subsystems;
 
-import com.andromedalib.shuffleboard.ShuffleboardInteractions;
-
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
@@ -16,12 +14,12 @@ public class DifferentialDriveSubsystem extends SubsystemBase {
   private MotorControllerGroup leftMotorController;
   private MotorControllerGroup rightMotorController;
 
-  private double leftSpeed;
-  private double rightSpeed;
+  private double leftSpeed = 0.0;
+  private double rightSpeed = 0.0;
 
   private DifferentialDrive drive;
 
-  public boolean driveInverted = false;
+  private boolean driveInverted = false;
 
   /**
    * Initializes the DifferentialDriveSubsystem with one side inverted
@@ -52,10 +50,34 @@ public class DifferentialDriveSubsystem extends SubsystemBase {
    */
   @Override
   public void periodic() {
-    ShuffleboardInteractions.getInstance().addData("Left Drive Speed", leftSpeed);
-    ShuffleboardInteractions.getInstance().addData("Right Drive Speed", rightSpeed);
-    ShuffleboardInteractions.getInstance().addData("Differential Drive", drive);
     outputTelemetry();
+  }
+
+  /**
+   * Gets the DifferentialDrive
+   * 
+   * @return The DifferentialDrive instance
+   */
+  public DifferentialDrive getDrive() {
+    return drive;
+  }
+
+  /**
+   * Gets the Left side speed
+   * 
+   * @return Left side speed
+   */
+  public double getLeftSpeed() {
+    return leftSpeed;
+  }
+
+  /**
+   * Gets the right side speed
+   * 
+   * @return Right side speed
+   */
+  public double getRightSpeed() {
+    return rightSpeed;
   }
 
   /**
@@ -109,5 +131,12 @@ public class DifferentialDriveSubsystem extends SubsystemBase {
    */
   public boolean isInverted() {
     return driveInverted;
+  }
+
+  /**
+   * Toggles inverted state
+   */
+  public void toggleInverted() {
+    driveInverted = !driveInverted;
   }
 }
