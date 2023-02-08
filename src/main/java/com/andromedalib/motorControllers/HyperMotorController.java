@@ -32,7 +32,7 @@ public interface HyperMotorController {
     /*
      * Outputs Telemetry to SmartDashboard
      */
-    public void outputTelemetry();
+    public void outputTelemetry(String tabName);
 
     /**
      * Resets the encoder of the motor controller
