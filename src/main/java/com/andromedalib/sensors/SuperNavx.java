@@ -9,12 +9,21 @@ import edu.wpi.first.math.geometry.Rotation2d;
  */
 public class SuperNavx extends AHRS {
 
+    private SuperNavx instance;
+
     /**
      * Configures SuperNavx & resets it
      */
-    public SuperNavx() {
+    private SuperNavx() {
         super();
         zeroHeading();
+    }
+
+    public SuperNavx getInstance(){
+        if(instance == null){
+            instance = new SuperNavx();
+        }
+        return instance;
     }
 
     /**
