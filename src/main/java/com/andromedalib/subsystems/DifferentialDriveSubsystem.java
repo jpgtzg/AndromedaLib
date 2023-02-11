@@ -11,8 +11,8 @@ import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class DifferentialDriveSubsystem extends SubsystemBase {
-  private MotorControllerGroup leftMotorController;
-  private MotorControllerGroup rightMotorController;
+  public MotorControllerGroup leftMotorController;
+  public MotorControllerGroup rightMotorController;
 
   private double leftSpeed = 0.0;
   private double rightSpeed = 0.0;
