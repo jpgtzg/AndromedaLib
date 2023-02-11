@@ -24,9 +24,9 @@ public class DifferentialDriveInfo extends ShuffleboardTabBase {
      */
     public DifferentialDriveInfo(ShuffleboardTab tab, DifferentialDriveSubsystem chassis) {
         this.chassis = chassis;
-        rightSpeed = tab.add("Right Drive Speed", 0.0).getEntry();
-        leftSpeed = tab.add("Left Drive Speed", 0.0).getEntry();
-        tab.add("Differential Drive", chassis.getDrive()).withWidget(BuiltInWidgets.kDifferentialDrive);
+        rightSpeed = tab.add("Right Drive Speed", 0.0).withPosition(3, 0) .getEntry();
+        leftSpeed = tab.add("Left Drive Speed", 0.0).withPosition(4,0).getEntry();
+        tab.add("Differential Drive", chassis.getDrive()).withPosition(0, 0).withWidget(BuiltInWidgets.kDifferentialDrive);
     }
 
     /**
