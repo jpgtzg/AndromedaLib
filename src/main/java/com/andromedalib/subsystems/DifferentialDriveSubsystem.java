@@ -4,7 +4,9 @@
 
 package com.andromedalib.subsystems;
 
+import edu.wpi.first.wpilibj.Compressor;
 import edu.wpi.first.wpilibj.DriverStation;
+import edu.wpi.first.wpilibj.PneumaticsModuleType;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.motorcontrol.MotorController;
 import edu.wpi.first.wpilibj.motorcontrol.MotorControllerGroup;
@@ -20,6 +22,8 @@ public class DifferentialDriveSubsystem extends SubsystemBase {
   private DifferentialDrive drive;
 
   private boolean driveInverted = false;
+
+  private Compressor compressor = new Compressor(PneumaticsModuleType.CTREPCM);
 
   /**
    * Initializes the DifferentialDriveSubsystem with one side inverted
@@ -43,6 +47,8 @@ public class DifferentialDriveSubsystem extends SubsystemBase {
         break;
     }
     drive = new DifferentialDrive(leftMotorController, rightMotorController);
+
+    compressor.enableDigital();
   }
 
   /**
