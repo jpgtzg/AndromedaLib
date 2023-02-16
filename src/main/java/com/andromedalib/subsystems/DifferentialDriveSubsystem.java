@@ -48,7 +48,7 @@ public class DifferentialDriveSubsystem extends SubsystemBase {
     }
     drive = new DifferentialDrive(leftMotorController, rightMotorController);
 
-    compressor.enableDigital();
+    powerOnCompressor();
   }
 
   /**
@@ -145,4 +145,19 @@ public class DifferentialDriveSubsystem extends SubsystemBase {
   public void toggleInverted() {
     driveInverted = !driveInverted;
   }
+
+  /**
+   * Powers on the Compressor
+   */
+  public void powerOnCompressor() {
+    compressor.enableDigital();
+  }
+
+  /**
+   * Powers off the Compressor
+   */
+  public void powerOffCompressor() {
+    compressor.disable();
+  }
+
 }
