@@ -1,3 +1,7 @@
+/**
+ * Written by Juan Pablo Gutiérrez
+ */
+
 package com.andromedalib.motorControllers;
 
 import com.andromedalib.leds.Blinkin;

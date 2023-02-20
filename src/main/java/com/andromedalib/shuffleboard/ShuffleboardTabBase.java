@@ -1,3 +1,7 @@
+/**
+ * Written by Juan Pablo Gutiérrez
+ */
+
 package com.andromedalib.shuffleboard;
 
 import edu.wpi.first.util.sendable.Sendable;

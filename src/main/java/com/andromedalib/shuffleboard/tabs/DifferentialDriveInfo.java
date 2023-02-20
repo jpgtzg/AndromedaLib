@@ -1,3 +1,7 @@
+/**
+ * Written by Juan Pablo Gutiérrez
+ */
+
 package com.andromedalib.shuffleboard.tabs;
 
 import com.andromedalib.shuffleboard.ShuffleboardTabBase;
