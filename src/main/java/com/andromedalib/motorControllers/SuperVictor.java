@@ -48,9 +48,6 @@ public class SuperVictor extends WPI_VictorSPX implements HyperMotorController {
         setInverted(isInverted);
     }
 
-    /**
-     * Sends the telemetry to shuffleboard. Run this method manually in a debug tab
-     */
     @Override
     public void outputTelemetry(String tabName) {
         Shuffleboard.getTab(tabName).add("Victor Motor " + getBaseID() + "Voltage:", getBusVoltage());

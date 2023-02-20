@@ -25,7 +25,7 @@ public class SuperTalonFX extends WPI_TalonFX implements HyperMotorController {
     /**
      * Configures SuperTalonFX motor controller
      * 
-     * @param motorID       ID of the motor controller
+     * @param motorID            ID of the motor controller
      * @param idleMode      Idle mode of the motor controller
      * @param inverted      Inverted state of the motor controller
      * @param configuration Stator current limit configuration
@@ -123,9 +123,6 @@ public class SuperTalonFX extends WPI_TalonFX implements HyperMotorController {
         blinkin = Blinkin.getInstance((int) blinkinPWMPort);
     }
 
-    /**
-     * Sends the telemetry to shuffleboard. Run this method manually in a debug tab
-     */
     @Override
     public void outputTelemetry(String tabName) {
         Shuffleboard.getTab(tabName).add("TalonFX Motor " + getBaseID() + "Voltage:", getBusVoltage());
