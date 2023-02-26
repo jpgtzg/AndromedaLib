@@ -7,6 +7,7 @@ package com.andromedalib.motorControllers;
 import com.andromedalib.math.Conversions;
 import com.andromedalib.motorControllers.IdleManager.GlobalIdleMode;
 import com.ctre.phoenix.ErrorCode;
+import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
 import edu.wpi.first.wpilibj.DriverStation;
@@ -21,22 +22,6 @@ public class SuperVictor extends WPI_VictorSPX implements HyperMotorController {
     private double currentLimit = 1;
 
     ErrorCode error;
-
-    /**
-     * Configures SuperVictor motor controller
-     * 
-     * @param id           ID of the motor controller
-     * @param idleMode     Idle mode of the motor controller
-     * @param inverted     Inverted state of the motor controller
-     * @param currentLimit Current limit of the motor controller in amps
-     */
-    public SuperVictor(int motorID, GlobalIdleMode idleMode, boolean isInverted, int currentLimit) {
-        super(motorID);
-        configFactoryDefault();
-        setMode(idleMode);
-        setInverted(isInverted);
-        // TODO SET CURRENT LIMIT
-    }
 
     /**
      * Configures SuperVictor motor controller
