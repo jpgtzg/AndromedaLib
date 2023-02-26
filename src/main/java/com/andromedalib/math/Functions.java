@@ -20,6 +20,7 @@
  
      /**
       * Handles controller deathband
+      * Credits to Team 3478
       * 
       * @param value    Controller stick value
       * @param deadband Deathband
