@@ -2,7 +2,7 @@
  * Written by Juan Pablo Gutiérrez
  */
 
-package com.andromedalib.motorControllers;
+ package com.andromedalib.motorControllers;
 
 import com.andromedalib.leds.Blinkin;
 import com.andromedalib.motorControllers.IdleManager.GlobalIdleMode;
@@ -39,6 +39,7 @@ public class SuperSparkMax extends CANSparkMax implements HyperMotorController {
     public SuperSparkMax(int motorID, MotorType type, GlobalIdleMode idleMode, boolean isInverted, int currentLimit) {
         super(motorID, type);
         restoreFactoryDefaults();
+        encoder.setPosition(0);
         setMode(idleMode);
         setInverted(isInverted);
         setSmartCurrentLimit(currentLimit);
@@ -55,6 +56,7 @@ public class SuperSparkMax extends CANSparkMax implements HyperMotorController {
     public SuperSparkMax(int motorID, MotorType type, GlobalIdleMode idleMode, boolean isInverted) {
         super(motorID, type);
         restoreFactoryDefaults();
+        encoder.setPosition(0);
         setMode(idleMode);
         setInverted(isInverted);
     }
@@ -72,6 +74,7 @@ public class SuperSparkMax extends CANSparkMax implements HyperMotorController {
             double blinkinPWMPort) {
         super(motorID, type);
         restoreFactoryDefaults();
+        encoder.setPosition(0);
         setMode(idleMode);
         setInverted(isInverted);
         blinkin = Blinkin.getInstance((int) blinkinPWMPort);
@@ -91,13 +94,14 @@ public class SuperSparkMax extends CANSparkMax implements HyperMotorController {
             int blinkinPWMPort) {
         super(motorID, type);
         restoreFactoryDefaults();
+        encoder.setPosition(0);
         setMode(idleMode);
         setInverted(isInverted);
         setSmartCurrentLimit(currentLimit);
         blinkin = Blinkin.getInstance((int) blinkinPWMPort);
     }
 
-     /**
+    /**
      * Configures SuperSparkMax motor controller with the {@link IdleMode} set to
      * Coast, the {@link MotorType} set to brushless, and {@link Blinkin} connected
      * to PWM port 0
@@ -109,6 +113,7 @@ public class SuperSparkMax extends CANSparkMax implements HyperMotorController {
     public SuperSparkMax(int motorID, GlobalIdleMode mode, boolean isInverted, int currentLimit) {
         super(motorID, MotorType.kBrushless);
         restoreFactoryDefaults();
+        encoder.setPosition(0);
         setMode(mode);
         setInverted(isInverted);
         setSmartCurrentLimit(currentLimit);
@@ -127,6 +132,7 @@ public class SuperSparkMax extends CANSparkMax implements HyperMotorController {
     public SuperSparkMax(int motorID, boolean isInverted, int currentLimit) {
         super(motorID, MotorType.kBrushless);
         restoreFactoryDefaults();
+        encoder.setPosition(0);
         setMode(GlobalIdleMode.Coast);
         setInverted(isInverted);
         setSmartCurrentLimit(currentLimit);
@@ -134,16 +140,18 @@ public class SuperSparkMax extends CANSparkMax implements HyperMotorController {
     }
 
     /**
-     * Configures SuperSparkMax motor controller without a current limit. The {@link IdleMode} set to
+     * Configures SuperSparkMax motor controller without a current limit. The
+     * {@link IdleMode} set to
      * Coast, the {@link MotorType} set to brushless, and {@link Blinkin} connected
      * to PWM port 0
      *
-     * @param motorID      ID of the motor controller
-     * @param inverted     Inverted state of the motor controller
+     * @param motorID  ID of the motor controller
+     * @param inverted Inverted state of the motor controller
      */
     public SuperSparkMax(int motorID, boolean isInverted) {
         super(motorID, MotorType.kBrushless);
         restoreFactoryDefaults();
+        encoder.setPosition(0);
         setMode(GlobalIdleMode.Coast);
         setInverted(isInverted);
         blinkin = Blinkin.getInstance(0);
