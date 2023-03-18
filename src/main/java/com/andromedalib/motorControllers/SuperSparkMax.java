@@ -39,7 +39,6 @@ public class SuperSparkMax extends CANSparkMax implements HyperMotorController {
     public SuperSparkMax(int motorID, MotorType type, GlobalIdleMode idleMode, boolean isInverted, int currentLimit) {
         super(motorID, type);
         restoreFactoryDefaults();
-        encoder.setPosition(0);
         setMode(idleMode);
         setInverted(isInverted);
         setSmartCurrentLimit(currentLimit);
@@ -56,7 +55,6 @@ public class SuperSparkMax extends CANSparkMax implements HyperMotorController {
     public SuperSparkMax(int motorID, MotorType type, GlobalIdleMode idleMode, boolean isInverted) {
         super(motorID, type);
         restoreFactoryDefaults();
-        encoder.setPosition(0);
         setMode(idleMode);
         setInverted(isInverted);
     }
@@ -74,7 +72,6 @@ public class SuperSparkMax extends CANSparkMax implements HyperMotorController {
             double blinkinPWMPort) {
         super(motorID, type);
         restoreFactoryDefaults();
-        encoder.setPosition(0);
         setMode(idleMode);
         setInverted(isInverted);
         blinkin = Blinkin.getInstance((int) blinkinPWMPort);
@@ -94,7 +91,6 @@ public class SuperSparkMax extends CANSparkMax implements HyperMotorController {
             int blinkinPWMPort) {
         super(motorID, type);
         restoreFactoryDefaults();
-        encoder.setPosition(0);
         setMode(idleMode);
         setInverted(isInverted);
         setSmartCurrentLimit(currentLimit);
@@ -132,7 +128,6 @@ public class SuperSparkMax extends CANSparkMax implements HyperMotorController {
     public SuperSparkMax(int motorID, boolean isInverted, int currentLimit) {
         super(motorID, MotorType.kBrushless);
         restoreFactoryDefaults();
-        encoder.setPosition(0);
         setMode(GlobalIdleMode.Coast);
         setInverted(isInverted);
         setSmartCurrentLimit(currentLimit);
@@ -151,7 +146,6 @@ public class SuperSparkMax extends CANSparkMax implements HyperMotorController {
     public SuperSparkMax(int motorID, boolean isInverted) {
         super(motorID, MotorType.kBrushless);
         restoreFactoryDefaults();
-        encoder.setPosition(0);
         setMode(GlobalIdleMode.Coast);
         setInverted(isInverted);
         blinkin = Blinkin.getInstance(0);
