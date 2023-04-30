@@ -54,7 +54,7 @@ public class DifferentialDriveSubsystem extends SubsystemBase {
   }
 
   /**
-   * Publishes data and information to SmartDashboard
+   * Publishes data and information to Dashboard
    */
   @Override
   public void periodic() {
