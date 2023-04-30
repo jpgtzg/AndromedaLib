@@ -86,8 +86,8 @@ public class LimelightCamera {
      * 
      * @return True if the Limelight has any valid targets, false otherwise
      */
-    public boolean hasValidTarget() {
-        return lTable.validTarget.getBoolean(false);
+    public double hasValidTarget() {
+        return lTable.validTarget.getDouble(0);
     }
 
     /**
@@ -160,6 +160,15 @@ public class LimelightCamera {
      */
     public double getLatency() {
         return lTable.latency.getDouble(0);
+    }
+
+    /**
+     * Gets the pipeline capture latency
+     * 
+     * @return Capture latency
+     */
+    public double getCaptureLatency() {
+        return lTable.captureLatency.getDouble(0);
     }
 
     /**
@@ -335,6 +344,10 @@ public class LimelightCamera {
      */
     public void setCustomString(String key, String value) {
         lTable.table.getEntry(key).setString(value);
+    }
+
+    public double[] getBotpose() {
+        return lTable.botpose.getDoubleArray(new double[7]);
     }
 
 }

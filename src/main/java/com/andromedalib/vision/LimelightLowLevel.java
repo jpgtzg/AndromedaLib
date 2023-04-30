@@ -59,6 +59,12 @@ public class LimelightLowLevel {
     public final NetworkTableEntry latency;
 
     /**
+     * Capture pipeline latency (ms). Time between the end of the exposure of the
+     * middle row of the sensor to the beginning of the tracking pipeline.
+     */
+    public final NetworkTableEntry captureLatency;
+
+    /**
      * The shortest side of the fitted bounding box (pixels)
      */
     public final NetworkTableEntry shortSideLength;
@@ -136,6 +142,10 @@ public class LimelightLowLevel {
      */
     public final NetworkTableEntry snapshot;
 
+    /* AprilTags */
+
+    public final NetworkTableEntry botpose;
+
     /**
      * Creates a new LimelightCamera object
      * 
@@ -157,6 +167,8 @@ public class LimelightLowLevel {
         targetSkew = table.getEntry("ts");
 
         latency = table.getEntry("tl");
+
+        captureLatency = table.getEntry("cl");
 
         shortSideLength = table.getEntry("tshort");
 
@@ -183,5 +195,7 @@ public class LimelightLowLevel {
         camStream = table.getEntry("stream");
 
         snapshot = table.getEntry("snapshot");
+
+        botpose = table.getEntry("botpose");
     }
 }
