@@ -2,7 +2,7 @@
  * Written by Juan Pablo Gutiérrez
  */
 
- package com.andromedalib.motorControllers;
+package com.andromedalib.motorControllers;
 
 import com.andromedalib.leds.Blinkin;
 import com.andromedalib.motorControllers.IdleManager.GlobalIdleMode;
@@ -212,6 +212,15 @@ public class SuperSparkMax extends CANSparkMax implements HyperMotorController {
      */
     public double getPosition() {
         return encoder.getPosition();
+    }
+
+    /**
+     * Swts the encoder to a defined position
+     * 
+     * @param position New position
+     */
+    public void setPosition(double position) {
+        encoder.setPosition(position);
     }
 
     /**
