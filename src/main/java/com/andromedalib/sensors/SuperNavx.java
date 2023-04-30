@@ -20,6 +20,7 @@ public class SuperNavx extends AHRS {
      */
     private SuperNavx() {
         super();
+        calibrate();
         zeroHeading();
     }
 
