@@ -3,7 +3,7 @@
  */
 package com.andromedalib.robot;
 
-import com.team6647.robot.TelemetryManager;
+import com.andromedalib.shuffleboard.TelemetryManager;
 
 import edu.wpi.first.cameraserver.CameraServer;
 import edu.wpi.first.wpilibj.TimedRobot;
