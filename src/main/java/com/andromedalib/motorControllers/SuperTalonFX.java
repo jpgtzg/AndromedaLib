@@ -8,10 +8,9 @@ import com.andromedalib.leds.Blinkin;
 import com.andromedalib.math.Conversions;
 import com.andromedalib.motorControllers.IdleManager.GlobalIdleMode;
 import com.ctre.phoenix.ErrorCode;
-import com.ctre.phoenix.motorcontrol.StatorCurrentLimitConfiguration;
+import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 
 /**
@@ -22,25 +21,23 @@ public class SuperTalonFX extends WPI_TalonFX implements HyperMotorController {
 
     private double currentLimit = 1;
 
-    Blinkin blinkin;
-
     ErrorCode error;
 
     /**
      * Configures SuperTalonFX motor controller
      * 
-     * @param motorID            ID of the motor controller
+     * @param motorID       ID of the motor controller
      * @param idleMode      Idle mode of the motor controller
      * @param inverted      Inverted state of the motor controller
      * @param configuration Stator current limit configuration
      */
     public SuperTalonFX(int motorID, GlobalIdleMode idleMode, Boolean isInverted,
-            StatorCurrentLimitConfiguration configuration) {
+            TalonFXConfiguration configuration) {
         super(motorID);
         configFactoryDefault();
         setMode(idleMode);
         setInverted(isInverted);
-        configStatorCurrentLimit(configuration);
+        configAllSettings(configuration);
     }
 
     /**
@@ -58,26 +55,6 @@ public class SuperTalonFX extends WPI_TalonFX implements HyperMotorController {
     }
 
     /**
-     * Configures SuperTalonFX motor controller
-     * 
-     * @param motorID        ID of the motor controller
-     * @param idleMode       Idle mode of the motor controller
-     * @param isInverted     Inverted state of the motor controller
-     * @param configuration  Stator current limit configuration
-     * @param blinkinPWMPort PWM port of the blinkin
-     */
-    public SuperTalonFX(int motorID, GlobalIdleMode idleMode, Boolean isInverted,
-            StatorCurrentLimitConfiguration configuration,
-            int blinkinPWMPort) {
-        super(motorID);
-        configFactoryDefault();
-        setMode(idleMode);
-        setInverted(isInverted);
-        configStatorCurrentLimit(configuration);
-        blinkin = Blinkin.getInstance(blinkinPWMPort);
-    }
-
-    /**
      * Configures a SuperTalonFX with the {@link NeutralMode} as Coast, and a new
      * {@link Blinkin} at PWM port 0
      * 
@@ -85,13 +62,12 @@ public class SuperTalonFX extends WPI_TalonFX implements HyperMotorController {
      * @param isInverted
      * @param configuration
      */
-    public SuperTalonFX(int motorID, boolean isInverted, StatorCurrentLimitConfiguration configuration) {
+    public SuperTalonFX(int motorID, boolean isInverted, TalonFXConfiguration configuration) {
         super(motorID);
         configFactoryDefault();
         setMode(GlobalIdleMode.Coast);
         setInverted(isInverted);
-        configStatorCurrentLimit(configuration);
-        blinkin = Blinkin.getInstance(0);
+        configAllSettings(configuration);
     }
 
     /**
@@ -102,29 +78,11 @@ public class SuperTalonFX extends WPI_TalonFX implements HyperMotorController {
      * @param isInverted
      * @param configuration
      */
-    public SuperTalonFX(int motorID, StatorCurrentLimitConfiguration configuration) {
+    public SuperTalonFX(int motorID, TalonFXConfiguration configuration) {
         super(motorID);
         configFactoryDefault();
         setMode(GlobalIdleMode.Coast);
-        configStatorCurrentLimit(configuration);
-        blinkin = Blinkin.getInstance(0);
-    }
-
-    /**
-     * Configures SuperTalonFX motor controller
-     * 
-     * @param motorID        ID of the motor controller
-     * @param idleMode       Idle mode of the motor controller
-     * @param isInverted     Inverted state of the motor controller
-     * @param blinkinPWMPort PWM port of the blinkin
-     */
-    public SuperTalonFX(int motorID, GlobalIdleMode idleMode, Boolean isInverted,
-            double blinkinPWMPort) {
-        super(motorID);
-        configFactoryDefault();
-        setMode(idleMode);
-        setInverted(isInverted);
-        blinkin = Blinkin.getInstance((int) blinkinPWMPort);
+        configAllSettings(configuration);
     }
 
     @Override
@@ -164,7 +122,8 @@ public class SuperTalonFX extends WPI_TalonFX implements HyperMotorController {
     }
 
     /**
-     * Gets the position of the motor controller
+     * Gets the position of the motor controller adjusted to a circumference (Useful
+     * for tank drives)
      * 
      * @param circumference Circumference of the wheel in meters
      * @param gearRatio     Gear ratio of the motor controller
@@ -176,6 +135,17 @@ public class SuperTalonFX extends WPI_TalonFX implements HyperMotorController {
     }
 
     /**
+     * Gets the motor angle adjusted to the gear ratio
+     * 
+     * @param gearRatio Gear ratio of the mechanism
+     * 
+     * @return the angle of the motor in degrees
+     */
+    public double getAngle(double gearRatio) {
+        return Conversions.falconToDegrees(getSelectedSensorPosition(), gearRatio);
+    }
+
+    /**
      * Gets the velocity of the motor controller
      * 
      * @param circumference Circumference of the wheel in meters
@@ -184,7 +154,7 @@ public class SuperTalonFX extends WPI_TalonFX implements HyperMotorController {
      * @return the velocity of the motor in meters per second
      */
     public double getVelocity(double circumference, double gearRatio) {
-        return Conversions.MPSToMeterPerSecond(getSelectedSensorVelocity(), circumference, gearRatio);
+        return Conversions.falconToMPS(getSelectedSensorVelocity(), circumference, gearRatio);
     }
 
     /**
@@ -195,68 +165,4 @@ public class SuperTalonFX extends WPI_TalonFX implements HyperMotorController {
         setSelectedSensorPosition(0);
     }
 
-    /**
-     * Sets the LED to the {@link ErrorCode} error
-     * in the motor controller. You must start running this method
-     * in your Subsystem's periodic method.
-     */
-    @Override
-    public void setErrorLED() {
-        error = getLastError();
-        if (error != ErrorCode.OK) {
-            DriverStation.reportError("FalconFX Error: " + error + " , in motor " +
-                    getDeviceID(), false);
-            switch (error) {
-                case CAN_MSG_STALE:
-
-                    break;
-                case CAN_TX_FULL:
-
-                    break;
-                case TxFailed:
-
-                    break;
-
-                case InvalidParamValue:
-
-                    break;
-                case CAN_INVALID_PARAM:
-
-                    break;
-                case RxTimeout:
-
-                    break;
-                case CAN_MSG_NOT_FOUND:
-
-                    break;
-                case TxTimeout:
-
-                    break;
-                case CAN_NO_MORE_TX_JOBS:
-
-                    break;
-                case UnexpectedArbId:
-
-                    break;
-                case CAN_NO_SESSIONS_AVAIL:
-
-                    break;
-                case BufferFull:
-
-                    break;
-                case CAN_OVERFLOW:
-
-                    break;
-                case SensorNotPresent:
-
-                    break;
-                case FirmwareTooOld:
-
-                    break;
-                default:
-                    break;
-            }
-        }
-
-    }
 }

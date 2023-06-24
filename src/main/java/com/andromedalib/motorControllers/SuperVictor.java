@@ -9,7 +9,6 @@ import com.andromedalib.motorControllers.IdleManager.GlobalIdleMode;
 import com.ctre.phoenix.ErrorCode;
 import com.ctre.phoenix.motorcontrol.can.WPI_VictorSPX;
 
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 
 /**
@@ -93,75 +92,12 @@ public class SuperVictor extends WPI_VictorSPX implements HyperMotorController {
      * @return the velocity of the motor in meters per second
      */
     public double getVelocity(double circumference, double gearRatio) {
-        return Conversions.MPSToMeterPerSecond(getSelectedSensorVelocity(), circumference, gearRatio);
+        return Conversions.falconToMPS(getSelectedSensorVelocity(), circumference, gearRatio);
     }
 
     @Override
     public void resetEncoder() {
         // TODO COMPLETE
-    }
-
-    /**
-     * Sets the LED to the {@link ErrorCode} error
-     * in the motor controller. You must start running this method
-     * in your Subsystem's periodic method.
-     */
-    @Override
-    public void setErrorLED() {
-        error = getLastError();
-        if (error != ErrorCode.OK) {
-            DriverStation.reportError("VictorSPX Error: " + error + " , in motor " + getDeviceID(), false);
-            switch (error) {
-                case CAN_MSG_STALE:
-
-                    break;
-                case CAN_TX_FULL:
-
-                    break;
-                case TxFailed:
-
-                    break;
-
-                case InvalidParamValue:
-
-                    break;
-                case CAN_INVALID_PARAM:
-
-                    break;
-                case RxTimeout:
-
-                    break;
-                case CAN_MSG_NOT_FOUND:
-
-                    break;
-                case TxTimeout:
-
-                    break;
-                case CAN_NO_MORE_TX_JOBS:
-
-                    break;
-                case UnexpectedArbId:
-
-                    break;
-                case CAN_NO_SESSIONS_AVAIL:
-
-                    break;
-                case BufferFull:
-
-                    break;
-                case CAN_OVERFLOW:
-
-                    break;
-                case SensorNotPresent:
-
-                    break;
-                case FirmwareTooOld:
-
-                    break;
-                default:
-                    break;
-            }
-        }
     }
 
 }

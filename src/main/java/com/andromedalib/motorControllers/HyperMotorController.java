@@ -43,8 +43,4 @@ public interface HyperMotorController {
      */
     public void resetEncoder();
 
-    /**
-     * Sets the LED to react to errors
-     */
-    public void setErrorLED();
 }

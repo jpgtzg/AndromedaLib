@@ -4,13 +4,11 @@
 
 package com.andromedalib.motorControllers;
 
-import com.andromedalib.leds.Blinkin;
 import com.andromedalib.motorControllers.IdleManager.GlobalIdleMode;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.REVLibError;
 import com.revrobotics.RelativeEncoder;
 
-import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 
 /**
@@ -18,8 +16,6 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
  * That implements the HyperMotorController interface
  */
 public class SuperSparkMax extends CANSparkMax implements HyperMotorController {
-
-    Blinkin blinkin;
 
     private double currentLimit = 1;
 
@@ -60,47 +56,8 @@ public class SuperSparkMax extends CANSparkMax implements HyperMotorController {
     }
 
     /**
-     * Configures SuperSparkMax motor controller
-     * 
-     * @param id             ID of the motor controller
-     * @param type           Type of the motor controller
-     * @param idleMode       Idle mode of the motor controller
-     * @param inverted       Inverted state of the motor controller
-     * @param blinkinPWMPort PWM port of the blinkin
-     */
-    public SuperSparkMax(int motorID, MotorType type, GlobalIdleMode idleMode, boolean isInverted,
-            double blinkinPWMPort) {
-        super(motorID, type);
-        restoreFactoryDefaults();
-        setMode(idleMode);
-        setInverted(isInverted);
-        blinkin = Blinkin.getInstance((int) blinkinPWMPort);
-    }
-
-    /**
-     * Configures SuperSparkMax motor controller
-     * 
-     * @param id             ID of the motor controller
-     * @param type           Type of the motor controller
-     * @param idleMode       Idle mode of the motor controller
-     * @param inverted       Inverted state of the motor controller
-     * @param currentLimit   Current limit of the motor controller in amps
-     * @param blinkinPWMPort PWM port of the blinkin
-     */
-    public SuperSparkMax(int motorID, MotorType type, GlobalIdleMode idleMode, boolean isInverted, int currentLimit,
-            int blinkinPWMPort) {
-        super(motorID, type);
-        restoreFactoryDefaults();
-        setMode(idleMode);
-        setInverted(isInverted);
-        setSmartCurrentLimit(currentLimit);
-        blinkin = Blinkin.getInstance((int) blinkinPWMPort);
-    }
-
-    /**
      * Configures SuperSparkMax motor controller with the {@link IdleMode} set to
-     * Coast, the {@link MotorType} set to brushless, and {@link Blinkin} connected
-     * to PWM port 0
+     * Coast, the {@link MotorType} set to brushless
      *
      * @param motorID      ID of the motor controller
      * @param inverted     Inverted state of the motor controller
@@ -113,13 +70,11 @@ public class SuperSparkMax extends CANSparkMax implements HyperMotorController {
         setMode(mode);
         setInverted(isInverted);
         setSmartCurrentLimit(currentLimit);
-        blinkin = Blinkin.getInstance(0);
     }
 
     /**
      * Configures SuperSparkMax motor controller with the {@link IdleMode} set to
-     * Coast, the {@link MotorType} set to brushless, and {@link Blinkin} connected
-     * to PWM port 0
+     * Coast, the {@link MotorType} set to brushless
      *
      * @param motorID      ID of the motor controller
      * @param inverted     Inverted state of the motor controller
@@ -131,14 +86,12 @@ public class SuperSparkMax extends CANSparkMax implements HyperMotorController {
         setMode(GlobalIdleMode.Coast);
         setInverted(isInverted);
         setSmartCurrentLimit(currentLimit);
-        blinkin = Blinkin.getInstance(0);
     }
 
     /**
      * Configures SuperSparkMax motor controller without a current limit. The
      * {@link IdleMode} set to
-     * Coast, the {@link MotorType} set to brushless, and {@link Blinkin} connected
-     * to PWM port 0
+     * Coast, the {@link MotorType} set to brushless
      *
      * @param motorID  ID of the motor controller
      * @param inverted Inverted state of the motor controller
@@ -148,7 +101,6 @@ public class SuperSparkMax extends CANSparkMax implements HyperMotorController {
         restoreFactoryDefaults();
         setMode(GlobalIdleMode.Coast);
         setInverted(isInverted);
-        blinkin = Blinkin.getInstance(0);
     }
 
     @Override
@@ -239,83 +191,5 @@ public class SuperSparkMax extends CANSparkMax implements HyperMotorController {
     @Override
     public void resetEncoder() {
         encoder.setPosition(0);
-    }
-
-    /**
-     * Sets the LED to the {@link REVLibError} error
-     * in the motor controller. You must start running this method
-     * in your Subsystem's periodic method.
-     */
-    @Override
-    public void setErrorLED() {
-        error = getLastError();
-        if (error != REVLibError.kOk) {
-            DriverStation.reportError("SparkMax Error: " + error + " , in motor " + getDeviceId(), false);
-            switch (error) {
-                case kError:
-
-                    break;
-                case kTimeout:
-
-                    break;
-                case kNotImplemented:
-
-                    break;
-
-                case kHALError:
-
-                    break;
-                case kCantFindFirmware:
-
-                    break;
-                case kFirmwareTooOld:
-
-                    break;
-                case kFirmwareTooNew:
-
-                    break;
-                case kParamInvalidID:
-
-                    break;
-                case kParamMismatchType:
-
-                    break;
-                case kParamAccessMode:
-
-                    break;
-                case kParamInvalid:
-
-                    break;
-                case kParamNotImplementedDeprecated:
-
-                    break;
-                case kFollowConfigMismatch:
-
-                    break;
-                case kInvalid:
-
-                    break;
-                case kSetpointOutOfRange:
-
-                    break;
-                case kUnknown:
-
-                    break;
-                case kCANDisconnected:
-
-                    break;
-                case kDuplicateCANId:
-
-                    break;
-                case kInvalidCANId:
-
-                    break;
-                case kSparkMaxDataPortAlreadyConfiguredDifferently:
-
-                    break;
-                default:
-                    break;
-            }
-        }
     }
 }
