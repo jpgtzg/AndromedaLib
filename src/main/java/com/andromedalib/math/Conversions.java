@@ -44,8 +44,7 @@ public class Conversions {
      * @return Falcon Counts
      */
     public static double degreesToFalcon(double degrees, double gearRatio) {
-        double ticks = degrees / (360.0 / (gearRatio * 2048.0));
-        return ticks;
+        return degrees / (360.0 / (gearRatio * 2048.0));
     }
 
     /**
@@ -88,7 +87,7 @@ public class Conversions {
     }
 
     /**
-     * Converts raw Falcon counts to miles per second
+     * Converts raw Falcon counts to meters per second
      * 
      * @param velocitycounts Falcon Velocity Counts
      * @param circumference  Circumference of Wheel
@@ -103,7 +102,7 @@ public class Conversions {
     }
 
     /**
-     * Converts miles per second to raw Falcon counts
+     * Converts meters per second to raw Falcon counts
      * 
      * @param velocity      Velocity MPS
      * @param circumference Circumference of Wheel
@@ -128,16 +127,4 @@ public class Conversions {
         return velocityCount * ((circumference) / (gearRatio * 2048.0));
     }
 
-    /**
-     * Converts from miles per second to meters per second
-     * 
-     * @param velocityCount Falcon Velocity Counts
-     * @param circumference Circumference of Wheel
-     * @param gearRatio     Gear Ratio between Falcon and Mechanism (set to 1 for
-     *                      Falcon RPM)
-     * @return Falcon velocity in Meters per Second
-     */
-    public static double MPSToMeterPerSecond(double velocityCount, double circumference, double gearRatio) {
-        return (falconToMPS(velocityCount, circumference, gearRatio) * 1609.344) / 3600;
-    }
 }
