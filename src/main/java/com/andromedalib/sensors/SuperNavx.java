@@ -24,8 +24,8 @@ public class SuperNavx extends AHRS {
         zeroHeading();
     }
 
-    public static SuperNavx getInstance(){
-        if(instance == null){
+    public static SuperNavx getInstance() {
+        if (instance == null) {
             instance = new SuperNavx();
         }
         return instance;
@@ -58,9 +58,20 @@ public class SuperNavx extends AHRS {
     }
 
     /**
+     * Clamps the angle value
+     * 
+     * @return Angle value clamped around 360 degrees
+     */
+    public Rotation2d getClampedYaw() {
+        return Rotation2d.fromDegrees(Math.IEEEremainder(-getAngle(), 360));
+/*         return Rotation2d.fromDegrees(-getYaw());
+ */    }
+
+    /**
      * Gets the current heading of the Navx
      * 
-     * @return Current rotation as a negative {@link edu.wpi.first.math.geometry.Rotation2d}
+     * @return Current rotation as a negative
+     *         {@link edu.wpi.first.math.geometry.Rotation2d}
      */
     public Rotation2d getRotation() {
         return getRotation2d();
