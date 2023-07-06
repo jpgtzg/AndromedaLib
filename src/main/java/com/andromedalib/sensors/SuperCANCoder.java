@@ -25,6 +25,20 @@ public class SuperCANCoder extends CANCoder {
     }
 
     /**
+     * SuperCANCoder constructor to a defined canbus
+     * 
+     * @param deviceID      CANCoder DeviceID
+     * @param configuration Configuration
+     * @param canbus        Device canbus
+     */
+    public SuperCANCoder(int deviceID, CANCoderConfiguration configuration, String canbus) {
+        super(deviceID, canbus);
+
+        this.configFactoryDefault();
+        this.configAllSettings(configuration);
+    }
+
+    /**
      * Gets the absolute degrees position
      * 
      * @return Absolute position in degrees
