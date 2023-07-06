@@ -1,6 +1,22 @@
 plugins {
     id "java"
     id "edu.wpi.first.GradleRIO" version "2023.1.1"
+    id 'maven-publish'
+}
+
+group = 'com.andromedahelix'
+
+
+publishing {
+    publications {
+        maven(MavenPublication) {
+            groupId = 'com.andromedahelix.andromedalib'
+            artifactId = 'library'
+            version = '1'
+
+            from components.java
+        }
+    }
 }
 
 sourceCompatibility = JavaVersion.VERSION_11
