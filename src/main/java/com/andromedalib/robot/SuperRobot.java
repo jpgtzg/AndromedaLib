@@ -10,9 +10,11 @@ import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
 public class SuperRobot extends TimedRobot {
     private SuperRobotContainer container;
-    private TelemetryManager telemetryManager;
+    private BaseTelemetryManager telemetryManager;
 
     private Command autonomousCommand;
+
+    private boolean useCamera;
 
     /**
      * Instantiates the {@link SuperRobotContainer}. Run this method before doing
@@ -20,9 +22,10 @@ public class SuperRobot extends TimedRobot {
      * 
      * @param container {@link SuperRobotContainer}
      */
-    public void setRobotContainer(SuperRobotContainer container) {
-        telemetryManager = TelemetryManager.getInstance();
+    public void setRobotContainer(SuperRobotContainer container, BaseTelemetryManager telemetryManager, boolean useCamera) {
+        this.telemetryManager = telemetryManager;
         this.container = container;
+        this.useCamera = useCamera;
     }
 
     /**
@@ -44,7 +47,8 @@ public class SuperRobot extends TimedRobot {
         telemetryManager.initTelemetry();
         container.configureBindings();
 
-        CameraServer.startAutomaticCapture();
+        if (useCamera)
+            CameraServer.startAutomaticCapture();
 
         addPeriodic(() -> CommandScheduler.getInstance().run(), 0.01);
     }
