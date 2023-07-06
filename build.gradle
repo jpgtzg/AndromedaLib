@@ -55,7 +55,7 @@ publishing {
    publications {
       maven(MavenPublication) {
          groupId = 'com.andromeda.andromedalib'
-         artifactId = 'library'
+         artifactId = 'andromedalib'
          version = "${version}"
 
          from components.java
