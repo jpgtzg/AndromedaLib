@@ -4,7 +4,6 @@
 
 package com.andromedalib.motorControllers;
 
-import com.andromedalib.leds.Blinkin;
 import com.andromedalib.math.Conversions;
 import com.andromedalib.motorControllers.IdleManager.GlobalIdleMode;
 import com.ctre.phoenix.ErrorCode;
@@ -41,6 +40,24 @@ public class SuperTalonFX extends WPI_TalonFX implements HyperMotorController {
     }
 
     /**
+     * Configures SuperTalonFX motor controller to a defined CAN bus
+     * 
+     * @param motorID       ID of the motor controller
+     * @param idleMode      Idle mode of the motor controller
+     * @param inverted      Inverted state of the motor controller
+     * @param configuration Stator current limit configuration
+     * @param canbus        Device Canbus
+     */
+    public SuperTalonFX(int motorID, GlobalIdleMode idleMode, Boolean isInverted,
+            TalonFXConfiguration configuration, String canbus) {
+        super(motorID, canbus);
+        configFactoryDefault();
+        setMode(idleMode);
+        setInverted(isInverted);
+        configAllSettings(configuration);
+    }
+
+    /**
      * Configures SuperTalonFX motor controller
      * 
      * @param motorID    ID of the motor controller
@@ -55,8 +72,22 @@ public class SuperTalonFX extends WPI_TalonFX implements HyperMotorController {
     }
 
     /**
-     * Configures a SuperTalonFX with the {@link NeutralMode} as Coast, and a new
-     * {@link Blinkin} at PWM port 0
+     * Configures SuperTalonFX motor controller to a defined CAN bus
+     * 
+     * @param motorID    ID of the motor controller
+     * @param idleMode   Idle mode of the motor controller
+     * @param isInverted Inverted state of the motor controller
+     * @param canbus     Device canbus
+     */
+    public SuperTalonFX(int motorID, GlobalIdleMode idleMode, Boolean isInverted, String canbus) {
+        super(motorID, canbus);
+        configFactoryDefault();
+        setMode(idleMode);
+        setInverted(isInverted);
+    }
+
+    /**
+     * Configures a SuperTalonFX with the {@link NeutralMode} as Coast
      * 
      * @param motorID
      * @param isInverted
@@ -71,8 +102,24 @@ public class SuperTalonFX extends WPI_TalonFX implements HyperMotorController {
     }
 
     /**
-     * Configures a SuperTalonFX with the {@link NeutralMode} as Coast, a new
-     * {@link Blinkin} at PWM port 0, and without an inversion
+     * Configures a SuperTalonFX with the {@link NeutralMode} as Coast to a defined
+     * canbus
+     * 
+     * @param motorID
+     * @param isInverted
+     * @param configuration
+     * @param canbus
+     */
+    public SuperTalonFX(int motorID, boolean isInverted, TalonFXConfiguration configuration, String canbus) {
+        super(motorID, canbus);
+        configFactoryDefault();
+        setMode(GlobalIdleMode.Coast);
+        setInverted(isInverted);
+        configAllSettings(configuration);
+    }
+
+    /**
+     * Configures a SuperTalonFX with the {@link NeutralMode} as Coast
      * 
      * @param motorID
      * @param isInverted
@@ -80,6 +127,20 @@ public class SuperTalonFX extends WPI_TalonFX implements HyperMotorController {
      */
     public SuperTalonFX(int motorID, TalonFXConfiguration configuration) {
         super(motorID);
+        configFactoryDefault();
+        setMode(GlobalIdleMode.Coast);
+        configAllSettings(configuration);
+    }
+
+    /**
+     * Configures a SuperTalonFX with the {@link NeutralMode} as Coast to a defined canbus
+     * 
+     * @param motorID
+     * @param isInverted
+     * @param configuration
+     */
+    public SuperTalonFX(int motorID, TalonFXConfiguration configuration, String canbus) {
+        super(motorID, canbus);
         configFactoryDefault();
         setMode(GlobalIdleMode.Coast);
         configAllSettings(configuration);
