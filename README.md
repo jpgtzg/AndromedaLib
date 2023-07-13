@@ -5,6 +5,10 @@ This libarry has the objective of encouraging a functional coding process, focus
 
 AndromedaLib has been proven to work effectively by being constantly used by Team 6647, VOLTEC Robotics
 
+# Installation 
+
+Follow jitpack installation instructions to add AndromedaLib into your project.
+
 # Authors
 
 * **Juan Pablo Gutiérrez** - [AndromedaHelix](https://github.com/AndromedaHelix)
