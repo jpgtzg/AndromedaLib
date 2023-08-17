@@ -16,6 +16,7 @@ import com.andromedalib.andromedaSwerve.utils.SwerveConstants;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.DriverStation;
 
 public class AndromedaModule {
         private int moduleNumber;
@@ -33,6 +34,10 @@ public class AndromedaModule {
 
         public AndromedaModule(int moduleNumber, AndromedaModuleConstants constants) {
                 this.moduleNumber = moduleNumber;
+
+                if(SwerveConstants.andromedaProfile.motorConfig.equals("Falcon config")){
+                        DriverStation.reportError("AndromedaModule " + moduleNumber + " is using Neo config. Please change your profile config selection to avoid unwanted behaviours", true);
+                    }
 
                 this.driveMotor = new SuperTalonFX(constants.driveMotorID, GlobalIdleMode.brake,
                                 SwerveConstants.andromedaProfile.driveMotorInvert,
