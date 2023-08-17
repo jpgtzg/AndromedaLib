@@ -35,9 +35,11 @@ public class AndromedaModule {
         public AndromedaModule(int moduleNumber, AndromedaModuleConstants constants) {
                 this.moduleNumber = moduleNumber;
 
-                if(SwerveConstants.andromedaProfile.motorConfig.equals("Neo config")){
-                        DriverStation.reportError("AndromedaModule " + moduleNumber + " is using Neo config. Please change your profile config selection to avoid unwanted behaviours", true);
-                    }
+                if (SwerveConstants.andromedaProfile.motorConfig.equals("Neo config")) {
+                        DriverStation.reportError("AndromedaModule " + moduleNumber
+                                        + " is using Neo config. Please change your profile config selection to avoid unwanted behaviours",
+                                        true);
+                }
 
                 this.driveMotor = new SuperTalonFX(constants.driveMotorID, GlobalIdleMode.brake,
                                 SwerveConstants.andromedaProfile.driveMotorInvert,
@@ -96,11 +98,15 @@ public class AndromedaModule {
 
         public void resetAbsolutePosition() {
                 steeringMotor.setSelectedSensorPosition(0);
-                System.out.println(steeringMotor.getSelectedSensorPosition());
                 double encoderPosition = Conversions.degreesToFalcon(
                                 steeringEncoder.getAbsolutePosition() - angleOffset.getDegrees(),
                                 SwerveConstants.andromedaProfile.steeringGearRatio);
-                steeringMotor.setSelectedSensorPosition(0);
+                try{
+                        Thread.sleep(1000);
+                } catch (Exception e){
+                        
+                }
+                steeringMotor.setSelectedSensorPosition(encoderPosition);
         }
 
         private Rotation2d getAngle() {
