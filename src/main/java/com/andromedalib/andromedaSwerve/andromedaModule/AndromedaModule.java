@@ -96,6 +96,7 @@ public class AndromedaModule {
 
         public void resetAbsolutePosition() {
                 steeringMotor.setSelectedSensorPosition(0);
+                System.out.println(steeringMotor.getSelectedSensorPosition());
                 double encoderPosition = Conversions.degreesToFalcon(
                                 steeringEncoder.getAbsolutePosition() - angleOffset.getDegrees(),
                                 SwerveConstants.andromedaProfile.steeringGearRatio);
