@@ -100,7 +100,7 @@ public class AndromedaModule {
                 double encoderPosition = Conversions.degreesToFalcon(
                                 steeringEncoder.getAbsolutePosition() - angleOffset.getDegrees(),
                                 SwerveConstants.andromedaProfile.steeringGearRatio);
-                steeringMotor.setSelectedSensorPosition(encoderPosition);
+                steeringMotor.setSelectedSensorPosition(0);
         }
 
         private Rotation2d getAngle() {
