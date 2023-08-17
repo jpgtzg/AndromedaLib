@@ -10,6 +10,7 @@ import com.andromedalib.andromedaSwerve.andromedaModule.AndromedaModule;
 import com.andromedalib.andromedaSwerve.utils.AndromedaMap;
 import com.andromedalib.andromedaSwerve.utils.SwerveConstants;
 
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -61,6 +62,20 @@ public class AndromedaSwerve extends SubsystemBase {
             : new ChassisSpeeds(translation.getX(), translation.getY(), rotation));
 
     setModuleStates(swerveModuleStates, isOpenLoop);
+  }
+
+  public Rotation2d getAngle(){
+    return navx.getClampedYaw();
+  }
+
+  public SwerveModuleState[] getStates(){
+    
+    SwerveModuleState[] states = new SwerveModuleState[4];
+    for (AndromedaModule andromedaModule : modules) {
+      states[andromedaModule.getModuleNumber()] = andromedaModule.getState();
+    }
+
+    return states;
   }
 
   private void setModuleStates(SwerveModuleState[] desiredStates, boolean isOpenLoop) {
