@@ -35,7 +35,7 @@ public class AndromedaModule {
         public AndromedaModule(int moduleNumber, AndromedaModuleConstants constants) {
                 this.moduleNumber = moduleNumber;
 
-                if(SwerveConstants.andromedaProfile.motorConfig.equals("Falcon config")){
+                if(SwerveConstants.andromedaProfile.motorConfig.equals("Neo config")){
                         DriverStation.reportError("AndromedaModule " + moduleNumber + " is using Neo config. Please change your profile config selection to avoid unwanted behaviours", true);
                     }
 
