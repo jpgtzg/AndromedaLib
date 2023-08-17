@@ -6,7 +6,6 @@ package com.andromedalib.motorControllers;
 
 import com.andromedalib.math.Conversions;
 import com.andromedalib.motorControllers.IdleManager.GlobalIdleMode;
-import com.ctre.phoenix.ErrorCode;
 import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
 import com.ctre.phoenix.motorcontrol.can.WPI_TalonFX;
 
@@ -19,8 +18,6 @@ import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 public class SuperTalonFX extends WPI_TalonFX implements HyperMotorController {
 
     private double currentLimit = 1;
-
-    ErrorCode error;
 
     /**
      * Configures SuperTalonFX motor controller
