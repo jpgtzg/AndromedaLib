@@ -10,6 +10,8 @@ public class AndromedaSwerveInfo extends ShuffleboardTabBase {
     AndromedaSwerve andromedaSwerve = AndromedaSwerve.getInstance();
 
     GenericEntry[] temps = new GenericEntry[8];
+    GenericEntry[] angles = new GenericEntry[4];
+    GenericEntry[] position = new GenericEntry[4];
 
     int module = 1;
     int i = 0;
@@ -23,6 +25,18 @@ public class AndromedaSwerveInfo extends ShuffleboardTabBase {
             }
             i++;
         });
+
+        andromedaSwerve.getModules().forEach((module) -> {
+            angles[module.getModuleNumber()] = tab
+                    .add("Module " + module.getModuleNumber(), module.getState().angle.getDegrees())
+                    .getEntry();
+        });
+
+        andromedaSwerve.getModules().forEach((module) -> {
+            position[module.getModuleNumber()] = tab
+                    .add("Module " + module.getModuleNumber(), module.getPosition().distanceMeters)
+                    .getEntry();
+        });
     }
 
     @Override
@@ -31,6 +45,14 @@ public class AndromedaSwerveInfo extends ShuffleboardTabBase {
         andromedaSwerve.getModulesTemp().forEach((temp) -> {
             temps[i].setDouble(temp);
             i++;
+        });
+
+        andromedaSwerve.getModules().forEach((module) -> {
+            angles[module.getModuleNumber()].setDouble(module.getState().angle.getDegrees());
+        });
+
+        andromedaSwerve.getModules().forEach((module) -> {
+            position[module.getModuleNumber()].setDouble(module.getPosition().distanceMeters);
         });
     }
 
