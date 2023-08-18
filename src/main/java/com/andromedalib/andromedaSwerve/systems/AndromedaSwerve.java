@@ -4,6 +4,8 @@
 package com.andromedalib.andromedaSwerve.systems;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 import com.andromedalib.sensors.SuperNavx;
 import com.andromedalib.andromedaSwerve.andromedaModule.AndromedaModule;
@@ -87,6 +89,11 @@ public class AndromedaSwerve extends SubsystemBase {
     }
 
     return states;
+  }
+
+  public List<AndromedaModule> getModules(){
+    List<AndromedaModule> modulesList = Arrays.asList(modules);
+    return modulesList;
   }
 
   private void setModuleStates(SwerveModuleState[] desiredStates, boolean isOpenLoop) {
