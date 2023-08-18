@@ -15,6 +15,7 @@ import com.andromedalib.andromedaSwerve.utils.SwerveConstants;
 
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DriverStation;
 
@@ -101,10 +102,10 @@ public class AndromedaModule {
                 double encoderPosition = Conversions.degreesToFalcon(
                                 steeringEncoder.getAbsolutePosition() - angleOffset.getDegrees(),
                                 SwerveConstants.andromedaProfile.steeringGearRatio);
-                try{
+                try {
                         Thread.sleep(1000);
-                } catch (Exception e){
-                        
+                } catch (Exception e) {
+
                 }
                 steeringMotor.setSelectedSensorPosition(encoderPosition);
         }
@@ -117,6 +118,12 @@ public class AndromedaModule {
         public SwerveModuleState getState() {
                 return new SwerveModuleState(driveMotor.getVelocity(SwerveConstants.wheelCircumference,
                                 SwerveConstants.andromedaProfile.driveGearRatio), getAngle());
+        }
+
+        public SwerveModulePosition getPosition() {
+                return new SwerveModulePosition(
+                                driveMotor.getPosition(SwerveConstants.wheelCircumference, SwerveConstants.andromedaProfile.driveGearRatio),
+                                getAngle());
         }
 
         /* Telemetry */

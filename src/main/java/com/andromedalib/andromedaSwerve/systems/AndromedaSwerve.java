@@ -14,6 +14,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
@@ -64,15 +65,25 @@ public class AndromedaSwerve extends SubsystemBase {
     setModuleStates(swerveModuleStates, isOpenLoop);
   }
 
-  public Rotation2d getAngle(){
+  public Rotation2d getAngle() {
     return navx.getClampedYaw();
   }
 
-  public SwerveModuleState[] getStates(){
-    
+  public SwerveModuleState[] getStates() {
+
     SwerveModuleState[] states = new SwerveModuleState[4];
     for (AndromedaModule andromedaModule : modules) {
       states[andromedaModule.getModuleNumber()] = andromedaModule.getState();
+    }
+
+    return states;
+  }
+
+  public SwerveModulePosition[] getPositions() {
+
+    SwerveModulePosition[] states = new SwerveModulePosition[4];
+    for (AndromedaModule andromedaModule : modules) {
+      states[andromedaModule.getModuleNumber()] = andromedaModule.getPosition();
     }
 
     return states;
