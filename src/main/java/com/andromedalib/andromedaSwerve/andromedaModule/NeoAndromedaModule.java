@@ -14,6 +14,7 @@ import com.andromedalib.andromedaSwerve.utils.SwerveConstants;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DriverStation;
 
@@ -35,8 +36,10 @@ public class NeoAndromedaModule {
     public NeoAndromedaModule(int moduleNumber, AndromedaModuleConstants constants) {
         this.moduleNumber = moduleNumber;
 
-        if(SwerveConstants.andromedaProfile.motorConfig.equals("Falcon config")){
-            DriverStation.reportError("Neo AndromedaModule " + moduleNumber + " is using Falcon config. Please change your profile config selection to avoid unwanted behaviours", true);
+        if (SwerveConstants.andromedaProfile.motorConfig.equals("Falcon config")) {
+            DriverStation.reportError("Neo AndromedaModule " + moduleNumber
+                    + " is using Falcon config. Please change your profile config selection to avoid unwanted behaviours",
+                    true);
         }
 
         this.driveMotor = new SuperSparkMax(constants.driveMotorID, GlobalIdleMode.brake,
@@ -120,6 +123,12 @@ public class NeoAndromedaModule {
 
     public SwerveModuleState getState() {
         return new SwerveModuleState(driveMotor.getVelocity(), getAngle());
+    }
+
+    public SwerveModulePosition getPosition() {
+        return new SwerveModulePosition(
+                driveMotor.getPosition(),
+                getAngle());
     }
 
     /**
