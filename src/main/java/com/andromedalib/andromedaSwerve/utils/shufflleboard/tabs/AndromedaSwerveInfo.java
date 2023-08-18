@@ -28,13 +28,13 @@ public class AndromedaSwerveInfo extends ShuffleboardTabBase {
 
         andromedaSwerve.getModules().forEach((module) -> {
             angles[module.getModuleNumber()] = tab
-                    .add("Module " + module.getModuleNumber(), module.getState().angle.getDegrees())
+                    .add("Module Angle " + module.getModuleNumber(), module.getState().angle.getDegrees())
                     .getEntry();
         });
 
         andromedaSwerve.getModules().forEach((module) -> {
             position[module.getModuleNumber()] = tab
-                    .add("Module " + module.getModuleNumber(), module.getPosition().distanceMeters)
+                    .add("Module Position" + module.getModuleNumber(), module.getPosition().distanceMeters)
                     .getEntry();
         });
     }
