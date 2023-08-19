@@ -19,9 +19,9 @@ public class SwerveConstants {
     public static final double wheelCircumference = andromedaProfile.wheelCircumference;
     public static final SwerveDriveKinematics swerveKinematics = new SwerveDriveKinematics(
             new Translation2d(wheelBase / 2.0, trackWidth / 2.0),
-            new Translation2d(wheelBase / 2.0, -trackWidth / 2.0),
+            new Translation2d(-wheelBase / 2.0, trackWidth / 2.0),
             new Translation2d(-wheelBase / 2.0, -trackWidth / 2.0),
-            new Translation2d(-wheelBase / 2.0, trackWidth / 2.0));
+            new Translation2d(wheelBase / 2.0, -trackWidth / 2.0));
 
     /*
      * Drive Motor Characterization Values
