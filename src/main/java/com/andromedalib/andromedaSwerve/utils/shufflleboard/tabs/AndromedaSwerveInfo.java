@@ -18,16 +18,19 @@ public class AndromedaSwerveInfo extends ShuffleboardTabBase {
 
     int module = 1;
     int i = 0;
+    boolean tempsEnabled;
 
-    public AndromedaSwerveInfo(ShuffleboardTab tab) {
-
-        andromedaSwerve.getModulesTemp().forEach((temp) -> {
-            temps[i] = tab.add("Module " + module + " " + i, temp).getEntry();
-            if ((i + 1) % 2 == 0) {
-                module = (module % 4) + 1;
-            }
-            i++;
-        });
+    public AndromedaSwerveInfo(ShuffleboardTab tab, boolean tempsEnabled) {
+        this.tempsEnabled = tempsEnabled;
+        if (tempsEnabled) {
+            andromedaSwerve.getModulesTemp().forEach((temp) -> {
+                temps[i] = tab.add("Module " + module + " " + i, temp).getEntry();
+                if ((i + 1) % 2 == 0) {
+                    module = (module % 4) + 1;
+                }
+                i++;
+            });
+        }
 
         andromedaSwerve.getModules().forEach((module) -> {
             angles[module.getModuleNumber()] = tab
@@ -41,16 +44,19 @@ public class AndromedaSwerveInfo extends ShuffleboardTabBase {
                     .getEntry();
         });
 
-        heading = tab.add("Heading", andromedaSwerve.getAngle().getDegrees()).withWidget(BuiltInWidgets.kGyro) .getEntry();
+        heading = tab.add("Heading", andromedaSwerve.getAngle().getDegrees()).withWidget(BuiltInWidgets.kGyro)
+                .getEntry();
     }
 
     @Override
     public void updateTelemetry() {
-        i = 0;
-        andromedaSwerve.getModulesTemp().forEach((temp) -> {
-            temps[i].setDouble(temp);
-            i++;
-        });
+        if (tempsEnabled) {
+            i = 0;
+            andromedaSwerve.getModulesTemp().forEach((temp) -> {
+                temps[i].setDouble(temp);
+                i++;
+            });
+        }
 
         andromedaSwerve.getModules().forEach((module) -> {
             angles[module.getModuleNumber()].setDouble(module.getState().angle.getDegrees());
