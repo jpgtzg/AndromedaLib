@@ -1,7 +1,7 @@
 package com.andromedalib.andromedaSwerve.utils.shufflleboard.tabs;
 
 import com.andromedalib.shuffleboard.ShuffleboardTabBase;
-
+import com.andromedalib.andromedaSwerve.andromedaModule.FalconAndromedaModule;
 import com.andromedalib.andromedaSwerve.systems.AndromedaSwerve;
 
 import edu.wpi.first.networktables.GenericEntry;
@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 
 public class AndromedaSwerveInfo extends ShuffleboardTabBase {
-    AndromedaSwerve andromedaSwerve = AndromedaSwerve.getInstance();
+    AndromedaSwerve andromedaSwerve = AndromedaSwerve.getInstance(new FalconAndromedaModule[] {});
 
     GenericEntry heading;
     GenericEntry[] temps = new GenericEntry[8];
@@ -34,13 +34,15 @@ public class AndromedaSwerveInfo extends ShuffleboardTabBase {
 
         andromedaSwerve.getModules().forEach((module) -> {
             angles[module.getModuleNumber()] = tab
-                    .add("Module Angle " + module.getModuleNumber(), module.getState().angle.getDegrees())
+                    .add(module.getModuleName() + " Angle " + module.getModuleNumber(),
+                            module.getState().angle.getDegrees())
                     .getEntry();
         });
 
         andromedaSwerve.getModules().forEach((module) -> {
             position[module.getModuleNumber()] = tab
-                    .add("Module Position" + module.getModuleNumber(), module.getPosition().distanceMeters)
+                    .add(module.getModuleName() + " Position" + module.getModuleNumber(),
+                            module.getPosition().distanceMeters)
                     .getEntry();
         });
 

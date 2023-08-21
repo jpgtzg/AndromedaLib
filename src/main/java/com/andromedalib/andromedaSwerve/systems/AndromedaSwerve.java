@@ -9,7 +9,6 @@ import java.util.List;
 
 import com.andromedalib.sensors.SuperNavx;
 import com.andromedalib.andromedaSwerve.andromedaModule.AndromedaModule;
-import com.andromedalib.andromedaSwerve.utils.AndromedaMap;
 import com.andromedalib.andromedaSwerve.utils.SwerveConstants;
 
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -23,26 +22,21 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class AndromedaSwerve extends SubsystemBase {
   private static AndromedaSwerve instance;
-  private static AndromedaModule[] modules;
+  private AndromedaModule[] modules;
 
   private static SuperNavx navx = SuperNavx.getInstance();
 
-  private AndromedaSwerve() {
+  private AndromedaSwerve(AndromedaModule[] modules) {
 
-    modules = new AndromedaModule[] {
-        new AndromedaModule(0, AndromedaMap.mod1Const),
-        new AndromedaModule(1, AndromedaMap.mod2Const),
-        new AndromedaModule(2, AndromedaMap.mod3Const),
-        new AndromedaModule(3, AndromedaMap.mod4Const),
-    };
+    this.modules = modules;
 
     Timer.delay(1.0);
     resetAbsoluteModules();
   }
 
-  public static AndromedaSwerve getInstance() {
+  public static AndromedaSwerve getInstance(AndromedaModule[] modules) {
     if (instance == null) {
-      instance = new AndromedaSwerve();
+      instance = new AndromedaSwerve(modules);
     }
     return instance;
   }
@@ -91,7 +85,7 @@ public class AndromedaSwerve extends SubsystemBase {
     return states;
   }
 
-  public List<AndromedaModule> getModules(){
+  public List<AndromedaModule> getModules() {
     List<AndromedaModule> modulesList = Arrays.asList(modules);
     return modulesList;
   }

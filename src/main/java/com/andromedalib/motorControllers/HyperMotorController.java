@@ -10,7 +10,7 @@ import com.andromedalib.motorControllers.IdleManager.GlobalIdleMode;
  * Interface to implement the same functions and
  * variables on all motor controllers
  */
-public interface HyperMotorController {
+public interface HyperMotorController { 
 
     /**
      * Sets the idle mode of the motor controller
