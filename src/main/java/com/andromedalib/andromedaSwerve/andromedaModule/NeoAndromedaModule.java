@@ -18,8 +18,9 @@ import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.wpilibj.DriverStation;
 
-public class NeoAndromedaModule {
+public class NeoAndromedaModule implements AndromedaModule {
     private int moduleNumber;
+    private String moduleName;
 
     private SuperSparkMax driveMotor;
     private SuperSparkMax steeringMotor;
@@ -33,8 +34,9 @@ public class NeoAndromedaModule {
 
     private PIDController steeringController;
 
-    public NeoAndromedaModule(int moduleNumber, AndromedaModuleConstants constants) {
+    public NeoAndromedaModule(int moduleNumber, String moduleName, AndromedaModuleConstants constants) {
         this.moduleNumber = moduleNumber;
+        this.moduleName = moduleName;
 
         if (SwerveConstants.andromedaProfile.motorConfig.equals("Falcon config")) {
             DriverStation.reportError("Neo AndromedaModule " + moduleNumber
@@ -79,10 +81,17 @@ public class NeoAndromedaModule {
 
     }
 
+    @Override
     public int getModuleNumber() {
         return moduleNumber;
     }
 
+    @Override
+    public String getModuleName() {
+        return moduleName;
+    }
+
+    @Override
     public void setDesiredState(SwerveModuleState desiredState, boolean isOpenLoop) {
         desiredState = SwerveModuleState.optimize(desiredState, getState().angle);
 
@@ -110,6 +119,7 @@ public class NeoAndromedaModule {
         }
     }
 
+    @Override
     public void resetAbsolutePosition() {
         steeringMotor.setPosition(0);
         double encoderPosition = steeringEncoder.getAbsolutePosition() - angleOffset.getDegrees();
@@ -121,10 +131,12 @@ public class NeoAndromedaModule {
                 steeringMotor.getPosition());
     }
 
+    @Override
     public SwerveModuleState getState() {
         return new SwerveModuleState(driveMotor.getVelocity(), getAngle());
     }
 
+    @Override
     public SwerveModulePosition getPosition() {
         return new SwerveModulePosition(
                 driveMotor.getPosition(),
@@ -136,7 +148,7 @@ public class NeoAndromedaModule {
      * @param targetAngleInDegrees target angle from WPI's swerve kinematics
      *                             optimize method
      */
-    public void setSparkAngle(double targetAngleInDegrees) {
+    private void setSparkAngle(double targetAngleInDegrees) {
 
         double currentSparkAngle = getAngle().getDegrees();
 
@@ -163,6 +175,7 @@ public class NeoAndromedaModule {
 
     /* Telemetry */
 
+    @Override
     public double[] getTemp() {
         return new double[] { steeringMotor.getMotorTemperature(), driveMotor.getMotorTemperature() };
     }
