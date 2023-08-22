@@ -45,12 +45,23 @@ public class AndromedaSwerve extends SubsystemBase {
   public void periodic() {
   }
 
+  /**
+   * Resets all modules to the absolute encoder position
+   */
   public void resetAbsoluteModules() {
     for (AndromedaModule andromedaModule : modules) {
       andromedaModule.resetAbsolutePosition();
     }
   }
 
+  /**
+   * Main driving method
+   * 
+   * @param translation   Translation movement
+   * @param rotation      Desired rotation
+   * @param fieldRelative True if field relative
+   * @param isOpenLoop    True if open loop
+   */
   public void drive(Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop) {
     SwerveModuleState[] swerveModuleStates = SwerveConstants.swerveKinematics.toSwerveModuleStates(
         fieldRelative
@@ -61,10 +72,20 @@ public class AndromedaSwerve extends SubsystemBase {
     setModuleStates(swerveModuleStates, isOpenLoop);
   }
 
+  /**
+   * Gets Navx Angle clamped to 0 - 360 degrees
+   * 
+   * @return
+   */
   public Rotation2d getAngle() {
     return navx.getClampedYaw();
   }
 
+  /**
+   * Return all module states
+   * 
+   * @return SwerveModuleStates array
+   */
   public SwerveModuleState[] getStates() {
 
     SwerveModuleState[] states = new SwerveModuleState[4];
@@ -75,6 +96,11 @@ public class AndromedaSwerve extends SubsystemBase {
     return states;
   }
 
+  /**
+   * Returns all module positions
+   * 
+   * @return SwerveModulePosition array
+   */
   public SwerveModulePosition[] getPositions() {
 
     SwerveModulePosition[] states = new SwerveModulePosition[4];
@@ -85,12 +111,32 @@ public class AndromedaSwerve extends SubsystemBase {
     return states;
   }
 
+  /**
+   * Gets the list of modules
+   * 
+   * @return List of modules
+   */
   public List<AndromedaModule> getModules() {
     List<AndromedaModule> modulesList = Arrays.asList(modules);
     return modulesList;
   }
 
-  private void setModuleStates(SwerveModuleState[] desiredStates, boolean isOpenLoop) {
+  /**
+   * Sets the modules states as open loop driving
+   * 
+   * @param desiredStates Desired SwerveModuleState array
+   */
+  public void setModuleStates(SwerveModuleState[] desiredStates) {
+    setModuleStates(desiredStates, true);
+  }
+
+  /**
+   * Sets the modules states
+   * 
+   * @param desiredStates Desired SwerveModuleState array
+   * @param isOpenLoop    True if open loop driving
+   */
+  public void setModuleStates(SwerveModuleState[] desiredStates, boolean isOpenLoop) {
     SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, SwerveConstants.maxSpeed);
 
     for (AndromedaModule andromedaModule : modules) {
@@ -98,6 +144,11 @@ public class AndromedaSwerve extends SubsystemBase {
     }
   }
 
+  /**
+   * Gets each modules' motors temperature
+   * 
+   * @return ArrayList module temperature
+   */
   public ArrayList<Double> getModulesTemp() {
 
     ArrayList<Double> temps = new ArrayList<>();
