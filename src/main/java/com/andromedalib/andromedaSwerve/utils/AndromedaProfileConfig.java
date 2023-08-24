@@ -48,6 +48,26 @@ public final class AndromedaProfileConfig {
 
         public final String motorConfig;
 
+        /**
+         * Creates a new AndromedaProfileConfig. This constructor is aimed for use with
+         * {@link SuperTalonFX} motors
+         * 
+         * @param steeringGearRatio         Gear ratio between the steering motor and
+         *                                  the wheel
+         * @param driveGearRatio            Gear Ratio between the drive motor and the
+         *                                  wheel
+         * @param wheelDiameter             Wheel diameter
+         * @param driveMotorConfiguration   {@link TalonFXConfiguration} for the drive
+         *                                  motor
+         * @param turningMotorConfiguration {@link TalonFXConfiguration} for the turning
+         *                                  motor
+         * @param cancoderConfiguration     {@link CANCoderConfiguration} for the
+         *                                  CANCoder
+         * @param driveMotorInvert          Drive motor invert status
+         * @param steeringMotorInvert       Steering motor invert status
+         * @param cancoderInvert            CANCoder motor invert status
+         * @param CANBus                    CANbus name
+         */
         public AndromedaProfileConfig(double steeringGearRatio, double driveGearRatio, double wheelDiameter,
                         TalonFXConfiguration driveMotorConfiguration, TalonFXConfiguration turningMotorConfiguration,
                         CANCoderConfiguration cancoderConfiguration,
@@ -84,6 +104,31 @@ public final class AndromedaProfileConfig {
                 this.motorConfig = "Falcon config";
         }
 
+        /**
+         * Creates a new AndromedaProfileConfig. This constructor is aimed for use with
+         * {@link SuperSparkMax} motors
+         * 
+         * @param steeringGearRatio           Gear ratio between the steering motor and
+         *                                    the wheel
+         * @param driveGearRatio              Gear Ratio between the drive motor and the
+         *                                    wheel
+         * @param wheelDiameter               Wheel diameter
+         * @param turningKp                   Kp value for turning motor
+         * @param turningKi                   Ki value for turning motor
+         * @param turningKd                   Kd value for turning motor
+         * @param turningKf                   Kf value for turning motor
+         * @param driveKp                     Kp value for drive motor
+         * @param driveKi                     Ki value for drive motor
+         * @param driveKd                     Kd value for drive motor
+         * @param driveKf                     Kf value for drive motor
+         * @param cancoderConfiguration       {@link CANCoderConfiguration} for the
+         *                                    CANCoder
+         * @param driveMotorInvertDrive       motor invert status
+         * @param angleMotorInvert            Steering motor invert status
+         * @param cancoderInvert              CANCoder motor invert status
+         * @param driveContinuousCurrentLimit Drive motor current limit
+         * @param angleContinuousCurrentLimit Angle motor current limit
+         */
         public AndromedaProfileConfig(double steeringGearRatio, double driveGearRatio, double wheelDiameter,
                         double turningKp, double turningKi, double turningKd, double turningKf, double driveKp,
                         double driveKi, double driveKd, double driveKf, CANCoderConfiguration cancoderConfig,

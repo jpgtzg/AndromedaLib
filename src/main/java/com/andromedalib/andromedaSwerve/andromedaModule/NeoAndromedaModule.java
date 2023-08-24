@@ -34,6 +34,13 @@ public class NeoAndromedaModule implements AndromedaModule {
 
     private PIDController steeringController;
 
+    /**
+     * Creates a new NeoAndromedaModule that uses {@link SuperSparkMax} motors
+     * 
+     * @param moduleNumber This module's number
+     * @param moduleName   This module's name
+     * @param constants    IDs and offsets constants
+     */
     public NeoAndromedaModule(int moduleNumber, String moduleName, AndromedaModuleConstants constants) {
         this.moduleNumber = moduleNumber;
         this.moduleName = moduleName;
@@ -99,6 +106,11 @@ public class NeoAndromedaModule implements AndromedaModule {
         setSpeed(desiredState, isOpenLoop);
     }
 
+    /**
+     * Sets the turning motor angle to its desired state
+     * 
+     * @param desiredState {@link SwerveModuleState} to apply
+     */
     private void setAngle(SwerveModuleState desiredState) {
         Rotation2d angle = (Math.abs(desiredState.speedMetersPerSecond) <= (SwerveConstants.maxSpeed * 0.01))
                 ? lastAngle
@@ -109,6 +121,12 @@ public class NeoAndromedaModule implements AndromedaModule {
         lastAngle = angle;
     }
 
+    /**
+     * Sets the drive motor speed to its desired state
+     * 
+     * @param desiredState {@link SwerveModuleState} to apply
+     * @param isOpenLoop   True if open loop feedback is enabled
+     */
     private void setSpeed(SwerveModuleState desiredState, boolean isOpenLoop) {
         if (isOpenLoop) {
             double percentOutput = desiredState.speedMetersPerSecond / SwerveConstants.maxSpeed;
@@ -126,6 +144,11 @@ public class NeoAndromedaModule implements AndromedaModule {
         steeringMotor.setPosition(encoderPosition);
     }
 
+    /**
+     * Gets the current module angle
+     * 
+     * @return Current {@link Rotation2D}
+     */
     private Rotation2d getAngle() {
         return Rotation2d.fromDegrees(
                 steeringMotor.getPosition());
@@ -144,6 +167,8 @@ public class NeoAndromedaModule implements AndromedaModule {
     }
 
     /**
+     * Sets the sparkmax angle and optimizes the angle to use
+     * {@link SparkMaxPIDController} loop
      * 
      * @param targetAngleInDegrees target angle from WPI's swerve kinematics
      *                             optimize method
@@ -158,6 +183,13 @@ public class NeoAndromedaModule implements AndromedaModule {
                 ControlType.kPosition);
     }
 
+    /**
+     * Calculates the correct angle and optimizes
+     * 
+     * @param value  Target Angle
+     * @param anchor Current angle
+     * @return Appropiate relativeAngle
+     */
     private double reboundValue(double value, double anchor) {
         double lowerBound = anchor - 180;
         double upperBound = anchor + 180;

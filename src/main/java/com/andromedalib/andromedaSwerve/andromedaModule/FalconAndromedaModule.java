@@ -35,6 +35,13 @@ public class FalconAndromedaModule implements AndromedaModule {
                         SwerveConstants.driveKV,
                         SwerveConstants.driveKA);
 
+        /**
+         * Creates a new FalconAndromedaModule, that uses {@link SuperTalonFX} Motors
+         * 
+         * @param moduleNumber This module's number
+         * @param moduleName   This module's name
+         * @param constants    IDs and offsets constants
+         */
         public FalconAndromedaModule(int moduleNumber, String moduleName, AndromedaModuleConstants constants) {
                 this.moduleNumber = moduleNumber;
                 this.moduleName = moduleName;
@@ -82,6 +89,11 @@ public class FalconAndromedaModule implements AndromedaModule {
                 setSpeed(desiredState, isOpenLoop);
         }
 
+        /**
+         * Sets the turning motor angle to its desired state
+         * 
+         * @param desiredState {@link SwerveModuleState} to apply
+         */
         private void setAngle(SwerveModuleState desiredState) {
                 Rotation2d angle = (Math.abs(desiredState.speedMetersPerSecond) <= (SwerveConstants.maxSpeed * 0.01))
                                 ? lastAngle
@@ -94,6 +106,12 @@ public class FalconAndromedaModule implements AndromedaModule {
                 lastAngle = angle;
         }
 
+        /**
+         * Sets the drive motor speed to its desired state
+         * 
+         * @param desiredState {@link SwerveModuleState} to apply
+         * @param isOpenLoop   True if open loop feedback is enabled
+         */
         private void setSpeed(SwerveModuleState desiredState, boolean isOpenLoop) {
                 if (isOpenLoop) {
                         double percentOutput = desiredState.speedMetersPerSecond / SwerveConstants.maxSpeed;
@@ -122,6 +140,11 @@ public class FalconAndromedaModule implements AndromedaModule {
                 steeringMotor.setSelectedSensorPosition(encoderPosition); // Encoder positions
         }
 
+        /**
+         * Gets the current module angle
+         * 
+         * @return Current {@link Rotation2D}
+         */
         private Rotation2d getAngle() {
                 return Rotation2d.fromDegrees(
                                 steeringMotor.getAngle(SwerveConstants.andromedaProfile.steeringGearRatio));
