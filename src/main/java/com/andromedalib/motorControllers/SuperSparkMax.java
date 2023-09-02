@@ -38,6 +38,7 @@ public class SuperSparkMax extends CANSparkMax implements HyperMotorController {
         setMode(idleMode);
         setInverted(isInverted);
         setSmartCurrentLimit(currentLimit);
+        burnFlash();
     }
 
     /**
@@ -53,6 +54,7 @@ public class SuperSparkMax extends CANSparkMax implements HyperMotorController {
         restoreFactoryDefaults();
         setMode(idleMode);
         setInverted(isInverted);
+        burnFlash();
     }
 
     /**
@@ -70,6 +72,7 @@ public class SuperSparkMax extends CANSparkMax implements HyperMotorController {
         setMode(mode);
         setInverted(isInverted);
         setSmartCurrentLimit(currentLimit);
+        burnFlash();
     }
 
     /**
@@ -86,6 +89,7 @@ public class SuperSparkMax extends CANSparkMax implements HyperMotorController {
         setMode(GlobalIdleMode.Coast);
         setInverted(isInverted);
         setSmartCurrentLimit(currentLimit);
+        burnFlash();
     }
 
     /**
@@ -101,6 +105,7 @@ public class SuperSparkMax extends CANSparkMax implements HyperMotorController {
         restoreFactoryDefaults();
         setMode(GlobalIdleMode.Coast);
         setInverted(isInverted);
+        burnFlash();
     }
 
     @Override
