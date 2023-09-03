@@ -51,7 +51,7 @@ public class SuperRobot extends TimedRobot {
         if (useCamera)
             CameraServer.startAutomaticCapture();
 
-        addPeriodic(() -> CommandScheduler.getInstance().run(), 0.01);
+        //addPeriodic(() -> CommandScheduler.getInstance().run(), 0.01);
     }
 
     /**
@@ -62,6 +62,8 @@ public class SuperRobot extends TimedRobot {
     @Override
     public void robotPeriodic() {
         telemetryManager.updateTelemetry();
+
+        CommandScheduler.getInstance().run();
     }
 
     /**
