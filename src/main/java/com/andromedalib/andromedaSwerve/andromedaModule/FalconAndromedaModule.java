@@ -132,11 +132,11 @@ public class FalconAndromedaModule implements AndromedaModule {
                 double encoderPosition = Conversions.degreesToFalcon(
                                 steeringEncoder.getAbsolutePosition() - angleOffset.getDegrees(),
                                 SwerveConstants.andromedaProfile.steeringGearRatio);
-          /*       try {
-                        Thread.sleep(1000);
+                try {
+                        Thread.sleep(700);
                 } catch (Exception e) {
 
-                } */
+                }
                 steeringMotor.setSelectedSensorPosition(encoderPosition); // Encoder positions
         }
 
