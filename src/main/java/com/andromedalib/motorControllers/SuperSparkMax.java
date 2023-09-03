@@ -8,6 +8,7 @@ import com.andromedalib.motorControllers.IdleManager.GlobalIdleMode;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.REVLibError;
 import com.revrobotics.RelativeEncoder;
+import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
 
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 
@@ -72,6 +73,32 @@ public class SuperSparkMax extends CANSparkMax implements HyperMotorController {
         setMode(mode);
         setInverted(isInverted);
         setSmartCurrentLimit(currentLimit);
+        burnFlash();
+    }
+
+    /**
+     * Configures SuperSparkMax motor controller with the {@link IdleMode} set to
+     * Coast, the {@link MotorType} set to brushless. It also configures the
+     * absolute encoder
+     *
+     * @param motorID                          ID of the motor controller
+     * @param inverted                         Inverted state of the motor
+     *                                         controller
+     * @param currentLimit                     Current limit of the motor controller
+     *                                         in amps
+     * @param absolutePositionConversionFactor Absolute Position Conversion Factor
+     * @param zeroOffset                       Zero Offset
+     */
+    public SuperSparkMax(int motorID, GlobalIdleMode mode, boolean isInverted, int currentLimit,
+            double absolutePositionConversionFactor, double zeroOfsset) {
+        super(motorID, MotorType.kBrushless);
+        restoreFactoryDefaults();
+        encoder.setPosition(0);
+        setMode(mode);
+        setInverted(isInverted);
+        setSmartCurrentLimit(currentLimit);
+        getAbsoluteEncoder(Type.kDutyCycle).setPositionConversionFactor(absolutePositionConversionFactor);
+        getAbsoluteEncoder(Type.kDutyCycle).setZeroOffset(zeroOfsset);
         burnFlash();
     }
 
