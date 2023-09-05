@@ -111,6 +111,10 @@ public class AndromedaSwerve extends SubsystemBase {
     return states;
   }
 
+  public void resetNavx(){
+    navx.reset();
+  }
+
   /**
    * Gets the list of modules
    * 
