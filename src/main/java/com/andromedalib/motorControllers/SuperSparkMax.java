@@ -89,7 +89,7 @@ public class SuperSparkMax extends CANSparkMax implements HyperMotorController {
      * @param zeroOffset                       Zero Offset
      */
     public SuperSparkMax(int motorID, GlobalIdleMode mode, boolean isInverted, int currentLimit,
-            double absolutePositionConversionFactor, double zeroOfsset) {
+            double absolutePositionConversionFactor, double zeroOfsset, boolean encoderInverted) {
         super(motorID, MotorType.kBrushless);
         restoreFactoryDefaults();
         encoder.setPosition(0);
@@ -98,6 +98,7 @@ public class SuperSparkMax extends CANSparkMax implements HyperMotorController {
         setSmartCurrentLimit(currentLimit);
         getAbsoluteEncoder(Type.kDutyCycle).setPositionConversionFactor(absolutePositionConversionFactor);
         getAbsoluteEncoder(Type.kDutyCycle).setZeroOffset(zeroOfsset);
+        getAbsoluteEncoder(Type.kDutyCycle).setInverted(encoderInverted);
         burnFlash();
     }
 
