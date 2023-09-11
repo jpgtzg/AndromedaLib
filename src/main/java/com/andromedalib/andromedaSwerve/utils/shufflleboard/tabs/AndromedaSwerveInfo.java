@@ -9,7 +9,7 @@ import edu.wpi.first.wpilibj.shuffleboard.BuiltInWidgets;
 import edu.wpi.first.wpilibj.shuffleboard.ShuffleboardTab;
 
 public class AndromedaSwerveInfo extends ShuffleboardTabBase {
-    AndromedaSwerve andromedaSwerve = AndromedaSwerve.getInstance(new FalconAndromedaModule[] {});
+    AndromedaSwerve andromedaSwerve = AndromedaSwerve.getInstance(new FalconAndromedaModule[] {}, AndromedaSwerve.andromedaProfile);
 
     GenericEntry heading;
     GenericEntry[] temps = new GenericEntry[8];

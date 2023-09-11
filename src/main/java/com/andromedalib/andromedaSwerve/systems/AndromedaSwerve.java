@@ -9,6 +9,7 @@ import java.util.List;
 
 import com.andromedalib.sensors.SuperNavx;
 import com.andromedalib.andromedaSwerve.andromedaModule.AndromedaModule;
+import com.andromedalib.andromedaSwerve.utils.AndromedaProfileConfig;
 import com.andromedalib.andromedaSwerve.utils.SwerveConstants;
 
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -23,20 +24,21 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class AndromedaSwerve extends SubsystemBase {
   private static AndromedaSwerve instance;
   private AndromedaModule[] modules;
+  public static AndromedaProfileConfig andromedaProfile;
 
   private static SuperNavx navx = SuperNavx.getInstance();
 
-  private AndromedaSwerve(AndromedaModule[] modules) {
-
+  private AndromedaSwerve(AndromedaModule[] modules, AndromedaProfileConfig profileConfig) {
+    AndromedaSwerve.andromedaProfile = profileConfig;
     this.modules = modules;
 
     Timer.delay(1.0);
     resetAbsoluteModules();
   }
 
-  public static AndromedaSwerve getInstance(AndromedaModule[] modules) {
+  public static AndromedaSwerve getInstance(AndromedaModule[] modules, AndromedaProfileConfig profileConfig) {
     if (instance == null) {
-      instance = new AndromedaSwerve(modules);
+      instance = new AndromedaSwerve(modules, profileConfig);
     }
     return instance;
   }

@@ -1,6 +1,6 @@
 package com.andromedalib.andromedaSwerve.utils;
 
-import com.andromedalib.andromedaSwerve.utils.AndromedaProfileConfig.AndromedaProfiles;
+import com.andromedalib.andromedaSwerve.systems.AndromedaSwerve;
 
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
@@ -10,13 +10,13 @@ public class SwerveConstants {
     /* Represents Swerve-wide constants */
 
     public static final double deadband = 0.1;
-    public static final AndromedaProfileConfig andromedaProfile = AndromedaProfileConfig
-            .getConfig(AndromedaProfiles.ANDROMEDA_CONFIG);
+    /* public static final AndromedaProfileConfig andromedaProfile = AndromedaProfileConfig
+            .getConfig(AndromedaProfiles.ANDROMEDA_CONFIG); */
 
     /* Drivetrain Constants */
     public static final double trackWidth = Units.inchesToMeters(18.5); 
     public static final double wheelBase = Units.inchesToMeters(18.5);
-    public static final double wheelCircumference = andromedaProfile.wheelCircumference;
+    public static final double wheelCircumference = AndromedaSwerve.andromedaProfile.wheelCircumference;
     public static final SwerveDriveKinematics swerveKinematics = new SwerveDriveKinematics(
             new Translation2d(wheelBase / 2.0, -trackWidth / 2.0),
             new Translation2d(-wheelBase / 2.0, -trackWidth / 2.0),
