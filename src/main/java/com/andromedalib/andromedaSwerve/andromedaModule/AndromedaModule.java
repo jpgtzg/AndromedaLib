@@ -1,3 +1,7 @@
+/**
+ * Written by Juan Pablo Gutiérrez
+ */
+
 package com.andromedalib.andromedaSwerve.andromedaModule;
 
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
@@ -43,12 +47,14 @@ public interface AndromedaModule {
 
     /**
      * Gets the current module position
+     * 
      * @return Current {@link SwerveModulePosition} position
      */
     public SwerveModulePosition getPosition();
 
     /**
      * Gets module's motor temps
+     * 
      * @return
      */
     public double[] getTemp();
