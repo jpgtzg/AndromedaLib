@@ -1,9 +1,7 @@
 plugins {
-   id "java"
-
-   id "maven-publish"
-
-   id "edu.wpi.first.GradleRIO" version "2023.4.3"
+    id "java"
+    id "maven-publish"
+    id "edu.wpi.first.GradleRIO" version "2023.4.3"
 }
 
 group = 'com.andromeda'
