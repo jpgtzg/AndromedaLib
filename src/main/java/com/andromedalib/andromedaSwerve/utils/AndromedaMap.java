@@ -22,7 +22,7 @@ public class AndromedaMap {
         public static final int steerID2 = 4;
         public static final int driveID2 = 5;
         public static final int absEncoder2 = 6;
-        public static final Rotation2d mod2Angleoffset = Rotation2d.fromDegrees(273.744);
+        public static final Rotation2d mod2Angleoffset = Rotation2d.fromDegrees(243.043);
         public static final AndromedaModuleConstants mod2Const = new AndromedaModuleConstants(steerID2, driveID2,
                         absEncoder2, mod2Angleoffset);
 
