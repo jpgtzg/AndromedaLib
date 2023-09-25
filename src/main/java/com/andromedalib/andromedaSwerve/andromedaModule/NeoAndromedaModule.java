@@ -9,8 +9,8 @@ import com.andromedalib.motorControllers.IdleManager.GlobalIdleMode;
 import com.andromedalib.sensors.SuperCANCoder;
 import com.revrobotics.SparkMaxPIDController;
 import com.revrobotics.CANSparkMax.ControlType;
-import com.andromedalib.andromedaSwerve.systems.AndromedaSwerve;
 import com.andromedalib.andromedaSwerve.utils.AndromedaModuleConstants;
+import com.andromedalib.andromedaSwerve.utils.AndromedaProfileConfig;
 import com.andromedalib.andromedaSwerve.utils.SwerveConstants;
 
 import edu.wpi.first.math.controller.PIDController;
@@ -34,6 +34,7 @@ public class NeoAndromedaModule implements AndromedaModule {
     private SparkMaxPIDController turningController;
 
     private PIDController steeringController;
+    private AndromedaProfileConfig andromedaProfile;
 
     /**
      * Creates a new NeoAndromedaModule that uses {@link SuperSparkMax} motors
@@ -42,48 +43,49 @@ public class NeoAndromedaModule implements AndromedaModule {
      * @param moduleName   This module's name
      * @param constants    IDs and offsets constants
      */
-    public NeoAndromedaModule(int moduleNumber, String moduleName, AndromedaModuleConstants constants) {
+    public NeoAndromedaModule(int moduleNumber, String moduleName, AndromedaModuleConstants constants, AndromedaProfileConfig config) {
         this.moduleNumber = moduleNumber;
         this.moduleName = moduleName;
+        this.andromedaProfile = config;
 
-        if (AndromedaSwerve.andromedaProfile.motorConfig.equals("Falcon config")) {
+        if (andromedaProfile.motorConfig.equals("Falcon config")) {
             DriverStation.reportError("Neo AndromedaModule " + moduleNumber
                     + " is using Falcon config. Please change your profile config selection to avoid unwanted behaviours",
                     true);
         }
 
         this.driveMotor = new SuperSparkMax(constants.driveMotorID, GlobalIdleMode.brake,
-        AndromedaSwerve.andromedaProfile.driveMotorInvert,
-                AndromedaSwerve.andromedaProfile.driveContinuousCurrentLimit);
+        andromedaProfile.driveMotorInvert,
+                andromedaProfile.driveContinuousCurrentLimit);
         this.steeringMotor = new SuperSparkMax(constants.steeringMotorID, GlobalIdleMode.Coast,
-        AndromedaSwerve.andromedaProfile.steeringMotorInvert,
-        AndromedaSwerve.andromedaProfile.angleContinuousCurrentLimit);
+        andromedaProfile.steeringMotorInvert,
+        andromedaProfile.angleContinuousCurrentLimit);
         this.steeringEncoder = new SuperCANCoder(constants.absCanCoderID,
-        AndromedaSwerve.andromedaProfile.cancoderConfig);
+        andromedaProfile.cancoderConfig);
         this.angleOffset = constants.angleOffset;
 
         this.driveController = driveMotor.getPIDController();
         this.turningController = steeringMotor.getPIDController();
 
-        steeringController = new PIDController(AndromedaSwerve.andromedaProfile.turningKp,
-        AndromedaSwerve.andromedaProfile.turningKi, AndromedaSwerve.andromedaProfile.turningKf);
+        steeringController = new PIDController(andromedaProfile.turningKp,
+        andromedaProfile.turningKi, andromedaProfile.turningKf);
 
         steeringController.enableContinuousInput(-180, 180);
 
-        turningController.setP(AndromedaSwerve.andromedaProfile.turningKp);
-        turningController.setI(AndromedaSwerve.andromedaProfile.turningKi);
-        turningController.setD(AndromedaSwerve.andromedaProfile.turningKi);
+        turningController.setP(andromedaProfile.turningKp);
+        turningController.setI(andromedaProfile.turningKi);
+        turningController.setD(andromedaProfile.turningKi);
 
-        driveController.setP(AndromedaSwerve.andromedaProfile.driveKp);
-        driveController.setI(AndromedaSwerve.andromedaProfile.driveKi);
-        driveController.setD(AndromedaSwerve.andromedaProfile.driveKd);
+        driveController.setP(andromedaProfile.driveKp);
+        driveController.setI(andromedaProfile.driveKi);
+        driveController.setD(andromedaProfile.driveKd);
 
         resetAbsolutePosition();
 
-        driveMotor.setPositionConversionFactor(AndromedaSwerve.andromedaProfile.driveGearRatio);
-        driveMotor.setVelocityConversionFactor(AndromedaSwerve.andromedaProfile.driveGearRatio / 60);
-        steeringMotor.setPositionConversionFactor(AndromedaSwerve.andromedaProfile.steeringGearRatio);
-        steeringMotor.setVelocityConversionFactor(AndromedaSwerve.andromedaProfile.steeringGearRatio / 60);
+        driveMotor.setPositionConversionFactor(andromedaProfile.driveGearRatio);
+        driveMotor.setVelocityConversionFactor(andromedaProfile.driveGearRatio / 60);
+        steeringMotor.setPositionConversionFactor(andromedaProfile.steeringGearRatio);
+        steeringMotor.setVelocityConversionFactor(andromedaProfile.steeringGearRatio / 60);
 
         lastAngle = getAngle();
 
