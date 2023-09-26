@@ -205,10 +205,10 @@ public final class AndromedaProfileConfig {
                 double driveKd = 0.0;
                 double driveKf = 0.0;
 
-                boolean driveMotorInvert = true;
+                boolean driveMotorInvert = false;
                 boolean angleMotorInvert = true;
                 boolean canCoderInvert = false;
-
+                
                 double openLoopRamp = 0.25;
                 double closedLoopRamp = 0.0;
 
