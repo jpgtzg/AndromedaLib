@@ -1,7 +1,5 @@
 package com.andromedalib.andromedaSwerve.utils;
 
-import com.andromedalib.andromedaSwerve.systems.AndromedaSwerve;
-
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.util.Units;
@@ -19,7 +17,8 @@ public class SwerveConstants {
         /* Drivetrain Constants */
         public static final double trackWidth = Units.inchesToMeters(18.5);
         public static final double wheelBase = Units.inchesToMeters(18.5);
-        public static final double wheelCircumference = AndromedaSwerve.andromedaProfile.wheelCircumference;
+        public static final double wheelDiameter = Units.inchesToMeters(4.0);
+        public static final double wheelCircumference = wheelDiameter * Math.PI;
 
         /*
          * This has to do with the robot-centric coordinate system in WPILib
