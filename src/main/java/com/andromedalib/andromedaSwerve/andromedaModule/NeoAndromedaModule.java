@@ -103,6 +103,8 @@ public class NeoAndromedaModule implements AndromedaModule {
 
         lastAngle = getAngle();
 
+        moduleDesiredState = new SwerveModuleState(0.0, new Rotation2d(0.0));
+
         swerveModuleTable = NetworkTableInstance.getDefault()
                 .getTable("AndromedaSwerveTable/SwerveModule/" + moduleNumber);
 
