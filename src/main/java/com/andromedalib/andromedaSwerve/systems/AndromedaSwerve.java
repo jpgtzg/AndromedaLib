@@ -63,6 +63,7 @@ public class AndromedaSwerve extends SubsystemBase {
 
   @Override
   public void periodic() {
+    updateNT();
   }
 
   /**
@@ -216,5 +217,9 @@ public class AndromedaSwerve extends SubsystemBase {
 
     realSwerveStatesPublisher.set(getDoubleStates());
     desiredSwerveStatesPublisher.set(getDoubleDesiredStates());
+
+    for (AndromedaModule andromedaModule : modules) {
+      andromedaModule.updateNT();
+    }
   }
 }
