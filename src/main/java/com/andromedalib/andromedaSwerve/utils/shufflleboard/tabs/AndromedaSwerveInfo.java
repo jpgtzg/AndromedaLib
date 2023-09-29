@@ -46,7 +46,7 @@ public class AndromedaSwerveInfo extends ShuffleboardTabBase {
                     .getEntry();
         });
 
-        heading = tab.add("Heading", andromedaSwerve.getAngle().getDegrees()).withWidget(BuiltInWidgets.kGyro)
+        heading = tab.add("Heading", andromedaSwerve.getSwerveAngle().getDegrees()).withWidget(BuiltInWidgets.kGyro)
                 .getEntry();
     }
 
@@ -68,7 +68,7 @@ public class AndromedaSwerveInfo extends ShuffleboardTabBase {
             position[module.getModuleNumber()].setDouble(module.getPosition().distanceMeters);
         });
 
-        heading.setDouble(andromedaSwerve.getAngle().getDegrees());
+        heading.setDouble(andromedaSwerve.getSwerveAngle().getDegrees());
     }
 
 }

@@ -18,11 +18,22 @@ import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.networktables.DoubleArrayEntry;
+import edu.wpi.first.networktables.DoubleEntry;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
+
 import edu.wpi.first.wpilibj.Timer;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class AndromedaSwerve extends SubsystemBase {
   private static AndromedaSwerve instance;
+
+  private static NetworkTable andromedaSwerveTable;
+  private static DoubleEntry navxPublisher;
+  private static DoubleArrayEntry realSwerveStatesPublisher;
+  private static DoubleArrayEntry desiredSwerveStatesPublisher;
+
   private AndromedaModule[] modules;
   public static AndromedaProfileConfig andromedaProfile;
 
@@ -32,8 +43,15 @@ public class AndromedaSwerve extends SubsystemBase {
     AndromedaSwerve.andromedaProfile = profileConfig;
     this.modules = modules;
 
+    // TODO CHECK THIS WORKFLOW
     Timer.delay(1.0);
     resetAbsoluteModules();
+
+    andromedaSwerveTable = NetworkTableInstance.getDefault().getTable("AndromedaSwerveTable");
+    navxPublisher = andromedaSwerveTable.getDoubleTopic("SwerveHeading").getEntry(getSwerveAngle().getDegrees());
+    realSwerveStatesPublisher = andromedaSwerveTable.getDoubleArrayTopic("RealSwerveStates").getEntry(new double[] {});
+    desiredSwerveStatesPublisher = andromedaSwerveTable.getDoubleArrayTopic("DesiredSwerveStates")
+        .getEntry(new double[] {});
   }
 
   public static AndromedaSwerve getInstance(AndromedaModule[] modules, AndromedaProfileConfig profileConfig) {
@@ -68,7 +86,7 @@ public class AndromedaSwerve extends SubsystemBase {
     SwerveModuleState[] swerveModuleStates = SwerveConstants.swerveKinematics.toSwerveModuleStates(
         fieldRelative
             ? ChassisSpeeds.fromFieldRelativeSpeeds(translation.getX(), translation.getY(), rotation,
-                navx.getClampedYaw())
+                getSwerveAngle())
             : new ChassisSpeeds(translation.getX(), translation.getY(), rotation));
 
     setModuleStates(swerveModuleStates, isOpenLoop);
@@ -79,7 +97,7 @@ public class AndromedaSwerve extends SubsystemBase {
    * 
    * @return
    */
-  public Rotation2d getAngle() {
+  public Rotation2d getSwerveAngle() {
     return navx.getClampedYaw();
   }
 
@@ -90,9 +108,33 @@ public class AndromedaSwerve extends SubsystemBase {
    */
   public SwerveModuleState[] getStates() {
 
-    SwerveModuleState[] states = new SwerveModuleState[4];
+    SwerveModuleState[] states = new SwerveModuleState[modules.length];
     for (AndromedaModule andromedaModule : modules) {
       states[andromedaModule.getModuleNumber()] = andromedaModule.getState();
+    }
+
+    return states;
+  }
+
+  public double[] getDoubleStates() {
+    double[] states = new double[8];
+
+    for (int i = 0; i < 4; i++) {
+      double[] moduleStates = modules[i].getDoubleStates();
+      states[i * 2] = moduleStates[0];
+      states[i * 2 + 1] = moduleStates[1];
+    }
+
+    return states;
+  }
+
+  public double[] getDoubleDesiredStates() {
+    double[] states = new double[8];
+
+    for (int i = 0; i < 4; i++) {
+      double[] moduleStates = modules[i].getDoubleDesiredStates();
+      states[i * 2] = moduleStates[0];
+      states[i * 2 + 1] = moduleStates[1];
     }
 
     return states;
@@ -105,7 +147,7 @@ public class AndromedaSwerve extends SubsystemBase {
    */
   public SwerveModulePosition[] getPositions() {
 
-    SwerveModulePosition[] states = new SwerveModulePosition[4];
+    SwerveModulePosition[] states = new SwerveModulePosition[modules.length];
     for (AndromedaModule andromedaModule : modules) {
       states[andromedaModule.getModuleNumber()] = andromedaModule.getPosition();
     }
@@ -113,7 +155,7 @@ public class AndromedaSwerve extends SubsystemBase {
     return states;
   }
 
-  public void resetNavx(){
+  public void resetNavx() {
     navx.reset();
   }
 
@@ -165,5 +207,14 @@ public class AndromedaSwerve extends SubsystemBase {
       }
     }
     return temps;
+  }
+
+  /* Telemetry */
+
+  public void updateNT() {
+    navxPublisher.set(getSwerveAngle().getDegrees());
+
+    realSwerveStatesPublisher.set(getDoubleStates());
+    desiredSwerveStatesPublisher.set(getDoubleDesiredStates());
   }
 }

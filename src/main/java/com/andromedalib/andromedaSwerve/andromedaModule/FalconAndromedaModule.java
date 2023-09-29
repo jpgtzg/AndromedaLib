@@ -18,6 +18,9 @@ import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.networktables.DoubleEntry;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
@@ -32,7 +35,16 @@ public class FalconAndromedaModule implements AndromedaModule {
         private Rotation2d angleOffset;
         private Rotation2d lastAngle;
 
+        private SwerveModuleState moduleDesiredState;
+
         private AndromedaProfileConfig andromedaProfile;
+
+        private NetworkTable swerveModuleTable;
+        private DoubleEntry speedEntry;
+        private DoubleEntry angleEntry;
+        private DoubleEntry encoderAngle;
+        private DoubleEntry desiredSpeedEntry;
+        private DoubleEntry desiredAngleEntry;
 
         SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(SwerveConstants.driveKS,
                         SwerveConstants.driveKV,
@@ -45,7 +57,8 @@ public class FalconAndromedaModule implements AndromedaModule {
          * @param moduleName   This module's name
          * @param constants    IDs and offsets constants
          */
-        public FalconAndromedaModule(int moduleNumber, String moduleName, AndromedaModuleConstants constants, AndromedaProfileConfig config) {
+        public FalconAndromedaModule(int moduleNumber, String moduleName, AndromedaModuleConstants constants,
+                        AndromedaProfileConfig config) {
                 this.moduleNumber = moduleNumber;
                 this.moduleName = moduleName;
                 this.andromedaProfile = config;
@@ -73,6 +86,16 @@ public class FalconAndromedaModule implements AndromedaModule {
                 resetAbsolutePosition();
 
                 lastAngle = getAngle();
+
+                swerveModuleTable = NetworkTableInstance.getDefault()
+                                .getTable("AndromedaSwerveTable/SwerveModule/" + moduleNumber);
+                speedEntry = swerveModuleTable.getDoubleTopic("Speed").getEntry(getState().speedMetersPerSecond);
+                angleEntry = swerveModuleTable.getDoubleTopic("Angle").getEntry(getAngle().getDegrees());
+                encoderAngle = swerveModuleTable.getDoubleTopic("Encoder")
+                                .getEntry(steeringEncoder.getAbsolutePosition());
+                desiredSpeedEntry = swerveModuleTable.getDoubleTopic("DesiredSpeed").getEntry(getDesiredState().speedMetersPerSecond);
+                desiredSpeedEntry = swerveModuleTable.getDoubleTopic("DesiredAngle").getEntry(getDesiredState().angle.getDegrees());
+
         }
 
         @Override
@@ -88,6 +111,8 @@ public class FalconAndromedaModule implements AndromedaModule {
         @Override
         public void setDesiredState(SwerveModuleState desiredState, boolean isOpenLoop) {
                 desiredState = AndromedaState.optimize(desiredState, getState().angle);
+
+                moduleDesiredState = desiredState;
 
                 setAngle(desiredState);
                 setSpeed(desiredState, isOpenLoop);
@@ -161,6 +186,21 @@ public class FalconAndromedaModule implements AndromedaModule {
         }
 
         @Override
+        public SwerveModuleState getDesiredState() {
+                return moduleDesiredState;
+        }
+
+        @Override
+        public double[] getDoubleStates() {
+                return new double[] { getState().speedMetersPerSecond, getState().angle.getDegrees() };
+        }
+
+        @Override
+        public double[] getDoubleDesiredStates() {
+                return new double[] { getDesiredState().speedMetersPerSecond, getDesiredState().angle.getDegrees() };
+        }
+
+        @Override
         public SwerveModulePosition getPosition() {
                 return new SwerveModulePosition(
                                 driveMotor.getPosition(SwerveConstants.wheelCircumference,
@@ -173,5 +213,14 @@ public class FalconAndromedaModule implements AndromedaModule {
         @Override
         public double[] getTemp() {
                 return new double[] { steeringMotor.getTemperature(), driveMotor.getTemperature() };
+        }
+
+        @Override
+        public void updateNT() {
+                speedEntry.set(getState().speedMetersPerSecond);
+                angleEntry.set(getAngle().getDegrees());
+                encoderAngle.set(steeringEncoder.getAbsolutePosition());
+                desiredSpeedEntry.set(getDesiredState().speedMetersPerSecond);
+                desiredAngleEntry.set(getDesiredState().angle.getDegrees());
         }
 }

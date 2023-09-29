@@ -46,6 +46,27 @@ public interface AndromedaModule {
     public SwerveModuleState getState();
 
     /**
+     * Gets the current desired module state
+     * 
+     * @return Current desired {@link SwerveModuleState}
+     */
+    public SwerveModuleState getDesiredState();
+
+    /**
+     * Gets the current module state in a double array
+     * 
+     * @return Current {@link SwerveModuleState} in a double array
+     */
+    public double[] getDoubleStates();
+
+    /**
+     * Gets the current desired module state in a double array
+     * 
+     * @return Current desired {@link SwerveModuleState} in a double array
+     */
+    public double[] getDoubleDesiredStates();
+
+    /**
      * Gets the current module position
      * 
      * @return Current {@link SwerveModulePosition} position
@@ -58,5 +79,10 @@ public interface AndromedaModule {
      * @return
      */
     public double[] getTemp();
+
+    /**
+     * Updates all NT values
+     */
+    public void updateNT();
 
 }

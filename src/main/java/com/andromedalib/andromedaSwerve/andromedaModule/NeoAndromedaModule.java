@@ -17,6 +17,9 @@ import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.networktables.DoubleEntry;
+import edu.wpi.first.networktables.NetworkTable;
+import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 
 public class NeoAndromedaModule implements AndromedaModule {
@@ -34,7 +37,17 @@ public class NeoAndromedaModule implements AndromedaModule {
     private SparkMaxPIDController turningController;
 
     private PIDController steeringController;
+
+    private SwerveModuleState moduleDesiredState;
+
     private AndromedaProfileConfig andromedaProfile;
+
+    private NetworkTable swerveModuleTable;
+    private DoubleEntry speedEntry;
+    private DoubleEntry angleEntry;
+    private DoubleEntry encoderAngle;
+    private DoubleEntry desiredSpeedEntry;
+    private DoubleEntry desiredAngleEntry;
 
     /**
      * Creates a new NeoAndromedaModule that uses {@link SuperSparkMax} motors
@@ -43,7 +56,8 @@ public class NeoAndromedaModule implements AndromedaModule {
      * @param moduleName   This module's name
      * @param constants    IDs and offsets constants
      */
-    public NeoAndromedaModule(int moduleNumber, String moduleName, AndromedaModuleConstants constants, AndromedaProfileConfig config) {
+    public NeoAndromedaModule(int moduleNumber, String moduleName, AndromedaModuleConstants constants,
+            AndromedaProfileConfig config) {
         this.moduleNumber = moduleNumber;
         this.moduleName = moduleName;
         this.andromedaProfile = config;
@@ -55,20 +69,20 @@ public class NeoAndromedaModule implements AndromedaModule {
         }
 
         this.driveMotor = new SuperSparkMax(constants.driveMotorID, GlobalIdleMode.brake,
-        andromedaProfile.driveMotorInvert,
+                andromedaProfile.driveMotorInvert,
                 andromedaProfile.driveContinuousCurrentLimit);
         this.steeringMotor = new SuperSparkMax(constants.steeringMotorID, GlobalIdleMode.Coast,
-        andromedaProfile.steeringMotorInvert,
-        andromedaProfile.angleContinuousCurrentLimit);
+                andromedaProfile.steeringMotorInvert,
+                andromedaProfile.angleContinuousCurrentLimit);
         this.steeringEncoder = new SuperCANCoder(constants.absCanCoderID,
-        andromedaProfile.cancoderConfig);
+                andromedaProfile.cancoderConfig);
         this.angleOffset = constants.angleOffset;
 
         this.driveController = driveMotor.getPIDController();
         this.turningController = steeringMotor.getPIDController();
 
         steeringController = new PIDController(andromedaProfile.turningKp,
-        andromedaProfile.turningKi, andromedaProfile.turningKf);
+                andromedaProfile.turningKi, andromedaProfile.turningKf);
 
         steeringController.enableContinuousInput(-180, 180);
 
@@ -89,6 +103,18 @@ public class NeoAndromedaModule implements AndromedaModule {
 
         lastAngle = getAngle();
 
+        swerveModuleTable = NetworkTableInstance.getDefault()
+                .getTable("AndromedaSwerveTable/SwerveModule/" + moduleNumber);
+
+        speedEntry = swerveModuleTable.getDoubleTopic("Speed").getEntry(getState().speedMetersPerSecond);
+        angleEntry = swerveModuleTable.getDoubleTopic("Angle").getEntry(getAngle().getDegrees());
+        encoderAngle = swerveModuleTable.getDoubleTopic("Encoder")
+                .getEntry(steeringEncoder.getAbsolutePosition());
+        desiredSpeedEntry = swerveModuleTable.getDoubleTopic("DesiredSpeed")
+                .getEntry(getDesiredState().speedMetersPerSecond);
+        desiredSpeedEntry = swerveModuleTable.getDoubleTopic("DesiredAngle")
+                .getEntry(getDesiredState().angle.getDegrees());
+
     }
 
     @Override
@@ -104,6 +130,8 @@ public class NeoAndromedaModule implements AndromedaModule {
     @Override
     public void setDesiredState(SwerveModuleState desiredState, boolean isOpenLoop) {
         desiredState = SwerveModuleState.optimize(desiredState, getState().angle);
+
+        moduleDesiredState = desiredState;
 
         setAngle(desiredState);
         setSpeed(desiredState, isOpenLoop);
@@ -163,6 +191,21 @@ public class NeoAndromedaModule implements AndromedaModule {
     }
 
     @Override
+    public SwerveModuleState getDesiredState() {
+        return moduleDesiredState;
+    }
+
+    @Override
+    public double[] getDoubleStates() {
+        return new double[] { getState().speedMetersPerSecond, getState().angle.getDegrees() };
+    }
+
+    @Override
+    public double[] getDoubleDesiredStates() {
+        return new double[] { getDesiredState().speedMetersPerSecond, getDesiredState().angle.getDegrees() };
+    }
+
+    @Override
     public SwerveModulePosition getPosition() {
         return new SwerveModulePosition(
                 driveMotor.getPosition(),
@@ -213,5 +256,14 @@ public class NeoAndromedaModule implements AndromedaModule {
     @Override
     public double[] getTemp() {
         return new double[] { steeringMotor.getMotorTemperature(), driveMotor.getMotorTemperature() };
+    }
+
+    @Override
+    public void updateNT() {
+        speedEntry.set(getState().speedMetersPerSecond);
+        angleEntry.set(getAngle().getDegrees());
+        encoderAngle.set(steeringEncoder.getAbsolutePosition());
+        desiredSpeedEntry.set(getDesiredState().speedMetersPerSecond);
+        desiredAngleEntry.set(getDesiredState().angle.getDegrees());
     }
 }
