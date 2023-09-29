@@ -106,16 +106,15 @@ public class NeoAndromedaModule implements AndromedaModule {
         moduleDesiredState = new SwerveModuleState(0.0, new Rotation2d(0.0));
 
         swerveModuleTable = NetworkTableInstance.getDefault()
-                .getTable("AndromedaSwerveTable/SwerveModule/" + moduleNumber);
-
+                        .getTable("AndromedaSwerveTable/SwerveModule/" + moduleNumber);
         speedEntry = swerveModuleTable.getDoubleTopic("Speed").getEntry(getState().speedMetersPerSecond);
         angleEntry = swerveModuleTable.getDoubleTopic("Angle").getEntry(getAngle().getDegrees());
         encoderAngle = swerveModuleTable.getDoubleTopic("Encoder")
-                .getEntry(steeringEncoder.getAbsolutePosition());
+                        .getEntry(steeringEncoder.getAbsolutePosition());
         desiredSpeedEntry = swerveModuleTable.getDoubleTopic("DesiredSpeed")
-                .getEntry(getDesiredState().speedMetersPerSecond);
-        desiredSpeedEntry = swerveModuleTable.getDoubleTopic("DesiredAngle")
-                .getEntry(getDesiredState().angle.getDegrees());
+                        .getEntry(getDesiredState().speedMetersPerSecond);
+        desiredAngleEntry = swerveModuleTable.getDoubleTopic("DesiredAngle")
+                        .getEntry(getDesiredState().angle.getDegrees());
 
     }
 
@@ -262,10 +261,10 @@ public class NeoAndromedaModule implements AndromedaModule {
 
     @Override
     public void updateNT() {
-        speedEntry.set(getState().speedMetersPerSecond);
-        angleEntry.set(getAngle().getDegrees());
-        encoderAngle.set(steeringEncoder.getAbsolutePosition());
-        desiredSpeedEntry.set(getDesiredState().speedMetersPerSecond);
-        desiredAngleEntry.set(getDesiredState().angle.getDegrees());
+            speedEntry.set(getState().speedMetersPerSecond);
+            angleEntry.set(getAngle().getDegrees());
+            encoderAngle.set(steeringEncoder.getAbsolutePosition());
+            desiredSpeedEntry.set(getDesiredState().speedMetersPerSecond);
+            desiredAngleEntry.set(getDesiredState().angle.getDegrees());
     }
 }

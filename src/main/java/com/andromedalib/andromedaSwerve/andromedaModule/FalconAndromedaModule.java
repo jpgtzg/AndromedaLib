@@ -97,7 +97,7 @@ public class FalconAndromedaModule implements AndromedaModule {
                                 .getEntry(steeringEncoder.getAbsolutePosition());
                 desiredSpeedEntry = swerveModuleTable.getDoubleTopic("DesiredSpeed")
                                 .getEntry(getDesiredState().speedMetersPerSecond);
-                desiredSpeedEntry = swerveModuleTable.getDoubleTopic("DesiredAngle")
+                desiredAngleEntry = swerveModuleTable.getDoubleTopic("DesiredAngle")
                                 .getEntry(getDesiredState().angle.getDegrees());
 
         }
