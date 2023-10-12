@@ -218,8 +218,8 @@ public class AndromedaSwerve extends SubsystemBase {
     realSwerveStatesPublisher.set(getDoubleStates());
     desiredSwerveStatesPublisher.set(getDoubleDesiredStates());
 
-    for (AndromedaModule andromedaModule : modules) {
+/*     for (AndromedaModule andromedaModule : modules) {
       andromedaModule.updateNT();
-    }
+    } */
   }
 }
