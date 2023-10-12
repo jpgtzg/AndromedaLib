@@ -43,10 +43,6 @@ public class AndromedaSwerve extends SubsystemBase {
     AndromedaSwerve.andromedaProfile = profileConfig;
     this.modules = modules;
 
-    // TODO CHECK THIS WORKFLOW
-    Timer.delay(1.0);
-    resetAbsoluteModules();
-
     andromedaSwerveTable = NetworkTableInstance.getDefault().getTable("AndromedaSwerveTable");
     navxPublisher = andromedaSwerveTable.getDoubleTopic("SwerveHeading").getEntry(getSwerveAngle().getDegrees());
     realSwerveStatesPublisher = andromedaSwerveTable.getDoubleArrayTopic("RealSwerveStates").getEntry(new double[] {});
