@@ -166,7 +166,7 @@ public class FalconAndromedaModule implements AndromedaModule {
                                 steeringEncoder.getAbsolutePosition() - angleOffset.getDegrees(),
                                 andromedaProfile.steeringGearRatio);
                 try {
-                        Thread.sleep(700);
+                        Thread.sleep(900);
                 } catch (Exception e) {
 
                 }
