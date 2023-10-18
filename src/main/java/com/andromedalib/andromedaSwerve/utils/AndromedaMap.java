@@ -8,6 +8,10 @@ import edu.wpi.first.math.geometry.Rotation2d;
 
 /**
  * References the IDs of the motors & angle offsets
+ * 
+ * @see AndromedaModuleConstants
+ * 
+ * Useful only for Team 6647's robot
  */
 public class AndromedaMap {
 
