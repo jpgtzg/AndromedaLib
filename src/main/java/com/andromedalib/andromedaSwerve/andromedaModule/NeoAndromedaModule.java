@@ -96,10 +96,10 @@ public class NeoAndromedaModule implements AndromedaModule {
 
         resetAbsolutePosition();
 
-        driveMotor.setPositionConversionFactor(andromedaProfile.driveGearRatio / 42);
-        driveMotor.setVelocityConversionFactor(andromedaProfile.driveGearRatio  / 42 / 60);
-        steeringMotor.setPositionConversionFactor(andromedaProfile.steeringGearRatio / 42 );
-        steeringMotor.setVelocityConversionFactor(andromedaProfile.steeringGearRatio / 42 / 60);
+        driveMotor.setPositionConversionFactor(andromedaProfile.driveGearRatio *42);
+        driveMotor.setVelocityConversionFactor(andromedaProfile.driveGearRatio  * 42 / 60);
+        steeringMotor.setPositionConversionFactor(andromedaProfile.steeringGearRatio * 42 );
+        steeringMotor.setVelocityConversionFactor(andromedaProfile.steeringGearRatio * 42 / 60);
 
         lastAngle = getAngle();
 
