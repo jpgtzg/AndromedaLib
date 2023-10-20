@@ -295,8 +295,8 @@ public final class AndromedaProfileConfig {
                 double driveKf = 0.0;
 
                 boolean driveMotorInvert = false;
-                boolean angleMotorInvert = false;
-                boolean canCoderInvert = false;
+                boolean angleMotorInvert = true;
+                boolean canCoderInvert = true;
 
                 /* Current Limiting */
                 int driveContinuousCurrentLimit = 35;
