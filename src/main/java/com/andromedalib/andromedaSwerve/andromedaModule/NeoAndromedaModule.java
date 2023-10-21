@@ -32,11 +32,12 @@ public class NeoAndromedaModule implements AndromedaModule {
 
     private Rotation2d angleOffset;
     private Rotation2d lastAngle;
-
+/* 
     private SparkMaxPIDController driveController;
-    private SparkMaxPIDController turningController;
+    private SparkMaxPIDController turningController; */
 
     private PIDController steeringController;
+    private PIDController driveController;
 
     private SwerveModuleState moduleDesiredState;
 
@@ -78,17 +79,17 @@ public class NeoAndromedaModule implements AndromedaModule {
                 andromedaProfile.cancoderConfig);
         this.angleOffset = constants.angleOffset;
 
-        this.driveController = driveMotor.getPIDController();
-        this.turningController = steeringMotor.getPIDController();
+  /*       this.driveController = driveMotor.getPIDController();
+        this.turningController = steeringMotor.getPIDController(); */
 
         steeringController = new PIDController(andromedaProfile.turningKp,
                 andromedaProfile.turningKi, andromedaProfile.turningKf);
 
         steeringController.enableContinuousInput(-180, 180);
 
-        turningController.setP(andromedaProfile.turningKp);
-        turningController.setI(andromedaProfile.turningKi);
-        turningController.setD(andromedaProfile.turningKi);
+        steeringController.setP(andromedaProfile.turningKp);
+        steeringController.setI(andromedaProfile.turningKi);
+        steeringController.setD(andromedaProfile.turningKi);
 
         driveController.setP(andromedaProfile.driveKp);
         driveController.setI(andromedaProfile.driveKi);
@@ -148,7 +149,9 @@ public class NeoAndromedaModule implements AndromedaModule {
                 ? lastAngle
                 : desiredState.angle;
 
-        setSparkAngle(angle.getDegrees());
+        steeringMotor.setVoltage(steeringController.calculate(getAngle().getDegrees(), angle.getDegrees()));
+
+        //setSparkAngle(angle.getDegrees());
 
         lastAngle = angle;
     }
@@ -165,8 +168,9 @@ public class NeoAndromedaModule implements AndromedaModule {
 
             driveMotor.set(percentOutput);
         } else {
+/*             driveMotor.setVoltage(driveController.calculate(, moduleNumber));
             driveController.setReference(desiredState.speedMetersPerSecond, ControlType.kVelocity);
-        }
+ */        }
     }
 
     @Override
@@ -220,7 +224,7 @@ public class NeoAndromedaModule implements AndromedaModule {
      * @param targetAngleInDegrees target angle from WPI's swerve kinematics
      *                             optimize method
      */
-    private void setSparkAngle(double targetAngleInDegrees) {
+    /* private void setSparkAngle(double targetAngleInDegrees) {
 
         double currentSparkAngle = getAngle().getDegrees();
 
@@ -228,7 +232,7 @@ public class NeoAndromedaModule implements AndromedaModule {
 
         turningController.setReference(sparkRelativeTargetAngle,
                 ControlType.kPosition);
-    }
+    } */
 
     /**
      * Calculates the correct angle and optimizes
