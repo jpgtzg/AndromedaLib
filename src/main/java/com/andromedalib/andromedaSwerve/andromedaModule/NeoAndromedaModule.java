@@ -79,7 +79,7 @@ public class NeoAndromedaModule implements AndromedaModule {
                 andromedaProfile.cancoderConfig);
         this.angleOffset = constants.angleOffset;
 
-  /*       this.driveController = driveMotor.getPIDController();
+  /*    this.driveController = driveMotor.getPIDController();
         this.turningController = steeringMotor.getPIDController(); */
 
         steeringController = new PIDController(andromedaProfile.turningKp,
@@ -87,13 +87,7 @@ public class NeoAndromedaModule implements AndromedaModule {
 
         steeringController.enableContinuousInput(-180, 180);
 
-        steeringController.setP(andromedaProfile.turningKp);
-        steeringController.setI(andromedaProfile.turningKi);
-        steeringController.setD(andromedaProfile.turningKi);
-
-        driveController.setP(andromedaProfile.driveKp);
-        driveController.setI(andromedaProfile.driveKi);
-        driveController.setD(andromedaProfile.driveKd);
+        driveController = new PIDController(andromedaProfile.driveKp, andromedaProfile.driveKi, andromedaProfile.driveKd);
 
         resetAbsolutePosition();
 
