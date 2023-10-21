@@ -89,7 +89,6 @@ public class NeoAndromedaModule implements AndromedaModule {
 
         driveController = new PIDController(andromedaProfile.driveKp, andromedaProfile.driveKi, andromedaProfile.driveKd);
 
-        resetAbsolutePosition();
 
         driveMotor.setPositionConversionFactor(360 / andromedaProfile.driveGearRatio);
         driveMotor.setVelocityConversionFactor(360 / andromedaProfile.driveGearRatio / 60);
