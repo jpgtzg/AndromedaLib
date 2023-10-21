@@ -97,10 +97,10 @@ public class NeoAndromedaModule implements AndromedaModule {
 
         resetAbsolutePosition();
 
-        driveMotor.setPositionConversionFactor(andromedaProfile.driveGearRatio);
-        driveMotor.setVelocityConversionFactor(andromedaProfile.driveGearRatio / 60);
-        steeringMotor.setPositionConversionFactor(andromedaProfile.steeringGearRatio );
-        steeringMotor.setVelocityConversionFactor(andromedaProfile.steeringGearRatio / 60);
+        driveMotor.setPositionConversionFactor(360 / andromedaProfile.driveGearRatio);
+        driveMotor.setVelocityConversionFactor(360 / andromedaProfile.driveGearRatio / 60);
+        steeringMotor.setPositionConversionFactor(360 / andromedaProfile.steeringGearRatio );
+        steeringMotor.setVelocityConversionFactor(360 / andromedaProfile.steeringGearRatio / 60);
 
         lastAngle = getAngle();
 
@@ -177,6 +177,7 @@ public class NeoAndromedaModule implements AndromedaModule {
     public void resetAbsolutePosition() {
         steeringMotor.setPosition(0);
         double encoderPosition = steeringEncoder.getAbsolutePosition() - angleOffset.getDegrees();
+        encoderPosition /= (360.0 / (andromedaProfile.steeringGearRatio));
         steeringMotor.setPosition(encoderPosition);
     }
 
@@ -241,7 +242,7 @@ public class NeoAndromedaModule implements AndromedaModule {
      * @param anchor Current angle
      * @return Appropiate relativeAngle
      */
-    private double reboundValue(double value, double anchor) {
+    /* private double reboundValue(double value, double anchor) {
         double lowerBound = anchor - 180;
         double upperBound = anchor + 180;
 
@@ -255,7 +256,7 @@ public class NeoAndromedaModule implements AndromedaModule {
 
         return value;
     }
-
+ */
     /* Telemetry */
 
     @Override
