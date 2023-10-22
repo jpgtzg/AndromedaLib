@@ -83,6 +83,8 @@ public class FalconAndromedaModule implements AndromedaModule {
 
                 this.angleOffset = constants.angleOffset;
 
+                steeringEncoder.setPositionToAbsolute();
+                
                 resetAbsolutePosition();
 
                 lastAngle = getAngle();
