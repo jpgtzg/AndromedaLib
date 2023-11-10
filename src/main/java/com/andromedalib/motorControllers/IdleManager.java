@@ -4,7 +4,7 @@
 
 package com.andromedalib.motorControllers;
 
-import com.ctre.phoenix.motorcontrol.NeutralMode;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 import com.revrobotics.CANSparkMax.IdleMode;
 
 /**
@@ -24,8 +24,8 @@ public class IdleManager {
      * 
      * @return The corresponding NeutralMode
      */
-    static NeutralMode idleToNeutral(GlobalIdleMode idleMode) {
-        return NeutralMode.values()[idleMode.ordinal() + 1];
+    static NeutralModeValue idleToNeutral(GlobalIdleMode idleMode) {
+        return NeutralModeValue.values()[idleMode.ordinal() + 1];
     }
 
     /**
