@@ -4,12 +4,12 @@
 
 package com.andromedalib.sensors;
 
-import com.ctre.phoenix.sensors.CANCoder;
-import com.ctre.phoenix.sensors.CANCoderConfiguration;
+import com.ctre.phoenix6.configs.CANcoderConfiguration;
+import com.ctre.phoenix6.hardware.CANcoder;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 
-public class SuperCANCoder extends CANCoder {
+public class SuperCANCoder extends CANcoder {
 
     /**
      * SuperCANCoder constructor
@@ -17,11 +17,11 @@ public class SuperCANCoder extends CANCoder {
      * @param deviceID      CANCoder DeviceID
      * @param configuration Configuration
      */
-    public SuperCANCoder(int deviceID, CANCoderConfiguration configuration) {
+    public SuperCANCoder(int deviceID, CANcoderConfiguration configuration) {
         super(deviceID);
 
-        this.configFactoryDefault();
-        this.configAllSettings(configuration);
+        getConfigurator().apply(new CANcoderConfiguration());
+        getConfigurator().apply(configuration);
     }
 
     /**
@@ -31,11 +31,11 @@ public class SuperCANCoder extends CANCoder {
      * @param configuration Configuration
      * @param canbus        Device canbus
      */
-    public SuperCANCoder(int deviceID, CANCoderConfiguration configuration, String canbus) {
+    public SuperCANCoder(int deviceID, CANcoderConfiguration configuration, String canbus) {
         super(deviceID, canbus);
 
-        this.configFactoryDefault();
-        this.configAllSettings(configuration);
+        getConfigurator().apply(new CANcoderConfiguration());
+        getConfigurator().apply(configuration);
     }
 
     /**
@@ -53,6 +53,6 @@ public class SuperCANCoder extends CANCoder {
      * @return Absolute positions
      */
     public Rotation2d getRotation() {
-        return Rotation2d.fromDegrees(getAbsolutePosition());
+        return Rotation2d.fromDegrees(getAbsolutePosition().getValue());
     }
 }

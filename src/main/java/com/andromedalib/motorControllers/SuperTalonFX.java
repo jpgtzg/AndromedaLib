@@ -6,9 +6,12 @@ package com.andromedalib.motorControllers;
 
 import com.andromedalib.math.Conversions;
 import com.andromedalib.motorControllers.IdleManager.GlobalIdleMode;
-import com.ctre.phoenix.motorcontrol.can.TalonFX;
-import com.ctre.phoenix.motorcontrol.can.TalonFXConfiguration;
+import com.ctre.phoenix6.configs.MotorOutputConfigs;
+import com.ctre.phoenix6.configs.TalonFXConfiguration;
+import com.ctre.phoenix6.hardware.TalonFX;
+import com.ctre.phoenix6.signals.NeutralModeValue;
 
+import edu.wpi.first.wpilibj.motorcontrol.Talon;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 
 /**
@@ -30,10 +33,10 @@ public class SuperTalonFX extends TalonFX implements HyperMotorController {
     public SuperTalonFX(int motorID, GlobalIdleMode idleMode, Boolean isInverted,
             TalonFXConfiguration configuration) {
         super(motorID);
-        configFactoryDefault();
+        getConfigurator().apply(new TalonFXConfiguration());
         setMode(idleMode);
         setInverted(isInverted);
-        configAllSettings(configuration);
+        getConfigurator().apply(configuration);
     }
 
     /**
@@ -48,10 +51,11 @@ public class SuperTalonFX extends TalonFX implements HyperMotorController {
     public SuperTalonFX(int motorID, GlobalIdleMode idleMode, Boolean isInverted,
             TalonFXConfiguration configuration, String canbus) {
         super(motorID, canbus);
-        configFactoryDefault();
+        getConfigurator().apply(new TalonFXConfiguration());
         setMode(idleMode);
         setInverted(isInverted);
-        configAllSettings(configuration);
+        getConfigurator().apply(configuration);
+
     }
 
     /**
@@ -63,7 +67,7 @@ public class SuperTalonFX extends TalonFX implements HyperMotorController {
      */
     public SuperTalonFX(int motorID, GlobalIdleMode idleMode, Boolean isInverted) {
         super(motorID);
-        configFactoryDefault();
+        getConfigurator().apply(new TalonFXConfiguration());
         setMode(idleMode);
         setInverted(isInverted);
     }
@@ -78,7 +82,7 @@ public class SuperTalonFX extends TalonFX implements HyperMotorController {
      */
     public SuperTalonFX(int motorID, GlobalIdleMode idleMode, Boolean isInverted, String canbus) {
         super(motorID, canbus);
-        configFactoryDefault();
+        getConfigurator().apply(new TalonFXConfiguration());
         setMode(idleMode);
         setInverted(isInverted);
     }
@@ -92,10 +96,11 @@ public class SuperTalonFX extends TalonFX implements HyperMotorController {
      */
     public SuperTalonFX(int motorID, boolean isInverted, TalonFXConfiguration configuration) {
         super(motorID);
-        configFactoryDefault();
+        getConfigurator().apply(new TalonFXConfiguration());
         setMode(GlobalIdleMode.Coast);
         setInverted(isInverted);
-        configAllSettings(configuration);
+        getConfigurator().apply(configuration);
+
     }
 
     /**
@@ -109,10 +114,11 @@ public class SuperTalonFX extends TalonFX implements HyperMotorController {
      */
     public SuperTalonFX(int motorID, boolean isInverted, TalonFXConfiguration configuration, String canbus) {
         super(motorID, canbus);
-        configFactoryDefault();
+        getConfigurator().apply(new TalonFXConfiguration());
         setMode(GlobalIdleMode.Coast);
         setInverted(isInverted);
-        configAllSettings(configuration);
+        getConfigurator().apply(configuration);
+
     }
 
     /**
@@ -124,13 +130,15 @@ public class SuperTalonFX extends TalonFX implements HyperMotorController {
      */
     public SuperTalonFX(int motorID, TalonFXConfiguration configuration) {
         super(motorID);
-        configFactoryDefault();
+        getConfigurator().apply(new TalonFXConfiguration());
         setMode(GlobalIdleMode.Coast);
-        configAllSettings(configuration);
+        getConfigurator().apply(configuration);
+
     }
 
     /**
-     * Configures a SuperTalonFX with the {@link NeutralMode} as Coast to a defined canbus
+     * Configures a SuperTalonFX with the {@link NeutralMode} as Coast to a defined
+     * canbus
      * 
      * @param motorID
      * @param isInverted
@@ -138,15 +146,16 @@ public class SuperTalonFX extends TalonFX implements HyperMotorController {
      */
     public SuperTalonFX(int motorID, TalonFXConfiguration configuration, String canbus) {
         super(motorID, canbus);
-        configFactoryDefault();
+        getConfigurator().apply(new TalonFXConfiguration());
         setMode(GlobalIdleMode.Coast);
-        configAllSettings(configuration);
+        getConfigurator().apply(configuration);
+
     }
 
     @Override
     public void outputTelemetry(String tabName) {
-        Shuffleboard.getTab(tabName).add("TalonFX Motor " + getBaseID() + "Voltage:", getBusVoltage());
-        Shuffleboard.getTab(tabName).add("TalonFX Motor " + getBaseID() + "Temperature", getTemperature());
+        Shuffleboard.getTab(tabName).add("TalonFX Motor " + getDeviceID() + "Voltage:", getSupplyVoltage());
+        Shuffleboard.getTab(tabName).add("TalonFX Motor " + getDeviceID() + "Temperature", getDeviceTemp());
     }
 
     /**
@@ -156,7 +165,9 @@ public class SuperTalonFX extends TalonFX implements HyperMotorController {
      */
     @Override
     public void setMode(GlobalIdleMode idleMode) {
-        setNeutralMode(IdleManager.idleToNeutral(idleMode));
+        MotorOutputConfigs configs = new MotorOutputConfigs();
+        configs.NeutralMode = IdleManager.idleToNeutral(idleMode);
+        getConfigurator().apply(configs);
     }
 
     /**
@@ -189,7 +200,7 @@ public class SuperTalonFX extends TalonFX implements HyperMotorController {
      * @return the position of the motor in meters
      */
     public double getPosition(double circumference, double gearRatio) {
-        return Conversions.falconToMeters(getSelectedSensorPosition(), circumference, gearRatio);
+        return Conversions.falconToMeters(getPosition().getValue(), circumference, gearRatio);
     }
 
     /**
@@ -200,7 +211,7 @@ public class SuperTalonFX extends TalonFX implements HyperMotorController {
      * @return the angle of the motor in degrees
      */
     public double getAngle(double gearRatio) {
-        return Conversions.falconToDegrees(getSelectedSensorPosition(), gearRatio);
+        return Conversions.falconToDegrees(getPosition().getValue(), gearRatio);
     }
 
     /**
@@ -212,7 +223,7 @@ public class SuperTalonFX extends TalonFX implements HyperMotorController {
      * @return the velocity of the motor in meters per second
      */
     public double getVelocity(double circumference, double gearRatio) {
-        return Conversions.falconToMPS(getSelectedSensorVelocity(), circumference, gearRatio);
+        return Conversions.falconToMPS(getPosition().getValue(), circumference, gearRatio);
     }
 
     /**
@@ -220,7 +231,7 @@ public class SuperTalonFX extends TalonFX implements HyperMotorController {
      */
     @Override
     public void resetEncoder() {
-        setSelectedSensorPosition(0);
+        setRotorPosition(0);
     }
 
 }
