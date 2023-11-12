@@ -12,9 +12,9 @@ import com.andromedalib.andromedaSwerve.utils.SwerveConstants;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Translation2d;
-import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.Command;
 
-public class SwerveDriveCommand extends CommandBase {
+public class SwerveDriveCommand extends Command {
 
   AndromedaSwerve swerve;
   DoubleSupplier translationY, translationX, rotation;

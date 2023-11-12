@@ -20,7 +20,6 @@ public class SuperNavx extends AHRS {
      */
     private SuperNavx() {
         super();
-        calibrate();
         zeroHeading();
     }
 
@@ -35,7 +34,6 @@ public class SuperNavx extends AHRS {
      * Resets the heading of the Navx
      */
     public void zeroHeading() {
-        calibrate();
         reset();
     }
 

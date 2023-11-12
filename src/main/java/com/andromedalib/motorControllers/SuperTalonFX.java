@@ -9,9 +9,7 @@ import com.andromedalib.motorControllers.IdleManager.GlobalIdleMode;
 import com.ctre.phoenix6.configs.MotorOutputConfigs;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
 import com.ctre.phoenix6.hardware.TalonFX;
-import com.ctre.phoenix6.signals.NeutralModeValue;
 
-import edu.wpi.first.wpilibj.motorcontrol.Talon;
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 
 /**
@@ -231,7 +229,7 @@ public class SuperTalonFX extends TalonFX implements HyperMotorController {
      */
     @Override
     public void resetEncoder() {
-        setRotorPosition(0);
+        setPosition(0);
     }
 
 }

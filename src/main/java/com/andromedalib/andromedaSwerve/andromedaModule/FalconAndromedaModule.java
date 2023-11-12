@@ -7,8 +7,8 @@ import com.andromedalib.math.Conversions;
 import com.andromedalib.motorControllers.SuperTalonFX;
 import com.andromedalib.motorControllers.IdleManager.GlobalIdleMode;
 import com.andromedalib.sensors.SuperCANCoder;
-import com.ctre.phoenix.motorcontrol.ControlMode;
-import com.ctre.phoenix.motorcontrol.DemandType;
+import com.ctre.phoenix6.controls.PositionVoltage;
+import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.andromedalib.andromedaSwerve.utils.AndromedaModuleConstants;
 import com.andromedalib.andromedaSwerve.utils.AndromedaProfileConfig;
 import com.andromedalib.andromedaSwerve.utils.AndromedaState;
@@ -22,7 +22,6 @@ import edu.wpi.first.networktables.DoubleEntry;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
-import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class FalconAndromedaModule implements AndromedaModule {
         private int moduleNumber;
@@ -32,8 +31,10 @@ public class FalconAndromedaModule implements AndromedaModule {
         private SuperTalonFX steeringMotor;
         private SuperCANCoder steeringEncoder;
 
-        private Rotation2d angleOffset;
         private Rotation2d lastAngle;
+
+        private PositionVoltage angleSetter = new PositionVoltage(0).withSlot(0);
+        private VelocityVoltage driveSetter = new VelocityVoltage(0).withSlot(0);
 
         private SwerveModuleState moduleDesiredState;
 
@@ -46,9 +47,7 @@ public class FalconAndromedaModule implements AndromedaModule {
         private DoubleEntry desiredSpeedEntry;
         private DoubleEntry desiredAngleEntry;
 
-        SimpleMotorFeedforward feedforward = new SimpleMotorFeedforward(SwerveConstants.driveKS,
-                        SwerveConstants.driveKV,
-                        SwerveConstants.driveKA);
+        private SimpleMotorFeedforward feedforward;
 
         /**
          * Creates a new FalconAndromedaModule, that uses {@link SuperTalonFX} Motors
@@ -77,14 +76,17 @@ public class FalconAndromedaModule implements AndromedaModule {
                                 andromedaProfile.steeringMotorInvert,
                                 andromedaProfile.turningMotorConfiguration,
                                 andromedaProfile.CANbus);
+
+                andromedaProfile.cancoderConfig.MagnetSensor.MagnetOffset = constants.angleOffset.getDegrees();
+
                 this.steeringEncoder = new SuperCANCoder(constants.absCanCoderID,
                                 andromedaProfile.cancoderConfig,
                                 andromedaProfile.CANbus);
 
-                this.angleOffset = constants.angleOffset;
+                feedforward = new SimpleMotorFeedforward(andromedaProfile.driveMotorConfiguration.Slot0.kS,
+                                andromedaProfile.driveMotorConfiguration.Slot0.kA,
+                                andromedaProfile.driveMotorConfiguration.Slot0.kV);
 
-                steeringEncoder.setPositionToAbsolute();
-                
                 resetAbsolutePosition();
 
                 lastAngle = getAngle();
@@ -96,7 +98,7 @@ public class FalconAndromedaModule implements AndromedaModule {
                 speedEntry = swerveModuleTable.getDoubleTopic("Speed").getEntry(getState().speedMetersPerSecond);
                 angleEntry = swerveModuleTable.getDoubleTopic("Angle").getEntry(getAngle().getDegrees());
                 encoderAngle = swerveModuleTable.getDoubleTopic("Encoder")
-                                .getEntry(steeringEncoder.getAbsolutePosition());
+                                .getEntry(steeringEncoder.getAbsolutePosition().getValue());
                 desiredSpeedEntry = swerveModuleTable.getDoubleTopic("DesiredSpeed")
                                 .getEntry(getDesiredState().speedMetersPerSecond);
                 desiredAngleEntry = swerveModuleTable.getDoubleTopic("DesiredAngle")
@@ -133,11 +135,9 @@ public class FalconAndromedaModule implements AndromedaModule {
                 Rotation2d angle = (Math.abs(desiredState.speedMetersPerSecond) <= (SwerveConstants.maxSpeed * 0.01))
                                 ? lastAngle
                                 : desiredState.angle;
+                steeringMotor.setControl(angleSetter.withPosition(Conversions.degreesToFalcon(angle.getDegrees(),
+                                andromedaProfile.steeringGearRatio)));
 
-                SmartDashboard.putNumber(getModuleName(), angle.getDegrees());
-                steeringMotor.set(ControlMode.Position,
-                                Conversions.degreesToFalcon(angle.getDegrees(),
-                                                andromedaProfile.steeringGearRatio));
                 lastAngle = angle;
         }
 
@@ -151,28 +151,28 @@ public class FalconAndromedaModule implements AndromedaModule {
                 if (isOpenLoop) {
                         double percentOutput = desiredState.speedMetersPerSecond / SwerveConstants.maxSpeed;
 
-                        driveMotor.set(ControlMode.PercentOutput, percentOutput);
+                        driveMotor.setControl(driveSetter.withVelocity(percentOutput));
                 } else {
                         double velocity = Conversions.MPSToFalcon(desiredState.speedMetersPerSecond,
                                         andromedaProfile.wheelCircumference,
                                         andromedaProfile.driveGearRatio);
-                        steeringMotor.set(ControlMode.Velocity, velocity, DemandType.ArbitraryFeedForward,
-                                        feedforward.calculate(desiredState.speedMetersPerSecond));
+                        driveMotor.setControl(driveSetter.withFeedForward(
+                                        feedforward.calculate(velocity)));
                 }
         }
 
         @Override
         public void resetAbsolutePosition() {
-                steeringMotor.setSelectedSensorPosition(0);
+                steeringMotor.setPosition(0);
                 double encoderPosition = Conversions.degreesToFalcon(
-                                steeringEncoder.getAbsolutePosition() - angleOffset.getDegrees(),
+                                steeringEncoder.getAbsolutePosition().getValue(),
                                 andromedaProfile.steeringGearRatio);
                 try {
                         Thread.sleep(1000);
                 } catch (Exception e) {
 
                 }
-                steeringMotor.setSelectedSensorPosition(encoderPosition); // Encoder positions
+                steeringMotor.setPosition(encoderPosition); // Encoder positions
         }
 
         /**
@@ -218,14 +218,14 @@ public class FalconAndromedaModule implements AndromedaModule {
 
         @Override
         public double[] getTemp() {
-                return new double[] { steeringMotor.getTemperature(), driveMotor.getTemperature() };
+                return new double[] { steeringMotor.getDeviceTemp().getValue(), driveMotor.getDeviceTemp().getValue() };
         }
 
         @Override
         public void updateNT() {
                 speedEntry.set(getState().speedMetersPerSecond);
                 angleEntry.set(getAngle().getDegrees());
-                encoderAngle.set(steeringEncoder.getAbsolutePosition());
+                encoderAngle.set(steeringEncoder.getAbsolutePosition().getValue());
                 desiredSpeedEntry.set(getDesiredState().speedMetersPerSecond);
                 desiredAngleEntry.set(getDesiredState().angle.getDegrees());
         }
