@@ -14,7 +14,8 @@ import com.revrobotics.CANSparkMax.IdleMode;
 public class IdleManager {
 
     public enum GlobalIdleMode {
-        Coast, brake
+        Coast,
+        brake
     }
 
     /**
@@ -25,7 +26,7 @@ public class IdleManager {
      * @return The corresponding NeutralMode
      */
     static NeutralModeValue idleToNeutral(GlobalIdleMode idleMode) {
-        return NeutralModeValue.values()[idleMode.ordinal() + 1];
+        return NeutralModeValue.valueOf(idleMode.ordinal());
     }
 
     /**
