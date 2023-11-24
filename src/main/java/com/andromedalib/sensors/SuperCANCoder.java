@@ -44,7 +44,16 @@ public class SuperCANCoder extends CANcoder {
      * @return Absolute position in degrees
      */
     public double getDegrees() {
-        return getRotation().getDegrees();
+        return getRotation().getDegrees() * 360;
+    }
+
+    /**
+     * Gets the absolute position in degrees
+     * 
+     * @return Absolute position in degrees
+     */
+    public double getAbsolutePositionDegrees(){
+        return getAbsolutePosition().getValueAsDouble() * 360;
     }
 
     /**
