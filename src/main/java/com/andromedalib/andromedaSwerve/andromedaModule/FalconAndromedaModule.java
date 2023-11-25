@@ -98,7 +98,7 @@ public class FalconAndromedaModule implements AndromedaModule {
                 speedEntry = swerveModuleTable.getDoubleTopic("Speed").getEntry(getState().speedMetersPerSecond);
                 angleEntry = swerveModuleTable.getDoubleTopic("Angle").getEntry(getAngle().getDegrees());
                 encoderAngle = swerveModuleTable.getDoubleTopic("Encoder")
-                                .getEntry(steeringEncoder.getAbsolutePosition().getValue());
+                                .getEntry(steeringEncoder.getAbsolutePositionDegrees());
                 desiredSpeedEntry = swerveModuleTable.getDoubleTopic("DesiredSpeed")
                                 .getEntry(getDesiredState().speedMetersPerSecond);
                 desiredAngleEntry = swerveModuleTable.getDoubleTopic("DesiredAngle")
@@ -135,8 +135,8 @@ public class FalconAndromedaModule implements AndromedaModule {
                 Rotation2d angle = (Math.abs(desiredState.speedMetersPerSecond) <= (SwerveConstants.maxSpeed * 0.01))
                                 ? lastAngle
                                 : desiredState.angle;
-                steeringMotor.setControl(angleSetter.withPosition(Conversions.degreesToFalcon(angle.getDegrees(),
-                                andromedaProfile.steeringGearRatio)));
+                steeringMotor.setControl(angleSetter.withPosition(
+                                Conversions.degreesToFalcon(angle.getDegrees(), andromedaProfile.steeringGearRatio)));
 
                 lastAngle = angle;
         }
@@ -155,7 +155,7 @@ public class FalconAndromedaModule implements AndromedaModule {
                 } else {
                         double velocity = Conversions.MPSToFalcon(desiredState.speedMetersPerSecond,
                                         andromedaProfile.wheelCircumference,
-                                        andromedaProfile.driveGearRatio);
+                                        1);
                         driveMotor.setControl(driveSetter.withFeedForward(
                                         feedforward.calculate(velocity)));
                 }
@@ -163,16 +163,11 @@ public class FalconAndromedaModule implements AndromedaModule {
 
         @Override
         public void resetAbsolutePosition() {
-                steeringMotor.setPosition(0);
                 double encoderPosition = Conversions.degreesToFalcon(
-                                steeringEncoder.getAbsolutePosition().getValue(),
+                                steeringEncoder.getAbsolutePositionDegrees(),
                                 andromedaProfile.steeringGearRatio);
-                try {
-                        Thread.sleep(1000);
-                } catch (Exception e) {
 
-                }
-                steeringMotor.setPosition(encoderPosition); // Encoder positions
+                steeringMotor.setPosition(encoderPosition);
         }
 
         /**
@@ -182,13 +177,12 @@ public class FalconAndromedaModule implements AndromedaModule {
          */
         private Rotation2d getAngle() {
                 return Rotation2d.fromDegrees(
-                                steeringMotor.getAngle(andromedaProfile.steeringGearRatio));
+                                steeringMotor.getPosition().refresh().getValueAsDouble());
         }
 
         @Override
         public SwerveModuleState getState() {
-                return new SwerveModuleState(driveMotor.getVelocity(SwerveConstants.wheelCircumference,
-                                andromedaProfile.driveGearRatio), getAngle());
+                return new SwerveModuleState(driveMotor.getVelocity().refresh().getValueAsDouble(), getAngle());
         }
 
         @Override
@@ -225,7 +219,7 @@ public class FalconAndromedaModule implements AndromedaModule {
         public void updateNT() {
                 speedEntry.set(getState().speedMetersPerSecond);
                 angleEntry.set(getAngle().getDegrees());
-                encoderAngle.set(steeringEncoder.getAbsolutePosition().getValue());
+                encoderAngle.set(steeringEncoder.getAbsolutePositionDegrees());
                 desiredSpeedEntry.set(getDesiredState().speedMetersPerSecond);
                 desiredAngleEntry.set(getDesiredState().angle.getDegrees());
         }
