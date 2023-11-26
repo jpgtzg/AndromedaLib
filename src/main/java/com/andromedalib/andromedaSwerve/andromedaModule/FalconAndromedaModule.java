@@ -177,12 +177,12 @@ public class FalconAndromedaModule implements AndromedaModule {
          */
         private Rotation2d getAngle() {
                 return Rotation2d.fromDegrees(
-                                steeringMotor.getPosition().refresh().getValueAsDouble());
+                                steeringMotor.getPosition().getValueAsDouble());
         }
 
         @Override
         public SwerveModuleState getState() {
-                return new SwerveModuleState(driveMotor.getVelocity().refresh().getValueAsDouble(), getAngle());
+                return new SwerveModuleState(driveMotor.getVelocity().getValueAsDouble(), getAngle());
         }
 
         @Override
