@@ -136,7 +136,7 @@ public class FalconAndromedaModule implements AndromedaModule {
                                 ? lastAngle
                                 : desiredState.angle;
                 steeringMotor.setControl(angleSetter.withPosition(
-                                Conversions.degreesToFalcon(angle.getDegrees(), andromedaProfile.steeringGearRatio)));
+                                Conversions.degreesToFalcon(angle.getDegrees(),1)));
 
                 lastAngle = angle;
         }
@@ -165,7 +165,7 @@ public class FalconAndromedaModule implements AndromedaModule {
         public void resetAbsolutePosition() {
                 double encoderPosition = Conversions.degreesToFalcon(
                                 steeringEncoder.getAbsolutePositionDegrees(),
-                                andromedaProfile.steeringGearRatio);
+                                1);
  
                 steeringMotor.setPosition(encoderPosition);
         }
