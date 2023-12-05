@@ -53,7 +53,6 @@ public class SuperTalonFX extends TalonFX implements HyperMotorController {
         setMode(idleMode);
         setInverted(isInverted);
         getConfigurator().apply(configuration);
-
     }
 
     /**
