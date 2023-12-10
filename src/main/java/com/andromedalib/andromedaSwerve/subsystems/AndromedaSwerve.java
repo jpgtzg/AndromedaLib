@@ -1,16 +1,15 @@
 /**
  * Written by Juan Pablo Gutiérrez
  */
-package com.andromedalib.andromedaSwerve.systems;
+package com.andromedalib.andromedaSwerve.subsystems;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import com.andromedalib.sensors.SuperNavx;
 import com.andromedalib.andromedaSwerve.andromedaModule.AndromedaModule;
-import com.andromedalib.andromedaSwerve.utils.AndromedaProfileConfig;
-import com.andromedalib.andromedaSwerve.utils.SwerveConstants;
+import com.andromedalib.andromedaSwerve.config.AndromedaSwerveConfig;
+import com.andromedalib.sensors.SuperNavx;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -22,7 +21,6 @@ import edu.wpi.first.networktables.DoubleArrayEntry;
 import edu.wpi.first.networktables.DoubleEntry;
 import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
-
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 
 public class AndromedaSwerve extends SubsystemBase {
@@ -34,12 +32,12 @@ public class AndromedaSwerve extends SubsystemBase {
   private static DoubleArrayEntry desiredSwerveStatesPublisher;
 
   private AndromedaModule[] modules;
-  public static AndromedaProfileConfig andromedaProfile;
+  public AndromedaSwerveConfig andromedaProfile;
 
   private static SuperNavx navx = SuperNavx.getInstance();
 
-  private AndromedaSwerve(AndromedaModule[] modules, AndromedaProfileConfig profileConfig) {
-    AndromedaSwerve.andromedaProfile = profileConfig;
+  private AndromedaSwerve(AndromedaModule[] modules, AndromedaSwerveConfig profileConfig) {
+    this.andromedaProfile = profileConfig;
     this.modules = modules;
 
     andromedaSwerveTable = NetworkTableInstance.getDefault().getTable("AndromedaSwerveTable");
@@ -49,7 +47,7 @@ public class AndromedaSwerve extends SubsystemBase {
         .getEntry(new double[] {});
   }
 
-  public static AndromedaSwerve getInstance(AndromedaModule[] modules, AndromedaProfileConfig profileConfig) {
+  public static AndromedaSwerve getInstance(AndromedaModule[] modules, AndromedaSwerveConfig profileConfig) {
     if (instance == null) {
       instance = new AndromedaSwerve(modules, profileConfig);
     }
@@ -79,7 +77,7 @@ public class AndromedaSwerve extends SubsystemBase {
    * @param isOpenLoop    True if open loop
    */
   public void drive(Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop) {
-    SwerveModuleState[] swerveModuleStates = SwerveConstants.swerveKinematics.toSwerveModuleStates(
+    SwerveModuleState[] swerveModuleStates = andromedaProfile.swerveKinematics.toSwerveModuleStates(
         fieldRelative
             ? ChassisSpeeds.fromFieldRelativeSpeeds(translation.getX(), translation.getY(), rotation,
                 getSwerveAngle())
@@ -181,7 +179,7 @@ public class AndromedaSwerve extends SubsystemBase {
    * @param isOpenLoop    True if open loop driving
    */
   public void setModuleStates(SwerveModuleState[] desiredStates, boolean isOpenLoop) {
-    SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, SwerveConstants.maxSpeed);
+    SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, andromedaProfile.maxSpeed);
 
     for (AndromedaModule andromedaModule : modules) {
       andromedaModule.setDesiredState(desiredStates[andromedaModule.getModuleNumber()], isOpenLoop);

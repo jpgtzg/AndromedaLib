@@ -6,9 +6,8 @@ package com.andromedalib.andromedaSwerve.commands;
 import java.util.function.BooleanSupplier;
 import java.util.function.DoubleSupplier;
 
+import com.andromedalib.andromedaSwerve.subsystems.AndromedaSwerve;
 import com.andromedalib.math.Functions;
-import com.andromedalib.andromedaSwerve.systems.AndromedaSwerve;
-import com.andromedalib.andromedaSwerve.utils.SwerveConstants;
 
 import edu.wpi.first.math.filter.SlewRateLimiter;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -31,26 +30,26 @@ public class SwerveDriveCommand extends Command {
     this.rotation = rotation;
     this.fieldOriented = fieldOrientedControl;
 
-    xLimiter = new SlewRateLimiter(SwerveConstants.maxAcceleration);
-    yLimiter = new SlewRateLimiter(SwerveConstants.maxAcceleration);
-    turningLimiter = new SlewRateLimiter(SwerveConstants.maxAngularAcceleration);
+    xLimiter = new SlewRateLimiter(andromedaSwerve.andromedaProfile.maxAcceleration);
+    yLimiter = new SlewRateLimiter(andromedaSwerve.andromedaProfile.maxAcceleration);
+    turningLimiter = new SlewRateLimiter(andromedaSwerve.andromedaProfile.maxAngularAcceleration);
 
     addRequirements(swerve);
   }
 
   @Override
   public void execute() {
-    double translationYVal = Functions.handleDeadband(translationY.getAsDouble(), SwerveConstants.deadband);
-    double translationXVal = Functions.handleDeadband(translationX.getAsDouble(), SwerveConstants.deadband);
-    double rotationVal = Functions.handleDeadband(rotation.getAsDouble(), SwerveConstants.deadband);
+    double translationYVal = Functions.handleDeadband(translationY.getAsDouble(), swerve.andromedaProfile.deadband);
+    double translationXVal = Functions.handleDeadband(translationX.getAsDouble(), swerve.andromedaProfile.deadband);
+    double rotationVal = Functions.handleDeadband(rotation.getAsDouble(), swerve.andromedaProfile.deadband);
 
     double ySpeed = yLimiter.calculate(translationYVal);
     double xSpeed = xLimiter.calculate(translationXVal);
     double rotationSpeed = turningLimiter.calculate(rotationVal);
 
     swerve.drive(
-        new Translation2d(ySpeed, xSpeed).times(SwerveConstants.maxSpeed),
-        rotationSpeed * SwerveConstants.maxAngularVelocity,
+        new Translation2d(ySpeed, xSpeed).times(swerve.andromedaProfile.maxSpeed),
+        rotationSpeed * swerve.andromedaProfile.maxAngularVelocity,
         !fieldOriented.getAsBoolean(), 
         true);
   }
