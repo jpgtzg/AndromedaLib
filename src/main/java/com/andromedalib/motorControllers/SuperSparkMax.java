@@ -8,7 +8,7 @@ import com.andromedalib.motorControllers.IdleManager.GlobalIdleMode;
 import com.revrobotics.CANSparkMax;
 import com.revrobotics.REVLibError;
 import com.revrobotics.RelativeEncoder;
-import com.revrobotics.SparkMaxAbsoluteEncoder.Type;
+import com.revrobotics.SparkAbsoluteEncoder;
 
 import edu.wpi.first.wpilibj.shuffleboard.Shuffleboard;
 
@@ -96,9 +96,9 @@ public class SuperSparkMax extends CANSparkMax implements HyperMotorController {
         setMode(mode);
         setInverted(isInverted);
         setSmartCurrentLimit(currentLimit);
-        getAbsoluteEncoder(Type.kDutyCycle).setPositionConversionFactor(absolutePositionConversionFactor);
-        getAbsoluteEncoder(Type.kDutyCycle).setZeroOffset(zeroOfsset);
-        getAbsoluteEncoder(Type.kDutyCycle).setInverted(encoderInverted);
+        getAbsoluteEncoder(SparkAbsoluteEncoder.Type.kDutyCycle).setPositionConversionFactor(absolutePositionConversionFactor);
+        getAbsoluteEncoder(SparkAbsoluteEncoder.Type.kDutyCycle).setZeroOffset(zeroOfsset);
+        getAbsoluteEncoder(SparkAbsoluteEncoder.Type.kDutyCycle).setInverted(encoderInverted);
         burnFlash();
     }
 

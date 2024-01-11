@@ -5,7 +5,7 @@
 package com.andromedalib.motorControllers;
 
 import com.ctre.phoenix6.signals.NeutralModeValue;
-import com.revrobotics.CANSparkMax.IdleMode;
+import com.revrobotics.CANSparkBase.IdleMode;
 
 /**
  * Global class to manage the idle mode of all motors
