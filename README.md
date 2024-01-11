@@ -7,7 +7,7 @@ AndromedaLib has been proven to work effectively by being constantly used by Tea
 
 # Installation 
 
-Follow jitpack installation instructions to add AndromedaLib into your project.
+Follow [jitpack](https://www.jitpack.io/#AndromedaHelix/AndromedaLib/da6f7e3481) installation instructions to add AndromedaLib into your project.
 
 # Authors
 
