@@ -134,8 +134,7 @@ public class FalconAndromedaModule implements AndromedaModule {
         Rotation2d angle = (Math.abs(desiredState.speedMetersPerSecond) <= (andromedaSwerveConfig.maxSpeed * 0.01))
                 ? lastAngle
                 : desiredState.angle;
-        steeringMotor.setControl(angleSetter.withPosition(
-                Conversions.degreesToFalcon(angle.getDegrees(), 1)));
+        steeringMotor.setControl(angleSetter.withPosition(angle.getRotations()));
 
         lastAngle = angle;
     }
