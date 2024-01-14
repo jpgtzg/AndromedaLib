@@ -4,85 +4,106 @@
 
 package com.andromedalib.andromedaSwerve.andromedaModule;
 
-import edu.wpi.first.math.kinematics.SwerveModulePosition;
+import org.littletonrobotics.junction.Logger;
+
+import com.andromedalib.andromedaSwerve.config.AndromedaModuleConfig;
+import com.andromedalib.andromedaSwerve.config.AndromedaSwerveConfig;
+
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 
-/**
- * AndromedaModule interface. All available modules inherit this interface
- */
-public interface AndromedaModule {
-    /**
-     * Gets the module's number
-     * 
-     * @return Module number
-     */
-    public int getModuleNumber();
+public class AndromedaModule {
+    private final int moduleNumber;
+    private final String moduleName;
+
+    private AndromedaModuleIO io;
+    private AndromedaModuleIOInputsAutoLogged inputs = new AndromedaModuleIOInputsAutoLogged();
+
+    private Rotation2d lastAngle;
+    private AndromedaModuleConfig andromedaModuleConfig;
+    private AndromedaSwerveConfig andromedaSwerveConfig;
+
+    public AndromedaModule(int moduleNumber, String name, AndromedaModuleConfig config,
+            AndromedaSwerveConfig swerveConfig, AndromedaModuleIO io) {
+        this.io = io;
+        this.moduleName = name;
+        this.moduleNumber = moduleNumber;
+        this.andromedaModuleConfig = config;
+        this.andromedaSwerveConfig = swerveConfig;
+        
+        /* Remove unused warning */
+        moduleName.getClass();
+        andromedaModuleConfig.getClass();
+        
+        lastAngle = getAngle();
+    }
+
+    public void periodic() {
+        io.updateInputs(inputs);
+        Logger.processInputs("Swerve/Module" + Integer.toString(moduleNumber), inputs);
+
+    }
+
+    public void setDesiredState(SwerveModuleState desiredState, boolean isOpenLoop) {
+        desiredState = SwerveModuleState.optimize(desiredState, getState().angle);
+
+        setAngle(desiredState);
+        setSpeed(desiredState, isOpenLoop);
+    }
 
     /**
-     * Gets the module's name
+     * Sets the turning motor angle to its desired state
      * 
-     * @return Module name
+     * @param desiredState {@link SwerveModuleState} to apply
      */
-    public String getModuleName();
+    private void setAngle(SwerveModuleState desiredState) {
+        Rotation2d angle = (Math.abs(desiredState.speedMetersPerSecond) <= (andromedaSwerveConfig.maxSpeed * 0.01))
+                ? lastAngle
+                : desiredState.angle;
+
+        io.setTurnPosition(angle);
+        lastAngle = angle;
+    }
 
     /**
-     * Sets the Module's state
+     * Sets the drive motor speed to its desired state
      * 
-     * @param desiredState Desired {@link SwerveModuleState} to apply
+     * @param desiredState {@link SwerveModuleState} to apply
      * @param isOpenLoop   True if open loop feedback is enabled
      */
-    public void setDesiredState(SwerveModuleState desiredState, boolean isOpenLoop);
+    private void setSpeed(SwerveModuleState desiredState, boolean isOpenLoop) {
+
+        io.setDriveSpeed(desiredState.speedMetersPerSecond, isOpenLoop);
+
+        // TODO REMOVE
+       /*  if (isOpenLoop) {
+            double percentOutput = desiredState.speedMetersPerSecond / andromedaSwerveConfig.maxSpeed;
+
+            io.setDrivePercent(percentOutput);
+        } else {
+            double velocity = Conversions.MPSToRPS(desiredState.speedMetersPerSecond,
+                    this.andromedaModuleConfig.wheelCircumference);
+            double feedforward = motorFeedforward.calculate(desiredState.speedMetersPerSecond);
+            
+            io.setDriveVelocity(feedforward);
+        } */
+    }
 
     /**
-     * Resets the module's angle to the absolute encoder position
-     */
-    public void resetAbsolutePosition();
-
-    /**
-     * Gets the current module state
-     * 
-     * @return Current {@link SwerveModuleState}
-     */
-    public SwerveModuleState getState();
-
-    /**
-     * Gets the current desired module state
-     * 
-     * @return Current desired {@link SwerveModuleState}
-     */
-    public SwerveModuleState getDesiredState();
-
-    /**
-     * Gets the current module state in a double array
-     * 
-     * @return Current {@link SwerveModuleState} in a double array
-     */
-    public double[] getDoubleStates();
-
-    /**
-     * Gets the current desired module state in a double array
-     * 
-     * @return Current desired {@link SwerveModuleState} in a double array
-     */
-    public double[] getDoubleDesiredStates();
-
-    /**
-     * Gets the current module position
-     * 
-     * @return Current {@link SwerveModulePosition} position
-     */
-    public SwerveModulePosition getPosition();
-
-    /**
-     * Gets module's motor temps
+     * Gets the current position and angle as a {@link SwerveModuleState}
      * 
      * @return
      */
-    public double[] getTemp();
+    public SwerveModuleState getState() {
+        return new SwerveModuleState(getDriveSpeed(), getAngle());
+    }
 
-    /**
-     * Updates all NT values
-     */
-    public void updateNT();
+    public double getDriveSpeed() {
+        return inputs.driveVelocity;
+    }
 
+    private Rotation2d getAngle() {
+        return Rotation2d.fromDegrees(inputs.steerAngle);
+    }
 }
