@@ -24,7 +24,8 @@ import edu.wpi.first.networktables.NetworkTable;
 import edu.wpi.first.networktables.NetworkTableInstance;
 import edu.wpi.first.wpilibj.DriverStation;
 
-public class FalconAndromedaModule implements AndromedaModule {
+@Deprecated
+public class FalconAndromedaModule implements AndromedaModuleInterface {
     private int moduleNumber;
     private String moduleName;
 
@@ -102,7 +103,6 @@ public class FalconAndromedaModule implements AndromedaModule {
                 .getEntry(getDesiredState().speedMetersPerSecond);
         desiredAngleEntry = swerveModuleTable.getDoubleTopic("DesiredAngle")
                 .getEntry(getDesiredState().angle.getDegrees());
-
     }
 
     @Override
@@ -155,7 +155,7 @@ public class FalconAndromedaModule implements AndromedaModule {
                     andromedaModuleConfig.wheelCircumference,
                     1);
             driveMotor.setControl(driveSetter.withFeedForward(
-                    feedforward.calculate(velocity)));
+                   velocity));
         }
     }
 

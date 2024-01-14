@@ -4,14 +4,13 @@
 
 package com.andromedalib.andromedaSwerve.andromedaModule;
 
-import org.littletonrobotics.junction.AutoLog;
-
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 
 /**
  * AndromedaModule interface. All available modules inherit this interface
  */
+@Deprecated
 public interface AndromedaModuleInterface {
 
     /**
