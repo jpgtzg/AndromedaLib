@@ -6,11 +6,10 @@ package com.andromedalib.andromedaSwerve.andromedaModule;
 
 import org.littletonrobotics.junction.Logger;
 
-import com.andromedalib.andromedaSwerve.config.AndromedaModuleConfig;
 import com.andromedalib.andromedaSwerve.config.AndromedaSwerveConfig;
 
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
+import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 
 public class AndromedaModule {
@@ -21,21 +20,20 @@ public class AndromedaModule {
     private AndromedaModuleIOInputsAutoLogged inputs = new AndromedaModuleIOInputsAutoLogged();
 
     private Rotation2d lastAngle;
-    private AndromedaModuleConfig andromedaModuleConfig;
     private AndromedaSwerveConfig andromedaSwerveConfig;
 
-    public AndromedaModule(int moduleNumber, String name, AndromedaModuleConfig config,
+    private SwerveModuleState moduleDesiredState = new SwerveModuleState(0.0, Rotation2d.fromDegrees(0));
+
+    public AndromedaModule(int moduleNumber, String name,
             AndromedaSwerveConfig swerveConfig, AndromedaModuleIO io) {
         this.io = io;
         this.moduleName = name;
         this.moduleNumber = moduleNumber;
-        this.andromedaModuleConfig = config;
         this.andromedaSwerveConfig = swerveConfig;
-        
+
         /* Remove unused warning */
         moduleName.getClass();
-        andromedaModuleConfig.getClass();
-        
+
         lastAngle = getAngle();
     }
 
@@ -47,6 +45,8 @@ public class AndromedaModule {
 
     public void setDesiredState(SwerveModuleState desiredState, boolean isOpenLoop) {
         desiredState = SwerveModuleState.optimize(desiredState, getState().angle);
+
+        moduleDesiredState = desiredState;
 
         setAngle(desiredState);
         setSpeed(desiredState, isOpenLoop);
@@ -73,21 +73,13 @@ public class AndromedaModule {
      * @param isOpenLoop   True if open loop feedback is enabled
      */
     private void setSpeed(SwerveModuleState desiredState, boolean isOpenLoop) {
-
-        io.setDriveSpeed(desiredState.speedMetersPerSecond, isOpenLoop);
-
-        // TODO REMOVE
-       /*  if (isOpenLoop) {
+        if (isOpenLoop) {
             double percentOutput = desiredState.speedMetersPerSecond / andromedaSwerveConfig.maxSpeed;
 
             io.setDrivePercent(percentOutput);
         } else {
-            double velocity = Conversions.MPSToRPS(desiredState.speedMetersPerSecond,
-                    this.andromedaModuleConfig.wheelCircumference);
-            double feedforward = motorFeedforward.calculate(desiredState.speedMetersPerSecond);
-            
-            io.setDriveVelocity(feedforward);
-        } */
+            io.setDriveSpeed(desiredState);
+        }
     }
 
     /**
@@ -104,6 +96,26 @@ public class AndromedaModule {
     }
 
     private Rotation2d getAngle() {
-        return Rotation2d.fromDegrees(inputs.steerAngle);
+        return inputs.steerAngle;
+    }
+
+    public int getModuleNumber() {
+        return moduleNumber;
+    }
+
+    public SwerveModuleState getDesiredState() {
+        return moduleDesiredState;
+    }
+
+    public double[] getDoubleStates() {
+        return new double[] { getState().speedMetersPerSecond, getState().angle.getDegrees() };
+    }
+
+    public double[] getDoubleDesiredStates() {
+        return new double[] { getDesiredState().speedMetersPerSecond, getDesiredState().angle.getDegrees() };
+    }
+
+    public SwerveModulePosition getPosition() {
+        return new SwerveModulePosition(inputs.drivePosition, getAngle());
     }
 }
