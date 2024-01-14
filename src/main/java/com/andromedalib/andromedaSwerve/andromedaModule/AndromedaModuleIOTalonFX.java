@@ -5,9 +5,7 @@
 package com.andromedalib.andromedaSwerve.andromedaModule;
 
 import com.andromedalib.andromedaSwerve.config.AndromedaModuleConfig;
-import com.andromedalib.andromedaSwerve.config.AndromedaSwerveConfig;
 import com.andromedalib.andromedaSwerve.config.AndromedaModuleConfig.ModuleMotorConfig;
-import com.andromedalib.andromedaSwerve.subsystems.AndromedaSwerve;
 import com.andromedalib.math.Conversions;
 import com.andromedalib.motorControllers.IdleManager.GlobalIdleMode;
 import com.andromedalib.motorControllers.SuperTalonFX;
@@ -17,7 +15,6 @@ import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.controls.DutyCycleOut;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
-import com.google.flatbuffers.Constants;
 
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -37,7 +34,6 @@ public class AndromedaModuleIOTalonFX implements AndromedaModuleIO {
     private VelocityVoltage driveSetter = new VelocityVoltage(0).withSlot(0);
     private final DutyCycleOut driveDutyCycle = new DutyCycleOut(0);
 
-    private AndromedaSwerveConfig andromedaSwerveConfig;
     private AndromedaModuleConfig andromedaModuleConfig;
 
     private final SimpleMotorFeedforward feedforward;
@@ -53,10 +49,8 @@ public class AndromedaModuleIOTalonFX implements AndromedaModuleIO {
     private final StatusSignal<Double> turnAppliedVolts;
     private final StatusSignal<Double> turnCurrent;
 
-    public AndromedaModuleIOTalonFX(int moduleNumber, AndromedaModuleConfig moduleConfig,
-            AndromedaSwerveConfig swerveConfig) {
+    public AndromedaModuleIOTalonFX(int moduleNumber, AndromedaModuleConfig moduleConfig) {
         this.andromedaModuleConfig = moduleConfig;
-        this.andromedaSwerveConfig = swerveConfig;
 
         if (andromedaModuleConfig.motorConfig == ModuleMotorConfig.SPARKMAX_CONFIG) {
             DriverStation.reportError("AndromedaModule " + moduleNumber
@@ -152,44 +146,3 @@ public class AndromedaModuleIOTalonFX implements AndromedaModuleIO {
         steeringMotor.setPosition(absolutePosition);
     }
 }
-
-// TODO REMOVE
-/*
- * if (isOpenLoop) {
- * double percentOutput = desiredState.speedMetersPerSecond /
- * andromedaSwerveConfig.maxSpeed;
- * 
- * io.setDrivePercent(percentOutput);
- * } else {
- * double velocity = Conversions.MPSToRPS(desiredState.speedMetersPerSecond,
- * this.andromedaModuleConfig.wheelCircumference);
- * double feedforward =
- * motorFeedforward.calculate(desiredState.speedMetersPerSecond);
- * 
- * io.setDriveVelocity(feedforward);
- * }
- */
-
-/*
- * Rotation2d angle = (Math.abs(desiredState.speedMetersPerSecond) <=
- * (andromedaSwerveConfig.maxSpeed * 0.01))
- * ? lastAngle
- * : desiredState.angle;
- */
-
-// TODO REMOVE
-/*
- * if (isOpenLoop) {
- * double percentOutput = desiredState.speedMetersPerSecond /
- * andromedaSwerveConfig.maxSpeed;
- * 
- * io.setDrivePercent(percentOutput);
- * } else {
- * double velocity = Conversions.MPSToRPS(desiredState.speedMetersPerSecond,
- * this.andromedaModuleConfig.wheelCircumference);
- * double feedforward =
- * motorFeedforward.calculate(desiredState.speedMetersPerSecond);
- * 
- * io.setDriveVelocity(feedforward);
- * }
- */

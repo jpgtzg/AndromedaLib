@@ -15,7 +15,6 @@ import com.andromedalib.sensors.SuperCANCoder;
 import com.ctre.phoenix6.controls.PositionVoltage;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -50,8 +49,6 @@ public class FalconAndromedaModule implements AndromedaModuleInterface {
     private DoubleEntry desiredSpeedEntry;
     private DoubleEntry desiredAngleEntry;
 
-    private SimpleMotorFeedforward feedforward;
-
     /**
      * Creates a new FalconAndromedaModule, that uses {@link SuperTalonFX} Motors
      * 
@@ -82,10 +79,6 @@ public class FalconAndromedaModule implements AndromedaModuleInterface {
         this.steeringEncoder = new SuperCANCoder(config.moduleIDs.absCanCoderID,
                 andromedaModuleConfig.cancoderConfiguration,
                 andromedaModuleConfig.swerveCANBus);
-
-        feedforward = new SimpleMotorFeedforward(andromedaModuleConfig.driveMotorConfiguration.Slot0.kS,
-                andromedaModuleConfig.driveMotorConfiguration.Slot0.kA,
-                andromedaModuleConfig.driveMotorConfiguration.Slot0.kV);
 
         resetAbsolutePosition();
 
