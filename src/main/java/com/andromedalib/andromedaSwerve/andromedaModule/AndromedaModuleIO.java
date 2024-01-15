@@ -11,8 +11,8 @@ public interface AndromedaModuleIO {
     public static class AndromedaModuleIOInputs {
         public double driveVelocity = 0.0;
         public double drivePosition = 0.0;
-        public Rotation2d steerAngle = new Rotation2d();
-        public Rotation2d encoderAbsolutePosition = new Rotation2d();
+        public Rotation2d steerAngle = new Rotation2d(0.0);
+        public Rotation2d encoderAbsolutePosition = new Rotation2d(0.0);
     }
 
     /** Updates the set of loggable inputs. */
