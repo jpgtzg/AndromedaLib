@@ -62,6 +62,8 @@ public class AndromedaSwerve extends SubsystemBase {
       Logger.recordOutput("SwerveStates/SetpointsOptimized", new SwerveModuleState[] {});
     }
 
+    Logger.recordOutput("Drive/Pose", odometry.getPoseMeters());
+
     odometry.update(getSwerveAngle(), getPositions());
   }
 
