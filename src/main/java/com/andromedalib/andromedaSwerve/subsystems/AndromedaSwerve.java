@@ -13,6 +13,7 @@ import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
+import edu.wpi.first.math.kinematics.SwerveDriveOdometry;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
 
@@ -28,15 +29,22 @@ public class AndromedaSwerve extends SubsystemBase {
   private final GyroIO gyroIO;
   private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
 
-/*   private SwerveDriveOdometry odometry;
- */
+  private SwerveDriveOdometry odometry;
+
+  /*
+   * private SwerveDriveOdometry odometry;
+   */
   private AndromedaSwerve(GyroIO gyro, AndromedaModule[] modules, AndromedaSwerveConfig profileConfig) {
     this.andromedaProfile = profileConfig;
     this.modules = modules;
     this.gyroIO = gyro;
 
-/*     odometry = new SwerveDriveOdometry(profileConfig.swerveKinematics, getSwerveAngle(), getPositions());
- */  }
+    odometry = new SwerveDriveOdometry(profileConfig.swerveKinematics, getSwerveAngle(), getPositions());
+
+    /*
+     * odometry = new SwerveDriveOdometry(profileConfig.swerveKinematics,
+     * getSwerveAngle(), getPositions());
+     */ }
 
   public static AndromedaSwerve getInstance(GyroIO gyro, AndromedaModule[] modules,
       AndromedaSwerveConfig profileConfig) {
@@ -49,7 +57,7 @@ public class AndromedaSwerve extends SubsystemBase {
   @Override
   public void periodic() {
     gyroIO.updateInputs(gyroInputs);
-    Logger.processInputs("Drive/Gyro", gyroInputs);
+    Logger.processInputs("Swerve/Gyro", gyroInputs);
 
     for (var module : modules) {
       module.periodic();
@@ -61,10 +69,17 @@ public class AndromedaSwerve extends SubsystemBase {
       Logger.recordOutput("SwerveStates/SetpointsOptimized", new SwerveModuleState[] {});
     }
 
-/*     Logger.recordOutput("Drive/Pose", odometry.getPoseMeters());
-
     odometry.update(getSwerveAngle(), getPositions());
- */  }
+    Logger.recordOutput("Odometry", odometry.getPoseMeters());
+    Logger.recordOutput("SwerveStates", getStates());
+
+    /*
+     * Logger.recordOutput("Drive/Pose", odometry.getPoseMeters());
+     * 
+     * odometry.update(getSwerveAngle(), getPositions());
+     */
+
+  }
 
   /**
    * Main driving method
@@ -74,14 +89,14 @@ public class AndromedaSwerve extends SubsystemBase {
    * @param fieldRelative True if field relative
    * @param isOpenLoop    True if open loop
    */
-  public void drive(Translation2d translation, double rotation, boolean fieldRelative, boolean isOpenLoop) {
+  public void drive(Translation2d translation, double rotation, boolean fieldRelative) {
     SwerveModuleState[] swerveModuleStates = andromedaProfile.swerveKinematics.toSwerveModuleStates(
         fieldRelative
             ? ChassisSpeeds.fromFieldRelativeSpeeds(translation.getX(), translation.getY(), rotation,
                 getSwerveAngle())
             : new ChassisSpeeds(translation.getX(), translation.getY(), rotation));
 
-    setModuleStates(swerveModuleStates, isOpenLoop);
+    setModuleStates(swerveModuleStates);
   }
 
   /**
@@ -148,25 +163,16 @@ public class AndromedaSwerve extends SubsystemBase {
   }
 
   /**
-   * Sets the modules states as open loop driving
-   * 
-   * @param desiredStates Desired SwerveModuleState array
-   */
-  public void setModuleStates(SwerveModuleState[] desiredStates) {
-    setModuleStates(desiredStates, true);
-  }
-
-  /**
    * Sets the modules states
    * 
    * @param desiredStates Desired SwerveModuleState array
    * @param isOpenLoop    True if open loop driving
    */
-  public void setModuleStates(SwerveModuleState[] desiredStates, boolean isOpenLoop) {
+  public void setModuleStates(SwerveModuleState[] desiredStates) {
     SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, andromedaProfile.maxSpeed);
 
     for (AndromedaModule andromedaModule : modules) {
-      andromedaModule.setDesiredState(desiredStates[andromedaModule.getModuleNumber()], isOpenLoop);
+      andromedaModule.setDesiredState(desiredStates[andromedaModule.getModuleNumber()]);
     }
   }
 }

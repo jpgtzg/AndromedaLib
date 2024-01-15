@@ -3,7 +3,6 @@ package com.andromedalib.andromedaSwerve.andromedaModule;
 import org.littletonrobotics.junction.AutoLog;
 
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.kinematics.SwerveModuleState;
 
 public interface AndromedaModuleIO {
 
@@ -25,15 +24,11 @@ public interface AndromedaModuleIO {
     }
 
     /** Sets the turn motor to the position */
-    public default void setTurnPosition(Rotation2d angle) {
+    public default void setTurnVoltage(double volts) {
     }
 
-    /** Sets the drive motor to a percent */
-    public default void setDriveSpeed(SwerveModuleState speed) {
-    }
-
-    /** Sets the drive motor to a speed */
-    public default void setDrivePercent(double percent) {
+    /** Sets the drive motor to a voltage */
+    public default void setDriveVoltage(double volts) {
     }
 
 }

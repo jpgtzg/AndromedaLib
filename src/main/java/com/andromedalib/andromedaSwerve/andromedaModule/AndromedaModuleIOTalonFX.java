@@ -6,19 +6,14 @@ package com.andromedalib.andromedaSwerve.andromedaModule;
 
 import com.andromedalib.andromedaSwerve.config.AndromedaModuleConfig;
 import com.andromedalib.andromedaSwerve.config.AndromedaModuleConfig.ModuleMotorConfig;
-import com.andromedalib.math.Conversions;
 import com.andromedalib.motorControllers.IdleManager.GlobalIdleMode;
 import com.andromedalib.motorControllers.SuperTalonFX;
 import com.andromedalib.sensors.SuperCANCoder;
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
-import com.ctre.phoenix6.controls.DutyCycleOut;
-import com.ctre.phoenix6.controls.PositionVoltage;
-import com.ctre.phoenix6.controls.VelocityVoltage;
+import com.ctre.phoenix6.controls.VoltageOut;
 
-import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.kinematics.SwerveModuleState;
 import edu.wpi.first.math.util.Units;
 import edu.wpi.first.wpilibj.DriverStation;
 
@@ -30,13 +25,7 @@ public class AndromedaModuleIOTalonFX implements AndromedaModuleIO {
         private SuperTalonFX steeringMotor;
         private SuperCANCoder steeringEncoder;
 
-        private PositionVoltage angleSetter = new PositionVoltage(0).withSlot(0);
-        private VelocityVoltage driveSetter = new VelocityVoltage(0).withSlot(0);
-        private final DutyCycleOut driveDutyCycle = new DutyCycleOut(0);
-
         private AndromedaModuleConfig andromedaModuleConfig;
-
-        private final SimpleMotorFeedforward feedforward;
 
         private final StatusSignal<Double> drivePosition;
         private final StatusSignal<Double> driveVelocity;
@@ -69,10 +58,6 @@ public class AndromedaModuleIOTalonFX implements AndromedaModuleIO {
                 this.steeringEncoder = new SuperCANCoder(andromedaModuleConfig.moduleIDs.absCanCoderID,
                                 andromedaModuleConfig.cancoderConfiguration,
                                 andromedaModuleConfig.swerveCANBus);
-
-                feedforward = new SimpleMotorFeedforward(andromedaModuleConfig.driveMotorConfiguration.Slot0.kS,
-                                andromedaModuleConfig.driveMotorConfiguration.Slot0.kA,
-                                andromedaModuleConfig.driveMotorConfiguration.Slot0.kV);
 
                 resetAbsolutePosition();
 
@@ -125,22 +110,13 @@ public class AndromedaModuleIOTalonFX implements AndromedaModuleIO {
         }
 
         @Override
-        public void setTurnPosition(Rotation2d angle) {
-                steeringMotor.setControl(angleSetter.withPosition(angle.getRotations()));
+        public void setTurnVoltage(double volts) {
+                steeringMotor.setControl(new VoltageOut(volts));
         }
 
         @Override
-        public void setDriveSpeed(SwerveModuleState speed) {
-                driveSetter.Velocity = Conversions.MPSToRPS(speed.speedMetersPerSecond,
-                                andromedaModuleConfig.wheelCircumference);
-                driveSetter.FeedForward = feedforward.calculate(speed.speedMetersPerSecond);
-                driveMotor.setControl(driveSetter);
-        }
-
-        @Override
-        public void setDrivePercent(double percent) {
-                driveDutyCycle.Output = percent;
-                driveMotor.setControl(driveDutyCycle);
+        public void setDriveVoltage(double volts) {
+                steeringMotor.setControl(new VoltageOut(volts));
         }
 
         public Rotation2d getAbsoluteRotations() {

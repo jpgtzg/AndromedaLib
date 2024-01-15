@@ -8,6 +8,8 @@ import org.littletonrobotics.junction.Logger;
 
 import com.andromedalib.andromedaSwerve.config.AndromedaSwerveConfig;
 
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -24,6 +26,11 @@ public class AndromedaModule {
 
     private SwerveModuleState moduleDesiredState = new SwerveModuleState(0.0, Rotation2d.fromDegrees(0));
 
+    // TODO SET
+    private final SimpleMotorFeedforward driveFeedforward = new SimpleMotorFeedforward(0.0, 0.13);;
+    private final PIDController driveFeedback = new PIDController(0.1, 0.0, 0.0);
+    private final PIDController turnFeedback = new PIDController(10.0, 0.0, 0.0);
+
     public AndromedaModule(int moduleNumber, String name,
             AndromedaSwerveConfig swerveConfig, AndromedaModuleIO io) {
         this.io = io;
@@ -35,6 +42,8 @@ public class AndromedaModule {
         moduleName.getClass();
 
         lastAngle = getAngle();
+
+        turnFeedback.enableContinuousInput(-Math.PI, Math.PI);
     }
 
     public void periodic() {
@@ -43,17 +52,17 @@ public class AndromedaModule {
 
     }
 
-    public void setDesiredState(SwerveModuleState desiredState, boolean isOpenLoop) {
-        desiredState = SwerveModuleState.optimize(desiredState, getState().angle);
+    public void setDesiredState(SwerveModuleState desiredState) {
+        desiredState = SwerveModuleState.optimize(desiredState, getAngle());
 
         moduleDesiredState = desiredState;
 
         setAngle(desiredState);
-        setSpeed(desiredState, isOpenLoop);
+        setSpeed(desiredState);
     }
 
     /**
-     * Sets the turning motor angle to its desired state
+     * Sets the turning motor´+´+ angle to its desired state
      * 
      * @param desiredState {@link SwerveModuleState} to apply
      */
@@ -62,7 +71,7 @@ public class AndromedaModule {
                 ? lastAngle
                 : desiredState.angle;
 
-        io.setTurnPosition(angle);
+        io.setTurnVoltage(turnFeedback.calculate(getAngle().getRadians(), angle.getRadians()));
         lastAngle = angle;
     }
 
@@ -72,14 +81,10 @@ public class AndromedaModule {
      * @param desiredState {@link SwerveModuleState} to apply
      * @param isOpenLoop   True if open loop feedback is enabled
      */
-    private void setSpeed(SwerveModuleState desiredState, boolean isOpenLoop) {
-        if (isOpenLoop) {
-            double percentOutput = desiredState.speedMetersPerSecond / andromedaSwerveConfig.maxSpeed;
-
-            io.setDrivePercent(percentOutput);
-        } else {
-            io.setDriveSpeed(desiredState);
-        }
+    private void setSpeed(SwerveModuleState desiredState) {
+        io.setDriveVoltage(
+                driveFeedforward.calculate(desiredState.speedMetersPerSecond)
+                        + driveFeedback.calculate(inputs.driveVelocity, desiredState.speedMetersPerSecond));
     }
 
     /**
