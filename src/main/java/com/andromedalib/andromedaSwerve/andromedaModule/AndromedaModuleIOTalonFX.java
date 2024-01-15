@@ -26,123 +26,129 @@ import edu.wpi.first.wpilibj.DriverStation;
  * AndromedaModule IO Implementation for TalonFX
  */
 public class AndromedaModuleIOTalonFX implements AndromedaModuleIO {
-    private SuperTalonFX driveMotor;
-    private SuperTalonFX steeringMotor;
-    private SuperCANCoder steeringEncoder;
+        private SuperTalonFX driveMotor;
+        private SuperTalonFX steeringMotor;
+        private SuperCANCoder steeringEncoder;
 
-    private PositionVoltage angleSetter = new PositionVoltage(0).withSlot(0);
-    private VelocityVoltage driveSetter = new VelocityVoltage(0).withSlot(0);
-    private final DutyCycleOut driveDutyCycle = new DutyCycleOut(0);
+        private PositionVoltage angleSetter = new PositionVoltage(0).withSlot(0);
+        private VelocityVoltage driveSetter = new VelocityVoltage(0).withSlot(0);
+        private final DutyCycleOut driveDutyCycle = new DutyCycleOut(0);
 
-    private AndromedaModuleConfig andromedaModuleConfig;
+        private AndromedaModuleConfig andromedaModuleConfig;
 
-    private final SimpleMotorFeedforward feedforward;
+        private final SimpleMotorFeedforward feedforward;
 
-    private final StatusSignal<Double> drivePosition;
-    private final StatusSignal<Double> driveVelocity;
-    private final StatusSignal<Double> driveAppliedVolts;
-    private final StatusSignal<Double> driveCurrent;
+        private final StatusSignal<Double> drivePosition;
+        private final StatusSignal<Double> driveVelocity;
+        private final StatusSignal<Double> driveAppliedVolts;
+        private final StatusSignal<Double> driveCurrent;
 
-    private final StatusSignal<Double> turnAbsolutePosition;
-    private final StatusSignal<Double> turnPosition;
-    private final StatusSignal<Double> turnVelocity;
-    private final StatusSignal<Double> turnAppliedVolts;
-    private final StatusSignal<Double> turnCurrent;
+        private final StatusSignal<Double> turnAbsolutePosition;
+        private final StatusSignal<Double> turnPosition;
+        private final StatusSignal<Double> turnVelocity;
+        private final StatusSignal<Double> turnAppliedVolts;
+        private final StatusSignal<Double> turnCurrent;
 
-    public AndromedaModuleIOTalonFX(int moduleNumber, AndromedaModuleConfig moduleConfig) {
-        this.andromedaModuleConfig = moduleConfig;
+        public AndromedaModuleIOTalonFX(int moduleNumber, AndromedaModuleConfig moduleConfig) {
+                this.andromedaModuleConfig = moduleConfig;
 
-        if (andromedaModuleConfig.motorConfig == ModuleMotorConfig.SPARKMAX_CONFIG) {
-            DriverStation.reportError("AndromedaModule " + moduleNumber
-                    + " is using Neo config. Please change your profile config selection to avoid unwanted behaviours",
-                    true);
+                if (andromedaModuleConfig.motorConfig == ModuleMotorConfig.SPARKMAX_CONFIG) {
+                        DriverStation.reportError("AndromedaModule " + moduleNumber
+                                        + " is using Neo config. Please change your profile config selection to avoid unwanted behaviours",
+                                        true);
+                }
+
+                this.driveMotor = new SuperTalonFX(andromedaModuleConfig.moduleIDs.driveMotorID, GlobalIdleMode.brake,
+                                andromedaModuleConfig.driveMotorConfiguration,
+                                andromedaModuleConfig.swerveCANBus);
+                this.steeringMotor = new SuperTalonFX(andromedaModuleConfig.moduleIDs.steeringMotorID,
+                                GlobalIdleMode.Coast,
+                                andromedaModuleConfig.turningMotorConfiguration,
+                                andromedaModuleConfig.swerveCANBus);
+
+                this.steeringEncoder = new SuperCANCoder(andromedaModuleConfig.moduleIDs.absCanCoderID,
+                                andromedaModuleConfig.cancoderConfiguration,
+                                andromedaModuleConfig.swerveCANBus);
+
+                feedforward = new SimpleMotorFeedforward(andromedaModuleConfig.driveMotorConfiguration.Slot0.kS,
+                                andromedaModuleConfig.driveMotorConfiguration.Slot0.kA,
+                                andromedaModuleConfig.driveMotorConfiguration.Slot0.kV);
+
+                resetAbsolutePosition();
+
+                drivePosition = driveMotor.getPosition();
+                driveVelocity = driveMotor.getVelocity();
+                driveAppliedVolts = driveMotor.getMotorVoltage();
+                driveCurrent = driveMotor.getStatorCurrent();
+
+                turnAbsolutePosition = steeringEncoder.getAbsolutePosition();
+                turnPosition = steeringMotor.getPosition();
+                turnVelocity = steeringMotor.getVelocity();
+                turnAppliedVolts = steeringMotor.getMotorVoltage();
+                turnCurrent = steeringMotor.getStatorCurrent();
+
+                BaseStatusSignal.setUpdateFrequencyForAll(
+                                100.0, drivePosition, turnPosition); // Required for odometry, use faster rate
+                BaseStatusSignal.setUpdateFrequencyForAll(
+                                50.0,
+                                driveVelocity,
+                                driveAppliedVolts,
+                                driveCurrent,
+                                turnAbsolutePosition,
+                                turnVelocity,
+                                turnAppliedVolts,
+                                turnCurrent);
         }
 
-        this.driveMotor = new SuperTalonFX(andromedaModuleConfig.moduleIDs.driveMotorID, GlobalIdleMode.brake,
-                andromedaModuleConfig.driveMotorConfiguration,
-                andromedaModuleConfig.swerveCANBus);
-        this.steeringMotor = new SuperTalonFX(andromedaModuleConfig.moduleIDs.steeringMotorID, GlobalIdleMode.Coast,
-                andromedaModuleConfig.turningMotorConfiguration,
-                andromedaModuleConfig.swerveCANBus);
+        @Override
+        public void updateInputs(AndromedaModuleIOInputs inputs) {
+                BaseStatusSignal.refreshAll(
+                                drivePosition,
+                                driveVelocity,
+                                driveAppliedVolts,
+                                driveCurrent,
+                                turnAbsolutePosition,
+                                turnPosition,
+                                turnVelocity,
+                                turnAppliedVolts,
+                                turnCurrent);
 
-        this.steeringEncoder = new SuperCANCoder(andromedaModuleConfig.moduleIDs.absCanCoderID,
-                andromedaModuleConfig.cancoderConfiguration,
-                andromedaModuleConfig.swerveCANBus);
+                inputs.driveVelocity = driveVelocity.getValueAsDouble();
+                inputs.drivePosition = Units.rotationsToRadians(drivePosition.getValueAsDouble())
+                                * andromedaModuleConfig.wheelCircumference;
+                inputs.steerAngle = Rotation2d.fromRotations(turnPosition.getValueAsDouble());
+                inputs.encoderAbsolutePosition = Rotation2d.fromRotations(turnAbsolutePosition.getValueAsDouble());
+                inputs.driveAppliedVolts = driveAppliedVolts.getValueAsDouble();
 
-        feedforward = new SimpleMotorFeedforward(andromedaModuleConfig.driveMotorConfiguration.Slot0.kS,
-                andromedaModuleConfig.driveMotorConfiguration.Slot0.kA,
-                andromedaModuleConfig.driveMotorConfiguration.Slot0.kV);
+                inputs.turnVelocity = turnVelocity.getValueAsDouble();
+                inputs.turnAppliedVolts = turnAppliedVolts.getValueAsDouble();
+        }
 
-        resetAbsolutePosition();
+        @Override
+        public void setTurnPosition(Rotation2d angle) {
+                steeringMotor.setControl(angleSetter.withPosition(angle.getRotations()));
+        }
 
-        drivePosition = driveMotor.getPosition();
-        driveVelocity = driveMotor.getVelocity();
-        driveAppliedVolts = driveMotor.getMotorVoltage();
-        driveCurrent = driveMotor.getStatorCurrent();
+        @Override
+        public void setDriveSpeed(SwerveModuleState speed) {
+                driveSetter.Velocity = Conversions.MPSToRPS(speed.speedMetersPerSecond,
+                                andromedaModuleConfig.wheelCircumference);
+                driveSetter.FeedForward = feedforward.calculate(speed.speedMetersPerSecond);
+                driveMotor.setControl(driveSetter);
+        }
 
-        turnAbsolutePosition = steeringEncoder.getAbsolutePosition();
-        turnPosition = steeringMotor.getPosition();
-        turnVelocity = steeringMotor.getVelocity();
-        turnAppliedVolts = steeringMotor.getMotorVoltage();
-        turnCurrent = steeringMotor.getStatorCurrent();
+        @Override
+        public void setDrivePercent(double percent) {
+                driveDutyCycle.Output = percent;
+                driveMotor.setControl(driveDutyCycle);
+        }
 
-        BaseStatusSignal.setUpdateFrequencyForAll(
-                100.0, drivePosition, turnPosition); // Required for odometry, use faster rate
-        BaseStatusSignal.setUpdateFrequencyForAll(
-                50.0,
-                driveVelocity,
-                driveAppliedVolts,
-                driveCurrent,
-                turnAbsolutePosition,
-                turnVelocity,
-                turnAppliedVolts,
-                turnCurrent);
-    }
+        public Rotation2d getAbsoluteRotations() {
+                return Rotation2d.fromRotations(steeringEncoder.getAbsolutePosition().getValue());
+        }
 
-    @Override
-    public void updateInputs(AndromedaModuleIOInputs inputs) {
-        BaseStatusSignal.refreshAll(
-                drivePosition,
-                driveVelocity,
-                driveAppliedVolts,
-                driveCurrent,
-                turnAbsolutePosition,
-                turnPosition,
-                turnVelocity,
-                turnAppliedVolts,
-                turnCurrent);
-
-        inputs.driveVelocity = driveVelocity.getValueAsDouble();
-        inputs.drivePosition = Units.rotationsToRadians(drivePosition.getValueAsDouble()) * andromedaModuleConfig.wheelCircumference;
-        inputs.steerAngle = Rotation2d.fromRotations(turnPosition.getValueAsDouble());
-        inputs.encoderAbsolutePosition = Rotation2d.fromRotations(turnAbsolutePosition.getValueAsDouble());   
-    }
-
-    @Override
-    public void setTurnPosition(Rotation2d angle) {
-        steeringMotor.setControl(angleSetter.withPosition(angle.getRotations()));
-    }
-
-    @Override
-    public void setDriveSpeed(SwerveModuleState speed) {
-        driveSetter.Velocity = Conversions.MPSToRPS(speed.speedMetersPerSecond,
-                andromedaModuleConfig.wheelCircumference);
-        driveSetter.FeedForward = feedforward.calculate(speed.speedMetersPerSecond);
-        driveMotor.setControl(driveSetter);
-    }
-
-    @Override
-    public void setDrivePercent(double percent) {
-        driveDutyCycle.Output = percent;
-        driveMotor.setControl(driveDutyCycle);
-    }
-
-    public Rotation2d getAbsoluteRotations() {
-        return Rotation2d.fromRotations(steeringEncoder.getAbsolutePosition().getValue());
-    }
-
-    private void resetAbsolutePosition() {
-        double absolutePosition = getAbsoluteRotations().getRotations();
-        steeringMotor.setPosition(absolutePosition);
-    }
+        private void resetAbsolutePosition() {
+                double absolutePosition = getAbsoluteRotations().getRotations();
+                steeringMotor.setPosition(absolutePosition);
+        }
 }
