@@ -29,15 +29,15 @@ public class AndromedaSwerve extends SubsystemBase {
   private final GyroIO gyroIO;
   private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
 
-  private SwerveDriveOdometry odometry;
-
+/*   private SwerveDriveOdometry odometry;
+ */
   private AndromedaSwerve(GyroIO gyro, AndromedaModule[] modules, AndromedaSwerveConfig profileConfig) {
     this.andromedaProfile = profileConfig;
     this.modules = modules;
     this.gyroIO = gyro;
 
-    odometry = new SwerveDriveOdometry(profileConfig.swerveKinematics, getSwerveAngle(), getPositions());
-  }
+/*     odometry = new SwerveDriveOdometry(profileConfig.swerveKinematics, getSwerveAngle(), getPositions());
+ */  }
 
   public static AndromedaSwerve getInstance(GyroIO gyro, AndromedaModule[] modules,
       AndromedaSwerveConfig profileConfig) {
@@ -62,10 +62,10 @@ public class AndromedaSwerve extends SubsystemBase {
       Logger.recordOutput("SwerveStates/SetpointsOptimized", new SwerveModuleState[] {});
     }
 
-    Logger.recordOutput("Drive/Pose", odometry.getPoseMeters());
+/*     Logger.recordOutput("Drive/Pose", odometry.getPoseMeters());
 
     odometry.update(getSwerveAngle(), getPositions());
-  }
+ */  }
 
   /**
    * Main driving method
