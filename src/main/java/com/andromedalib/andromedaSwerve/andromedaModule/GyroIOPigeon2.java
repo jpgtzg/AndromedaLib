@@ -14,6 +14,11 @@ public class GyroIOPigeon2 implements GyroIO {
     private final StatusSignal<Double> yaw;
     private final StatusSignal<Double> yawVelocity;
 
+    /**
+     * Constructs a new GyroIOPigeon2
+     * 
+     * @param gyroID Gyro CAN ID
+     */
     public GyroIOPigeon2(int gyroID) {
         pigeon = new Pigeon2(gyroID);
         yaw = pigeon.getYaw();
