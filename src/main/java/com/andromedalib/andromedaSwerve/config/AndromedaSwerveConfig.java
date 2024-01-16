@@ -31,4 +31,11 @@ public class AndromedaSwerveConfig {
         this.maxAngularVelocity = maxAngularVelocity;
         this.maxAngularAcceleration = maxAngularAcceleration;
     }
+
+    public static enum Mode {
+        REAL,
+        REPLAY,
+        SIM
+    }
+
 }
