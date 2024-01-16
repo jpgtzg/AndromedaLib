@@ -98,14 +98,14 @@ public class AndromedaModuleIOTalonFX implements AndromedaModuleIO {
                                 turnAppliedVolts,
                                 turnCurrent);
 
-                inputs.driveVelocity = driveVelocity.getValueAsDouble();
-                inputs.drivePosition = Units.rotationsToRadians(drivePosition.getValueAsDouble())
-                                * andromedaModuleConfig.wheelCircumference;
-                inputs.steerAngle = Rotation2d.fromRotations(turnPosition.getValueAsDouble());
-                inputs.encoderAbsolutePosition = Rotation2d.fromRotations(turnAbsolutePosition.getValueAsDouble());
+                inputs.drivePosition = Units.rotationsToRadians(drivePosition.getValueAsDouble());
+                inputs.driveVelocity = Units.rotationsToRadians(driveVelocity.getValueAsDouble());
                 inputs.driveAppliedVolts = driveAppliedVolts.getValueAsDouble();
 
-                inputs.turnVelocity = turnVelocity.getValueAsDouble();
+                inputs.encoderAbsolutePosition = Rotation2d.fromRotations(turnAbsolutePosition.getValueAsDouble());
+                inputs.steerAngle = Rotation2d.fromRotations(turnPosition.getValueAsDouble());
+
+                inputs.turnVelocity = Units.rotationsToRadians(turnVelocity.getValueAsDouble());
                 inputs.turnAppliedVolts = turnAppliedVolts.getValueAsDouble();
         }
 
