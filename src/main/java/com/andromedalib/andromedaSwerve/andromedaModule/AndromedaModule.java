@@ -7,6 +7,7 @@ package com.andromedalib.andromedaSwerve.andromedaModule;
 import org.littletonrobotics.junction.Logger;
 
 import com.andromedalib.andromedaSwerve.config.AndromedaSwerveConfig;
+import com.andromedalib.andromedaSwerve.config.AndromedaSwerveConfig.Mode;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
@@ -24,15 +25,12 @@ public class AndromedaModule {
     private Rotation2d lastAngle;
     private AndromedaSwerveConfig andromedaSwerveConfig;
 
-    private SwerveModuleState moduleDesiredState = new SwerveModuleState(0.0, Rotation2d.fromDegrees(0));
-
-    // TODO SET
-    private final SimpleMotorFeedforward driveFeedforward = new SimpleMotorFeedforward(0.0, 0.13);;
-    private final PIDController driveFeedback = new PIDController(0.1, 0.0, 0.0);
-    private final PIDController turnFeedback = new PIDController(10.0, 0.0, 0.0);
+    private final SimpleMotorFeedforward driveFeedforward;
+    private final PIDController driveFeedback;
+    private final PIDController turnFeedback;
 
     public AndromedaModule(int moduleNumber, String name,
-            AndromedaSwerveConfig swerveConfig, AndromedaModuleIO io) {
+            AndromedaSwerveConfig swerveConfig, Mode mode, AndromedaModuleIO io) {
         this.io = io;
         this.moduleName = name;
         this.moduleNumber = moduleNumber;
@@ -43,7 +41,27 @@ public class AndromedaModule {
 
         lastAngle = getAngle();
 
+        switch (mode) {
+            case REAL:
+            case REPLAY:
+                driveFeedforward = new SimpleMotorFeedforward(0.1, 0.13);
+                driveFeedback = new PIDController(0.05, 0.0, 0.0);
+                turnFeedback = new PIDController(0.3, 0.0, 0.0);
+                break;
+            case SIM:
+                driveFeedforward = new SimpleMotorFeedforward(0.0, 0.13);
+                driveFeedback = new PIDController(0.1, 0.0, 0.0);
+                turnFeedback = new PIDController(10.0, 0.0, 0.0);
+                break;
+            default:
+                driveFeedforward = new SimpleMotorFeedforward(0.0, 0.0);
+                driveFeedback = new PIDController(0.0, 0.0, 0.0);
+                turnFeedback = new PIDController(0.0, 0.0, 0.0);
+                break;
+        }
+
         turnFeedback.enableContinuousInput(-Math.PI, Math.PI);
+
     }
 
     public void periodic() {
@@ -54,8 +72,6 @@ public class AndromedaModule {
 
     public void setDesiredState(SwerveModuleState desiredState) {
         desiredState = SwerveModuleState.optimize(desiredState, getAngle());
-
-        moduleDesiredState = desiredState;
 
         setAngle(desiredState);
         setSpeed(desiredState);
@@ -106,18 +122,6 @@ public class AndromedaModule {
 
     public int getModuleNumber() {
         return moduleNumber;
-    }
-
-    public SwerveModuleState getDesiredState() {
-        return moduleDesiredState;
-    }
-
-    public double[] getDoubleStates() {
-        return new double[] { getState().speedMetersPerSecond, getState().angle.getDegrees() };
-    }
-
-    public double[] getDoubleDesiredStates() {
-        return new double[] { getDesiredState().speedMetersPerSecond, getDesiredState().angle.getDegrees() };
     }
 
     public SwerveModulePosition getPosition() {
