@@ -5,9 +5,11 @@ package com.andromedalib.andromedaSwerve.subsystems;
 
 import org.littletonrobotics.junction.Logger;
 import com.andromedalib.andromedaSwerve.andromedaModule.AndromedaModule;
+import com.andromedalib.andromedaSwerve.andromedaModule.AndromedaModuleIO;
 import com.andromedalib.andromedaSwerve.andromedaModule.GyroIO;
 import com.andromedalib.andromedaSwerve.andromedaModule.GyroIOInputsAutoLogged;
 import com.andromedalib.andromedaSwerve.config.AndromedaSwerveConfig;
+import com.andromedalib.andromedaSwerve.config.AndromedaSwerveConfig.Mode;
 
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Translation2d;
@@ -23,7 +25,7 @@ import edu.wpi.first.wpilibj2.command.SubsystemBase;
 public class AndromedaSwerve extends SubsystemBase {
   private static AndromedaSwerve instance;
 
-  private AndromedaModule[] modules;
+  private AndromedaModule[] modules = new AndromedaModule[4];
   public AndromedaSwerveConfig andromedaProfile;
 
   private final GyroIO gyroIO;
@@ -34,9 +36,13 @@ public class AndromedaSwerve extends SubsystemBase {
   /*
    * private SwerveDriveOdometry odometry;
    */
-  private AndromedaSwerve(GyroIO gyro, AndromedaModule[] modules, AndromedaSwerveConfig profileConfig) {
+  private AndromedaSwerve(Mode mode, GyroIO gyro, AndromedaModuleIO[] modulesIO, AndromedaSwerveConfig profileConfig) {
     this.andromedaProfile = profileConfig;
-    this.modules = modules;
+    modules[0] = new AndromedaModule(0, "Front Left", andromedaProfile, mode, modulesIO[0]);
+    modules[1] = new AndromedaModule(1, "Front Left", andromedaProfile, mode, modulesIO[1]);
+    modules[2] = new AndromedaModule(2, "Front Left", andromedaProfile, mode, modulesIO[2]);
+    modules[3] = new AndromedaModule(3, "Front Left", andromedaProfile, mode, modulesIO[3]);
+
     this.gyroIO = gyro;
 
     odometry = new SwerveDriveOdometry(profileConfig.swerveKinematics, getSwerveAngle(), getPositions());
@@ -46,10 +52,10 @@ public class AndromedaSwerve extends SubsystemBase {
      * getSwerveAngle(), getPositions());
      */ }
 
-  public static AndromedaSwerve getInstance(GyroIO gyro, AndromedaModule[] modules,
+  public static AndromedaSwerve getInstance(Mode mode, GyroIO gyro, AndromedaModuleIO[] modules,
       AndromedaSwerveConfig profileConfig) {
     if (instance == null) {
-      instance = new AndromedaSwerve(gyro, modules, profileConfig);
+      instance = new AndromedaSwerve(mode, gyro, modules, profileConfig);
     }
     return instance;
   }
@@ -118,30 +124,6 @@ public class AndromedaSwerve extends SubsystemBase {
     SwerveModuleState[] states = new SwerveModuleState[modules.length];
     for (AndromedaModule andromedaModule : modules) {
       states[andromedaModule.getModuleNumber()] = andromedaModule.getState();
-    }
-
-    return states;
-  }
-
-  public double[] getDoubleStates() {
-    double[] states = new double[8];
-
-    for (int i = 0; i < 4; i++) {
-      double[] moduleStates = modules[i].getDoubleStates();
-      states[i * 2] = moduleStates[0];
-      states[i * 2 + 1] = moduleStates[1];
-    }
-
-    return states;
-  }
-
-  public double[] getDoubleDesiredStates() {
-    double[] states = new double[8];
-
-    for (int i = 0; i < 4; i++) {
-      double[] moduleStates = modules[i].getDoubleDesiredStates();
-      states[i * 2] = moduleStates[0];
-      states[i * 2 + 1] = moduleStates[1];
     }
 
     return states;
