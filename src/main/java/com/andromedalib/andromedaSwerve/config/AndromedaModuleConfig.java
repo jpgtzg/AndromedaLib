@@ -159,7 +159,7 @@ public class AndromedaModuleConfig {
 
         cancoderConfig.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
         cancoderConfig.MagnetSensor.SensorDirection = canCoderInvert;
-        cancoderConfig.MagnetSensor.MagnetOffset = moduleIDs.angleOffset.getDegrees();
+        cancoderConfig.MagnetSensor.MagnetOffset = moduleIDs.angleOffset.getRotations();
 
         /* Turning Motor */
 
