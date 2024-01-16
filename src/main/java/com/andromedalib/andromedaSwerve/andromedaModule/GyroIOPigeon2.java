@@ -5,6 +5,7 @@ import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.Pigeon2Configuration;
 import com.ctre.phoenix6.hardware.Pigeon2;
+
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.util.Units;
 
@@ -19,15 +20,14 @@ public class GyroIOPigeon2 implements GyroIO {
      * 
      * @param gyroID Gyro CAN ID
      */
-    public GyroIOPigeon2(int gyroID) {
-        pigeon = new Pigeon2(gyroID);
+    public GyroIOPigeon2(int id, String canbus) {
+        pigeon = new Pigeon2(id, canbus);
         yaw = pigeon.getYaw();
         yawVelocity = pigeon.getAngularVelocityZWorld();
         pigeon.getConfigurator().apply(new Pigeon2Configuration());
         pigeon.getConfigurator().setYaw(0.0);
         yaw.setUpdateFrequency(100.0);
         yawVelocity.setUpdateFrequency(100.0);
-        pigeon.optimizeBusUtilization();
     }
 
     @Override
