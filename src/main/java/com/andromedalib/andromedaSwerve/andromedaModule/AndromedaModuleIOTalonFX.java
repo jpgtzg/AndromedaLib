@@ -59,6 +59,9 @@ public class AndromedaModuleIOTalonFX implements AndromedaModuleIO {
                                 andromedaModuleConfig.cancoderConfiguration,
                                 andromedaModuleConfig.swerveCANBus);
 
+                steeringMotor.setPosition(0);
+                driveMotor.setPosition(0);
+
                 resetAbsolutePosition();
 
                 drivePosition = driveMotor.getPosition();
@@ -102,7 +105,7 @@ public class AndromedaModuleIOTalonFX implements AndromedaModuleIO {
                 inputs.driveVelocity = Units.rotationsToRadians(driveVelocity.getValueAsDouble());
                 inputs.driveAppliedVolts = driveAppliedVolts.getValueAsDouble();
 
-                inputs.encoderAbsolutePosition = Rotation2d.fromRotations(turnAbsolutePosition.getValueAsDouble());
+                inputs.encoderAbsolutePosition = Rotation2d.fromRotations(turnAbsolutePosition.getValue());
                 inputs.steerAngle = Rotation2d.fromRotations(turnPosition.getValueAsDouble());
 
                 inputs.turnVelocity = Units.rotationsToRadians(turnVelocity.getValueAsDouble());
@@ -116,7 +119,7 @@ public class AndromedaModuleIOTalonFX implements AndromedaModuleIO {
 
         @Override
         public void setDriveVoltage(double volts) {
-                steeringMotor.setControl(new VoltageOut(volts));
+                driveMotor.setControl(new VoltageOut(volts));
         }
 
         public Rotation2d getAbsoluteRotations() {

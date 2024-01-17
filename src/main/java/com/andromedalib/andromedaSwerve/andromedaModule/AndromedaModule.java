@@ -8,12 +8,14 @@ import org.littletonrobotics.junction.Logger;
 
 import com.andromedalib.andromedaSwerve.config.AndromedaSwerveConfig;
 import com.andromedalib.andromedaSwerve.config.AndromedaSwerveConfig.Mode;
+import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain.SwerveDriveState;
 
 import edu.wpi.first.math.controller.PIDController;
 import edu.wpi.first.math.controller.SimpleMotorFeedforward;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
 public class AndromedaModule {
     private final int moduleNumber;
@@ -46,7 +48,7 @@ public class AndromedaModule {
             case REPLAY:
                 driveFeedforward = new SimpleMotorFeedforward(0.1, 0.13);
                 driveFeedback = new PIDController(0.05, 0.0, 0.0);
-                turnFeedback = new PIDController(0.3, 0.0, 0.0);
+                turnFeedback = new PIDController(3, 0.0, 0.0);
                 break;
             case SIM:
                 driveFeedforward = new SimpleMotorFeedforward(0.0, 0.13);
@@ -66,7 +68,7 @@ public class AndromedaModule {
 
     public void periodic() {
         io.updateInputs(inputs);
-        Logger.processInputs("Swerve/Module" + Integer.toString(moduleNumber), inputs);
+        Logger.processInputs("Swerve/" + moduleName, inputs);
 
     }
 
@@ -98,9 +100,7 @@ public class AndromedaModule {
      * @param isOpenLoop   True if open loop feedback is enabled
      */
     private void setSpeed(SwerveModuleState desiredState) {
-        io.setDriveVoltage(
-                driveFeedforward.calculate(desiredState.speedMetersPerSecond)
-                        + driveFeedback.calculate(inputs.driveVelocity, desiredState.speedMetersPerSecond));
+        io.setDriveVoltage( driveFeedback.calculate(inputs.driveVelocity, desiredState.speedMetersPerSecond));
     }
 
     /**
