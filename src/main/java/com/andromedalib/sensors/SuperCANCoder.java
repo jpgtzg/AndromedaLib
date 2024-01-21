@@ -38,30 +38,4 @@ public class SuperCANCoder extends CANcoder {
         getConfigurator().apply(configuration);
     }
 
-    /**
-     * Gets the absolute degrees position
-     * 
-     * @return Absolute position in degrees
-     */
-    public double getDegrees() {
-        return getRotation().getDegrees() * 360;
-    }
-
-    /**
-     * Gets the absolute position in degrees
-     * 
-     * @return Absolute position in degrees
-     */
-    public double getAbsolutePositionDegrees(){
-        return getAbsolutePosition().getValueAsDouble() * 360;
-    }
-
-    /**
-     * Gets the absolute {@link Rotation2d} positions
-     * 
-     * @return Absolute positions
-     */
-    public Rotation2d getRotation() {
-        return Rotation2d.fromDegrees(getAbsolutePosition().getValue());
-    }
 }

@@ -10,6 +10,7 @@ package com.andromedalib.math;
  * 
  * Copied over and modified from
  * https://github.com/frc1678/C2022/blob/main/src/main/java/com/lib/math/Conversions.java
+ * https://github.com/dirtbikerxz/BaseTalonFXSwerve/blob/main/src/main/java/frc/lib/math/Conversions.java
  */
 
 public class Conversions {
@@ -33,7 +34,7 @@ public class Conversions {
      * @return Degrees of rotation of mechanism
      */
     public static double neoToDegrees(double counts, double gearRatio) {
-        return counts / ( gearRatio / 360);
+        return counts / (gearRatio / 360);
     }
 
     /**
@@ -125,6 +126,46 @@ public class Conversions {
      */
     public static double falconToMeters(double velocityCount, double circumference, double gearRatio) {
         return velocityCount * ((circumference) / (gearRatio * 2048.0));
+    }
+
+    /**
+     * @param wheelRPS      Wheel Velocity: (in Rotations per Second)
+     * @param circumference Wheel Circumference: (in Meters)
+     * @return Wheel Velocity: (in Meters per Second)
+     */
+    public static double RPSToMPS(double wheelRPS, double circumference) {
+        double wheelMPS = wheelRPS * circumference;
+        return wheelMPS;
+    }
+
+    /**
+     * @param wheelMPS      Wheel Velocity: (in Meters per Second)
+     * @param circumference Wheel Circumference: (in Meters)
+     * @return Wheel Velocity: (in Rotations per Second)
+     */
+    public static double MPSToRPS(double wheelMPS, double circumference) {
+        double wheelRPS = wheelMPS / circumference;
+        return wheelRPS;
+    }
+
+    /**
+     * @param wheelRotations Wheel Position: (in Rotations)
+     * @param circumference  Wheel Circumference: (in Meters)
+     * @return Wheel Distance: (in Meters)
+     */
+    public static double rotationsToMeters(double wheelRotations, double circumference) {
+        double wheelMeters = wheelRotations * circumference;
+        return wheelMeters;
+    }
+
+    /**
+     * @param wheelMeters   Wheel Distance: (in Meters)
+     * @param circumference Wheel Circumference: (in Meters)
+     * @return Wheel Position: (in Rotations)
+     */
+    public static double metersToRotations(double wheelMeters, double circumference) {
+        double wheelRotations = wheelMeters / circumference;
+        return wheelRotations;
     }
 
 }

@@ -4,85 +4,127 @@
 
 package com.andromedalib.andromedaSwerve.andromedaModule;
 
+import org.littletonrobotics.junction.Logger;
+
+import com.andromedalib.andromedaSwerve.config.AndromedaSwerveConfig;
+import com.andromedalib.andromedaSwerve.config.AndromedaSwerveConfig.Mode;
+import com.ctre.phoenix6.mechanisms.swerve.SwerveDrivetrain.SwerveDriveState;
+
+import edu.wpi.first.math.controller.PIDController;
+import edu.wpi.first.math.controller.SimpleMotorFeedforward;
+import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 
-/**
- * AndromedaModule interface. All available modules inherit this interface
- */
-public interface AndromedaModule {
+public class AndromedaModule {
+    private final int moduleNumber;
+    private final String moduleName;
+
+    private AndromedaModuleIO io;
+    private AndromedaModuleIOInputsAutoLogged inputs = new AndromedaModuleIOInputsAutoLogged();
+
+    private Rotation2d lastAngle;
+    private AndromedaSwerveConfig andromedaSwerveConfig;
+
+    private final SimpleMotorFeedforward driveFeedforward;
+    private final PIDController driveFeedback;
+    private final PIDController turnFeedback;
+
+    public AndromedaModule(int moduleNumber, String name,
+            AndromedaSwerveConfig swerveConfig, Mode mode, AndromedaModuleIO io) {
+        this.io = io;
+        this.moduleName = name;
+        this.moduleNumber = moduleNumber;
+        this.andromedaSwerveConfig = swerveConfig;
+
+        /* Remove unused warning */
+        moduleName.getClass();
+
+        lastAngle = getAngle();
+
+        switch (mode) {
+            case REAL:
+            case REPLAY:
+                driveFeedforward = new SimpleMotorFeedforward(0.1, 0.13);
+                driveFeedback = new PIDController(0.05, 0.0, 0.0);
+                turnFeedback = new PIDController(3, 0.0, 0.0);
+                break;
+            case SIM:
+                driveFeedforward = new SimpleMotorFeedforward(0.0, 0.13);
+                driveFeedback = new PIDController(0.1, 0.0, 0.0);
+                turnFeedback = new PIDController(10.0, 0.0, 0.0);
+                break;
+            default:
+                driveFeedforward = new SimpleMotorFeedforward(0.0, 0.0);
+                driveFeedback = new PIDController(0.0, 0.0, 0.0);
+                turnFeedback = new PIDController(0.0, 0.0, 0.0);
+                break;
+        }
+
+        turnFeedback.enableContinuousInput(-Math.PI, Math.PI);
+
+    }
+
+    public void periodic() {
+        io.updateInputs(inputs);
+        Logger.processInputs("Swerve/" + moduleName, inputs);
+
+    }
+
+    public void setDesiredState(SwerveModuleState desiredState) {
+        desiredState = SwerveModuleState.optimize(desiredState, getAngle());
+
+        setAngle(desiredState);
+        setSpeed(desiredState);
+    }
+
     /**
-     * Gets the module's number
+     * Sets the turning motor´+´+ angle to its desired state
      * 
-     * @return Module number
+     * @param desiredState {@link SwerveModuleState} to apply
      */
-    public int getModuleNumber();
+    private void setAngle(SwerveModuleState desiredState) {
+        Rotation2d angle = (Math.abs(desiredState.speedMetersPerSecond) <= (andromedaSwerveConfig.maxSpeed * 0.01))
+                ? lastAngle
+                : desiredState.angle;
+
+        io.setTurnVoltage(turnFeedback.calculate(getAngle().getRadians(), angle.getRadians()));
+        lastAngle = angle;
+    }
 
     /**
-     * Gets the module's name
+     * Sets the drive motor speed to its desired state
      * 
-     * @return Module name
-     */
-    public String getModuleName();
-
-    /**
-     * Sets the Module's state
-     * 
-     * @param desiredState Desired {@link SwerveModuleState} to apply
+     * @param desiredState {@link SwerveModuleState} to apply
      * @param isOpenLoop   True if open loop feedback is enabled
      */
-    public void setDesiredState(SwerveModuleState desiredState, boolean isOpenLoop);
+    private void setSpeed(SwerveModuleState desiredState) {
+        io.setDriveVoltage( driveFeedback.calculate(inputs.driveVelocity, desiredState.speedMetersPerSecond));
+    }
 
     /**
-     * Resets the module's angle to the absolute encoder position
-     */
-    public void resetAbsolutePosition();
-
-    /**
-     * Gets the current module state
-     * 
-     * @return Current {@link SwerveModuleState}
-     */
-    public SwerveModuleState getState();
-
-    /**
-     * Gets the current desired module state
-     * 
-     * @return Current desired {@link SwerveModuleState}
-     */
-    public SwerveModuleState getDesiredState();
-
-    /**
-     * Gets the current module state in a double array
-     * 
-     * @return Current {@link SwerveModuleState} in a double array
-     */
-    public double[] getDoubleStates();
-
-    /**
-     * Gets the current desired module state in a double array
-     * 
-     * @return Current desired {@link SwerveModuleState} in a double array
-     */
-    public double[] getDoubleDesiredStates();
-
-    /**
-     * Gets the current module position
-     * 
-     * @return Current {@link SwerveModulePosition} position
-     */
-    public SwerveModulePosition getPosition();
-
-    /**
-     * Gets module's motor temps
+     * Gets the current position and angle as a {@link SwerveModuleState}
      * 
      * @return
      */
-    public double[] getTemp();
+    public SwerveModuleState getState() {
+        return new SwerveModuleState(getDriveSpeed(), getAngle());
+    }
 
-    /**
-     * Updates all NT values
-     */
-    public void updateNT();
+    public double getDriveSpeed() {
+        return inputs.driveVelocity;
+    }
 
+    private Rotation2d getAngle() {
+        return inputs.steerAngle;
+    }
+
+    public int getModuleNumber() {
+        return moduleNumber;
+    }
+
+    public SwerveModulePosition getPosition() {
+        return new SwerveModulePosition(inputs.drivePosition, getAngle());
+    }
 }

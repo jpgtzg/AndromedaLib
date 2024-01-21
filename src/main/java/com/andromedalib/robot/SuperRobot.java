@@ -3,12 +3,13 @@
  */
 package com.andromedalib.robot;
 
+import org.littletonrobotics.junction.LoggedRobot;
+
 import edu.wpi.first.cameraserver.CameraServer;
-import edu.wpi.first.wpilibj.TimedRobot;
 import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.CommandScheduler;
 
-public class SuperRobot extends TimedRobot {
+public class SuperRobot extends LoggedRobot {
     private SuperRobotContainer container;
     private BaseTelemetryManager telemetryManager;
 
@@ -50,8 +51,6 @@ public class SuperRobot extends TimedRobot {
 
         if (useCamera)
             CameraServer.startAutomaticCapture();
-
-        addPeriodic(() -> CommandScheduler.getInstance().run(), 0.01);
     }
 
     /**
@@ -61,6 +60,7 @@ public class SuperRobot extends TimedRobot {
      */
     @Override
     public void robotPeriodic() {
+        CommandScheduler.getInstance().run();
         telemetryManager.updateTelemetry();
     }
 

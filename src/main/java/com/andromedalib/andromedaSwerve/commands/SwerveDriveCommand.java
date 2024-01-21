@@ -50,8 +50,7 @@ public class SwerveDriveCommand extends Command {
     swerve.drive(
         new Translation2d(ySpeed, xSpeed).times(swerve.andromedaProfile.maxSpeed),
         rotationSpeed * swerve.andromedaProfile.maxAngularVelocity,
-        !fieldOriented.getAsBoolean(), 
-        true);
+        !fieldOriented.getAsBoolean());
   }
 
 }

@@ -157,9 +157,8 @@ public class AndromedaModuleConfig {
         ModuleMotorConfig motorConfig = ModuleMotorConfig.FALCON_CONFIG;
         /* CANCoder */
 
-        cancoderConfig.MagnetSensor.AbsoluteSensorRange = AbsoluteSensorRangeValue.Signed_PlusMinusHalf;
         cancoderConfig.MagnetSensor.SensorDirection = canCoderInvert;
-        cancoderConfig.MagnetSensor.MagnetOffset = moduleIDs.angleOffset.getDegrees();
+        cancoderConfig.MagnetSensor.MagnetOffset = moduleIDs.angleOffset.getRotations();
 
         /* Turning Motor */
 
