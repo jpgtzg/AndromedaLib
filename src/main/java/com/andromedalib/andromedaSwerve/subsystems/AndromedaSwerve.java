@@ -108,13 +108,13 @@ public class AndromedaSwerve extends SubsystemBase {
 
     // Log empty setpoint states when disabled
     if (DriverStation.isDisabled()) {
-      Logger.recordOutput("SwerveStates/Setpoints", new SwerveModuleState[] {});
-      Logger.recordOutput("SwerveStates/SetpointsOptimized", new SwerveModuleState[] {});
-      Logger.recordOutput("DesiredChassisSpeeds", new ChassisSpeeds());
+      Logger.recordOutput("Swerve/SwerveStates/Setpoints", new SwerveModuleState[] {});
+      Logger.recordOutput("Swerve/SwerveStates/SetpointsOptimized", new SwerveModuleState[] {});
+      Logger.recordOutput("Swerve/DesiredChassisSpeeds", new ChassisSpeeds());
     }
-    Logger.recordOutput("SwerveStates/Measured", getModuleStates());
+    Logger.recordOutput("Swerve/SwerveStates/Measured", getModuleStates());
 
-    Logger.recordOutput("ChassisSpeeds", getFieldRelativeChassisSpeeds());
+    Logger.recordOutput("Swerve/ChassisSpeeds", getFieldRelativeChassisSpeeds());
 
     updateOdometry();
   }
@@ -139,7 +139,7 @@ public class AndromedaSwerve extends SubsystemBase {
   public void drive(ChassisSpeeds chassisSpeeds) {
     SwerveModuleState[] swerveModuleStates = andromedaProfile.swerveKinematics.toSwerveModuleStates(chassisSpeeds);
 
-    Logger.recordOutput("DesiredChassisSpeeds", chassisSpeeds);
+    Logger.recordOutput("Swerve/DesiredChassisSpeeds", chassisSpeeds);
 
     setModuleStates(swerveModuleStates);
 
@@ -160,7 +160,7 @@ public class AndromedaSwerve extends SubsystemBase {
    * Returns the module states (turn angles and drive velocities) for all of the
    * modules.
    */
-  @AutoLogOutput(key = "SwerveStates/Measured")
+  @AutoLogOutput(key = "Swerve/SwerveStates/Measured")
   private SwerveModuleState[] getModuleStates() {
     SwerveModuleState[] states = new SwerveModuleState[4];
 
@@ -172,7 +172,7 @@ public class AndromedaSwerve extends SubsystemBase {
   }
 
   /** Returns the current odometry pose. */
-  @AutoLogOutput(key = "Odometry/Robot")
+  @AutoLogOutput(key = "Swerve/Odometry/Robot")
   public Pose2d getPose() {
     return poseEsimtator.getEstimatedPosition();
   }
@@ -222,7 +222,7 @@ public class AndromedaSwerve extends SubsystemBase {
   public void setModuleStates(SwerveModuleState[] desiredStates) {
     SwerveDriveKinematics.desaturateWheelSpeeds(desiredStates, andromedaProfile.maxSpeed);
 
-    Logger.recordOutput("SwerveStates/Setpoints", desiredStates);
+    Logger.recordOutput("Swerve/SwerveStates/Setpoints", desiredStates);
 
     for (AndromedaModule andromedaModule : modules) {
       andromedaModule.setDesiredState(desiredStates[andromedaModule.getModuleNumber()]);
