@@ -19,9 +19,12 @@ public class AndromedaSwerveConfig {
     public final double maxAngularVelocity;
     public final double maxAngularAcceleration;
 
+    public final double wheelDiameter;
+    public final double wheelCircumference;
+
     public AndromedaSwerveConfig(double deadband, double trackWidth, double wheelBase,
             SwerveDriveKinematics swerveKinematics, double maxSpeed, double maxAcceleration, double maxAngularVelocity,
-            double maxAngularAcceleration) {
+            double maxAngularAcceleration, double wheelDiameter) {
         this.deadband = deadband;
         this.trackWidth = trackWidth;
         this.wheelBase = wheelBase;
@@ -30,6 +33,8 @@ public class AndromedaSwerveConfig {
         this.maxAcceleration = maxAcceleration;
         this.maxAngularVelocity = maxAngularVelocity;
         this.maxAngularAcceleration = maxAngularAcceleration;
+        this.wheelDiameter = wheelDiameter;
+        this.wheelCircumference = wheelDiameter * Math.PI;
     }
 
     public static enum Mode {
