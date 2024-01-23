@@ -6,11 +6,14 @@ package com.andromedalib.andromedaSwerve.andromedaModule;
 
 import com.andromedalib.andromedaSwerve.config.AndromedaModuleConfig;
 import com.andromedalib.andromedaSwerve.config.AndromedaModuleConfig.ModuleMotorConfig;
+import com.andromedalib.math.Conversions;
 import com.andromedalib.motorControllers.IdleManager.GlobalIdleMode;
 import com.andromedalib.motorControllers.SuperTalonFX;
 import com.andromedalib.sensors.SuperCANCoder;
 import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.StatusSignal;
+import com.ctre.phoenix6.controls.PositionVoltage;
+import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 
 import edu.wpi.first.math.geometry.Rotation2d;
@@ -30,13 +33,17 @@ public class AndromedaModuleIOTalonFX implements AndromedaModuleIO {
         private final StatusSignal<Double> drivePosition;
         private final StatusSignal<Double> driveVelocity;
         private final StatusSignal<Double> driveAppliedVolts;
-        private final StatusSignal<Double> driveCurrent;
+        private final StatusSignal<Double> driveAcceleration;
 
         private final StatusSignal<Double> turnAbsolutePosition;
         private final StatusSignal<Double> turnPosition;
         private final StatusSignal<Double> turnVelocity;
         private final StatusSignal<Double> turnAppliedVolts;
         private final StatusSignal<Double> turnCurrent;
+
+        private VelocityVoltage driveVelocityControl = new VelocityVoltage(0).withSlot(0);
+        private VoltageOut driveCharacterizationControl = new VoltageOut(0);
+        private PositionVoltage turnPositionControl = new PositionVoltage(0).withSlot(0);
 
         public AndromedaModuleIOTalonFX(int moduleNumber, AndromedaModuleConfig moduleConfig) {
                 this.andromedaModuleConfig = moduleConfig;
@@ -60,14 +67,13 @@ public class AndromedaModuleIOTalonFX implements AndromedaModuleIO {
                                 andromedaModuleConfig.swerveCANBus);
 
                 steeringMotor.setPosition(0);
-                driveMotor.setPosition(0);
 
-                resetAbsolutePosition();
+                resetAbsolutePosition(moduleConfig.moduleIDs.angleOffset);
 
                 drivePosition = driveMotor.getPosition();
                 driveVelocity = driveMotor.getVelocity();
                 driveAppliedVolts = driveMotor.getMotorVoltage();
-                driveCurrent = driveMotor.getStatorCurrent();
+                driveAcceleration = driveMotor.getAcceleration();
 
                 turnAbsolutePosition = steeringEncoder.getAbsolutePosition();
                 turnPosition = steeringMotor.getPosition();
@@ -81,7 +87,6 @@ public class AndromedaModuleIOTalonFX implements AndromedaModuleIO {
                                 50.0,
                                 driveVelocity,
                                 driveAppliedVolts,
-                                driveCurrent,
                                 turnAbsolutePosition,
                                 turnVelocity,
                                 turnAppliedVolts,
@@ -94,15 +99,21 @@ public class AndromedaModuleIOTalonFX implements AndromedaModuleIO {
                                 drivePosition,
                                 driveVelocity,
                                 driveAppliedVolts,
-                                driveCurrent,
                                 turnAbsolutePosition,
+                                driveAcceleration,
                                 turnPosition,
                                 turnVelocity,
                                 turnAppliedVolts,
                                 turnCurrent);
 
-                inputs.drivePosition = Units.rotationsToRadians(drivePosition.getValueAsDouble());
-                inputs.driveVelocity = Units.rotationsToRadians(driveVelocity.getValueAsDouble());
+                inputs.drivePosition = Units.rotationsToRadians(drivePosition.getValueAsDouble())
+                                * (andromedaModuleConfig.wheelDiameter / 2);
+                inputs.driveVelocity = Units.rotationsToRadians(driveMotor.getVelocity().getValueAsDouble())
+                                * (andromedaModuleConfig.wheelDiameter / 2);
+
+                inputs.driveAcceleration = Units.rotationsToRadians(driveMotor.getAcceleration().getValueAsDouble())
+                                * (andromedaModuleConfig.wheelDiameter / 2);
+
                 inputs.driveAppliedVolts = driveAppliedVolts.getValueAsDouble();
 
                 inputs.encoderAbsolutePosition = Rotation2d.fromRotations(turnAbsolutePosition.getValue());
@@ -113,21 +124,29 @@ public class AndromedaModuleIOTalonFX implements AndromedaModuleIO {
         }
 
         @Override
-        public void setTurnVoltage(double volts) {
-                steeringMotor.setControl(new VoltageOut(volts));
+        public void setTurnPosition(Rotation2d angle) {
+                steeringMotor.setControl(turnPositionControl.withPosition(angle.getRotations()));
         }
 
         @Override
-        public void setDriveVoltage(double volts) {
-                driveMotor.setControl(new VoltageOut(volts));
+        public void setDriveVelocity(double velocity) {
+                driveVelocityControl.Velocity = Conversions.MPSToRPS(velocity,
+                                andromedaModuleConfig.wheelCircumference);
+                driveMotor.setControl(driveVelocityControl.withVelocity(velocity)
+                                .withFeedForward(velocity));
+        }
+
+        @Override
+        public void runDriveCharacterization(double volts) {
+                driveMotor.setControl(driveCharacterizationControl.withOutput(volts));
         }
 
         public Rotation2d getAbsoluteRotations() {
                 return Rotation2d.fromRotations(steeringEncoder.getAbsolutePosition().getValue());
         }
 
-        private void resetAbsolutePosition() {
-                double absolutePosition = getAbsoluteRotations().getRotations();
+        private void resetAbsolutePosition(Rotation2d offset) {
+                double absolutePosition = getAbsoluteRotations().getRotations() - offset.getRotations();
                 steeringMotor.setPosition(absolutePosition);
         }
 }
