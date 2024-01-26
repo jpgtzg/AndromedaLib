@@ -145,6 +145,15 @@ public class AndromedaSwerve extends SubsystemBase {
 
   }
 
+  public void lockPose() {
+    SwerveModuleState[] desiredStates = andromedaProfile.swerveKinematics
+        .toSwerveModuleStates(new ChassisSpeeds(0, 0, 0.1));
+
+    for (AndromedaModule andromedaModule : modules) {
+      andromedaModule.setDesiredState(desiredStates[andromedaModule.getModuleNumber()]);
+    }
+  }
+
   /* Telemetry */
 
   /**
