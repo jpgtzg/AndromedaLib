@@ -45,7 +45,7 @@ public class AndromedaSwerve extends SubsystemBase {
   private final GyroIO gyroIO;
   private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
 
-  private SwerveDrivePoseEstimator poseEsimtator;
+  private SwerveDrivePoseEstimator poseEstimator;
 
   private final MutableMeasure<Voltage> m_appliedVoltage = mutable(Volts.of(0));
   private final MutableMeasure<Distance> m_distance = mutable(Meters.of(0));
@@ -84,7 +84,11 @@ public class AndromedaSwerve extends SubsystemBase {
 
     this.gyroIO = gyro;
 
-    poseEsimtator = new SwerveDrivePoseEstimator(profileConfig.swerveKinematics, getSwerveAngle(), getPositions(),
+    poseEstimator = new SwerveDrivePoseEstimator(profileConfig.swerveKinematics, new Rotation2d(),
+        new SwerveModulePosition[] { new SwerveModulePosition(),
+            new SwerveModulePosition(),
+            new SwerveModulePosition(),
+            new SwerveModulePosition()},
         new Pose2d());
   }
 
@@ -183,19 +187,19 @@ public class AndromedaSwerve extends SubsystemBase {
   /** Returns the current odometry pose. */
   @AutoLogOutput(key = "Swerve/Odometry/Robot")
   public Pose2d getPose() {
-    return poseEsimtator.getEstimatedPosition();
+    return poseEstimator.getEstimatedPosition();
   }
 
   public void resetPose(Pose2d pose2d) {
-    poseEsimtator.resetPosition(getSwerveAngle(), getPositions(), pose2d);
+    poseEstimator.resetPosition(getSwerveAngle(), getPositions(), pose2d);
   }
 
   public void updateOdometry() {
-    poseEsimtator.update(getSwerveAngle(), getPositions());
+    poseEstimator.update(getSwerveAngle(), getPositions());
   }
 
   public void addVisionMeasurements(Pose2d visionMeasurement, double timestampSeconds) {
-    poseEsimtator.addVisionMeasurement(visionMeasurement, timestampSeconds);
+    poseEstimator.addVisionMeasurement(visionMeasurement, timestampSeconds);
   }
 
   public ChassisSpeeds getRelativeChassisSpeeds() {
