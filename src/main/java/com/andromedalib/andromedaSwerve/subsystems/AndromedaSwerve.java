@@ -1,34 +1,39 @@
 /**
  * Written by Juan Pablo Gutiérrez
+ * 
+ * 22 03 2024
  */
 package com.andromedalib.andromedaSwerve.subsystems;
 
+import static edu.wpi.first.units.Units.Meters;
+import static edu.wpi.first.units.Units.MetersPerSecond;
+import static edu.wpi.first.units.Units.Rotations;
+import static edu.wpi.first.units.Units.Volts;
+
+import java.util.concurrent.locks.Lock;
+import java.util.concurrent.locks.ReentrantLock;
+
 import org.littletonrobotics.junction.AutoLogOutput;
 import org.littletonrobotics.junction.Logger;
+
 import com.andromedalib.andromedaSwerve.andromedaModule.AndromedaModule;
 import com.andromedalib.andromedaSwerve.andromedaModule.AndromedaModuleIO;
 import com.andromedalib.andromedaSwerve.andromedaModule.GyroIO;
 import com.andromedalib.andromedaSwerve.andromedaModule.GyroIOInputsAutoLogged;
 import com.andromedalib.andromedaSwerve.config.AndromedaSwerveConfig;
-import com.pathplanner.lib.auto.AutoBuilder;
-import com.pathplanner.lib.path.PathConstraints;
-import com.pathplanner.lib.util.HolonomicPathFollowerConfig;
-import com.pathplanner.lib.util.PathPlannerLogging;
-import edu.wpi.first.math.VecBuilder;
-import edu.wpi.first.math.Vector;
-import edu.wpi.first.math.estimator.SwerveDrivePoseEstimator;
-import edu.wpi.first.math.geometry.Pose2d;
+import com.andromedalib.andromedaSwerve.utils.PhoenixOdometryThread;
+import com.andromedalib.odometry.SuperRobotState;
+
 import edu.wpi.first.math.geometry.Rotation2d;
-import edu.wpi.first.math.geometry.Translation2d;
+import edu.wpi.first.math.geometry.Twist2d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
 import edu.wpi.first.math.kinematics.SwerveDriveKinematics;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
-import edu.wpi.first.math.numbers.N3;
+import edu.wpi.first.units.Angle;
 import edu.wpi.first.units.Distance;
 import edu.wpi.first.units.Measure;
 import edu.wpi.first.units.MutableMeasure;
-import edu.wpi.first.units.Units;
 import edu.wpi.first.units.Velocity;
 import edu.wpi.first.units.Voltage;
 import edu.wpi.first.wpilibj.DriverStation;
@@ -37,37 +42,32 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
 import edu.wpi.first.wpilibj2.command.sysid.SysIdRoutine;
 
-import static edu.wpi.first.units.MutableMeasure.mutable;
-import static edu.wpi.first.units.Units.Meters;
-import static edu.wpi.first.units.Units.MetersPerSecond;
-import static edu.wpi.first.units.Units.Volts;
-
 public class AndromedaSwerve extends SubsystemBase {
-  private static AndromedaSwerve instance;
 
   private AndromedaModule[] modules = new AndromedaModule[4];
   public AndromedaSwerveConfig andromedaProfile;
 
+  private final SuperRobotState robotState;
+
   private final GyroIO gyroIO;
   private final GyroIOInputsAutoLogged gyroInputs = new GyroIOInputsAutoLogged();
 
-  private SwerveDrivePoseEstimator poseEstimator;
+  @AutoLogOutput(key = "Swerve/Rotation")
+  private Rotation2d rawGyroRotation = new Rotation2d();
+  private SwerveModulePosition[] lastModulePositions = new SwerveModulePosition[4];
 
-  private final MutableMeasure<Voltage> m_appliedVoltage = mutable(Volts.of(0));
-  private final MutableMeasure<Distance> m_distance = mutable(Meters.of(0));
-  private final MutableMeasure<Velocity<Distance>> m_velocity = mutable(MetersPerSecond.of(0));
+  public static final Lock odometryLock = new ReentrantLock();
 
-  private final Vector<N3> stateStandardDeviations = VecBuilder.fill(0.03, 0.03,
-      edu.wpi.first.math.util.Units.degreesToRadians(1));
-
-  private final Vector<N3> visionmeasurementStandardDeviations = VecBuilder.fill(0.5, 0.5,
-      edu.wpi.first.math.util.Units.degreesToRadians(50));
+  /* Characterization */
+  private final MutableMeasure<Voltage> m_appliedVoltage = MutableMeasure.zero(Volts);
+  private final MutableMeasure<Distance> m_distance = MutableMeasure.zero(Meters);
+  private final MutableMeasure<Velocity<Distance>> m_velocity = MutableMeasure.zero(MetersPerSecond);
 
   private final SysIdRoutine m_sysIdRoutine = new SysIdRoutine(
       new SysIdRoutine.Config(),
       new SysIdRoutine.Mechanism(
           (Measure<Voltage> volts) -> {
-            runSwerveCharacterization(volts.in(Units.Volts));
+            runSwerveCharacterization(volts);
           },
           log -> {
             log.motor("drive-left")
@@ -87,61 +87,36 @@ public class AndromedaSwerve extends SubsystemBase {
           },
           this));
 
-  private AndromedaSwerve(GyroIO gyro, AndromedaModuleIO[] modulesIO, AndromedaSwerveConfig profileConfig,
-      HolonomicPathFollowerConfig pathConfig) {
-    this.andromedaProfile = profileConfig;
+  /** Creates a new AndromedaSwerve. */
+  public AndromedaSwerve(GyroIO gyroIO, AndromedaModuleIO[] modulesIO, AndromedaSwerveConfig andromedaProfile,
+      SuperRobotState robotState) {
+    this.andromedaProfile = andromedaProfile;
+    this.robotState = robotState;
     modules[0] = new AndromedaModule(0, "Front Right", andromedaProfile, modulesIO[0]);
     modules[1] = new AndromedaModule(1, "Back Right", andromedaProfile, modulesIO[1]);
     modules[2] = new AndromedaModule(2, "Back Left", andromedaProfile, modulesIO[2]);
     modules[3] = new AndromedaModule(3, "Front Left", andromedaProfile, modulesIO[3]);
+    lastModulePositions = new SwerveModulePosition[] {
+        new SwerveModulePosition(),
+        new SwerveModulePosition(),
+        new SwerveModulePosition(),
+        new SwerveModulePosition()
+    };
 
-    this.gyroIO = gyro;
+    this.gyroIO = gyroIO;
 
-    poseEstimator = new SwerveDrivePoseEstimator(profileConfig.swerveKinematics, new Rotation2d(),
-        new SwerveModulePosition[] { new SwerveModulePosition(),
-            new SwerveModulePosition(),
-            new SwerveModulePosition(),
-            new SwerveModulePosition() },
-        new Pose2d(), stateStandardDeviations, visionmeasurementStandardDeviations);
-
-    AutoBuilder.configureHolonomic(
-        this::getPose,
-        this::resetPose,
-        this::getRelativeChassisSpeeds,
-        this::drive,
-        pathConfig,
-        () -> {
-          var alliance = DriverStation.getAlliance();
-          if (alliance.isPresent()) {
-            return alliance.get() == DriverStation.Alliance.Red;
-          }
-          return false;
-        }, this);
-    PathPlannerLogging.setLogActivePathCallback(
-        (activePath) -> {
-          Logger.recordOutput(
-              "Odometry/Trajectory", activePath.toArray(new Pose2d[activePath.size()]));
-        });
-    PathPlannerLogging.setLogTargetPoseCallback(
-        (targetPose) -> {
-          Logger.recordOutput("Odometry/TrajectorySetpoint", targetPose);
-        });
-  }
-
-  public static AndromedaSwerve getInstance(GyroIO gyro, AndromedaModuleIO[] modules,
-      AndromedaSwerveConfig profileConfig, HolonomicPathFollowerConfig pathConfig) {
-    if (instance == null) {
-      instance = new AndromedaSwerve(gyro, modules, profileConfig, pathConfig);
-    }
-    return instance;
-
+    PhoenixOdometryThread.getInstance().start();
   }
 
   @Override
   public void periodic() {
+    odometryLock.lock(); // Prevents odometry updates while reading data
     gyroIO.updateInputs(gyroInputs);
+    for (var module : modules) {
+      module.updateInputs();
+    }
+    odometryLock.unlock();
     Logger.processInputs("Swerve/Gyro", gyroInputs);
-
     for (var module : modules) {
       module.periodic();
     }
@@ -152,29 +127,41 @@ public class AndromedaSwerve extends SubsystemBase {
       Logger.recordOutput("Swerve/SwerveStates/SetpointsOptimized", new SwerveModuleState[] {});
       Logger.recordOutput("Swerve/DesiredChassisSpeeds", new ChassisSpeeds());
     }
+
     Logger.recordOutput("Swerve/SwerveStates/Measured", getModuleStates());
 
-    Logger.recordOutput("Swerve/ChassisSpeeds", getFieldRelativeChassisSpeeds());
+    Logger.recordOutput("Swerve/ChassisSpeeds", getRobotRelativeChassisSpeeds());
 
-    updateOdometry();
-  }
+    // Update odometry
+    double[] sampleTimestamps = modules[0].getOdometryTimestamps(); // All signals are sampled together
+    int sampleCount = sampleTimestamps.length;
+    Logger.recordOutput("Swerve/Samplecount", sampleCount);
+    for (int i = 0; i < sampleCount; i++) {
+      // Read wheel positions and deltas from each module
+      SwerveModulePosition[] modulePositions = new SwerveModulePosition[4];
+      SwerveModulePosition[] moduleDeltas = new SwerveModulePosition[4];
+      for (int moduleIndex = 0; moduleIndex < 4; moduleIndex++) {
+        modulePositions[moduleIndex] = modules[moduleIndex].getOdometryPositions()[i];
+        moduleDeltas[moduleIndex] = new SwerveModulePosition(
+            modulePositions[moduleIndex].distanceMeters
+                - lastModulePositions[moduleIndex].distanceMeters,
+            modulePositions[moduleIndex].angle);
+        lastModulePositions[moduleIndex] = modulePositions[moduleIndex];
+      }
 
-  /**
-   * Drives the robot with the given translation and rotation
-   * 
-   * @param translation   Translation movement
-   * @param rotation      Desired rotation
-   * @param fieldRelative True if field relative
-   */
-  public void drive(Translation2d translation, double rotation, boolean fieldRelative) {
-    ChassisSpeeds chassisSpeeds = fieldRelative
-        ? ChassisSpeeds.fromFieldRelativeSpeeds(translation.getX(), translation.getY(), rotation,
-            getSwerveAngle())
-        : new ChassisSpeeds(translation.getX(), translation.getY(), rotation);
+      // Update gyro angle
+      if (gyroInputs.connected) {
+        // Use the real gyro angle
+        rawGyroRotation = gyroInputs.odometryYawPositions[i];
+      } else {
+        // Use the angle delta from the kinematics and module deltas
+        Twist2d twist = andromedaProfile.swerveKinematics.toTwist2d(moduleDeltas);
+        rawGyroRotation = rawGyroRotation.plus(new Rotation2d(twist.dtheta));
+      }
 
-    chassisSpeeds = ChassisSpeeds.discretize(chassisSpeeds, 0.2);
-
-    drive(chassisSpeeds);
+      // Apply update
+      robotState.addOdometryObservations(sampleTimestamps[i], rawGyroRotation, modulePositions);
+    }
   }
 
   /**
@@ -182,12 +169,33 @@ public class AndromedaSwerve extends SubsystemBase {
    * 
    * @param chassisSpeeds The desired ChassisSpeeds
    */
-  public void drive(ChassisSpeeds chassisSpeeds) {
+  protected void drive(ChassisSpeeds chassisSpeeds) {
+
+    chassisSpeeds = ChassisSpeeds.discretize(chassisSpeeds, 0.02);
+
     SwerveModuleState[] swerveModuleStates = andromedaProfile.swerveKinematics.toSwerveModuleStates(chassisSpeeds);
 
     Logger.recordOutput("Swerve/DesiredChassisSpeeds", chassisSpeeds);
 
     setModuleStates(swerveModuleStates);
+  }
+
+  /**
+   * Gets Gyro Angle clamped to 0 - 360 degrees
+   * 
+   * @return
+   */
+  public Rotation2d getSwerveAngle() {
+    return rawGyroRotation;
+  }
+
+  /**
+   * Gets the heading velocity of the robot in degrees
+   * 
+   * @return Heading velocity
+   */
+  public double getHeadingVelocity() {
+    return gyroInputs.yawVelocityDegrees;
   }
 
   /**
@@ -207,29 +215,6 @@ public class AndromedaSwerve extends SubsystemBase {
   }
 
   /**
-   * Locks the pose of the robot to all motors at 45 degrees to prevent movement
-   */
-  public void lockPose() {
-    SwerveModuleState[] desiredStates = andromedaProfile.swerveKinematics
-        .toSwerveModuleStates(new ChassisSpeeds(0, 0, 0.1));
-
-    for (AndromedaModule andromedaModule : modules) {
-      andromedaModule.setDesiredState(desiredStates[andromedaModule.getModuleNumber()]);
-    }
-  }
-
-  /* Telemetry */
-
-  /**
-   * Gets Navx Angle clamped to 0 - 360 degrees
-   * 
-   * @return
-   */
-  public Rotation2d getSwerveAngle() {
-    return gyroInputs.yawPosition;
-  }
-
-  /**
    * Returns the module states (turn angles and drive velocities) for all of the
    * modules.
    */
@@ -244,31 +229,22 @@ public class AndromedaSwerve extends SubsystemBase {
     return states;
   }
 
-  /** Returns the current odometry pose. */
-  @AutoLogOutput(key = "Swerve/PoseEstimate/Robot")
-  public Pose2d getPose() {
-    return poseEstimator.getEstimatedPosition();
-  }
-
-  public void resetPose(Pose2d pose2d) {
-    poseEstimator.resetPosition(getSwerveAngle(), getPositions(), pose2d);
-
-  }
-
-  public void updateOdometry() {
-    poseEstimator.updateWithTime(Logger.getRealTimestamp(), getSwerveAngle(), getPositions());
-  }
-
-  public void addVisionMeasurements(Pose2d visionMeasurement, double timestampSeconds) {
-    poseEstimator.addVisionMeasurement(visionMeasurement, timestampSeconds);
-  }
-
-  public ChassisSpeeds getRelativeChassisSpeeds() {
+  /**
+   * Returns the current {@link ChassisSpeeds} of the robot, relative to the robot
+   * 
+   * @return {@link ChassisSpeeds} of the robot
+   */
+  public ChassisSpeeds getFieldRelativeChassisSpeeds() {
     return ChassisSpeeds.fromFieldRelativeSpeeds(andromedaProfile.swerveKinematics.toChassisSpeeds(getModuleStates()),
         getSwerveAngle());
   }
 
-  public ChassisSpeeds getFieldRelativeChassisSpeeds() {
+  /**
+   * Returns the current {@link ChassisSpeeds} of the robot, relative to the field
+   * 
+   * @return {@link ChassisSpeeds} of the robot
+   */
+  public ChassisSpeeds getRobotRelativeChassisSpeeds() {
     return andromedaProfile.swerveKinematics.toChassisSpeeds(getModuleStates());
   }
 
@@ -287,9 +263,45 @@ public class AndromedaSwerve extends SubsystemBase {
     return states;
   }
 
+  /**
+   * Manually sets the gyro angle to a specified angle
+   * 
+   * @param angle New angle
+   */
+  public void setGyroAngle(Measure<Angle> angle) {
+    gyroIO.setGyroAngle(Rotation2d.fromRotations(angle.in(Rotations)));
+  }
+
+  /**
+   * Stops the drive and turns the modules to an X arrangement to resist movement.
+   * The modules will
+   * return to their normal orientations the next time a nonzero velocity is
+   * requested.
+   */
+  public void lock() {
+    Rotation2d[] headings = new Rotation2d[4];
+    for (int i = 0; i < 4; i++) {
+      headings[i] = andromedaProfile.moduleTranslations[i].getAngle();
+    }
+    SwerveModuleState[] states = andromedaProfile.swerveKinematics.toSwerveModuleStates(new ChassisSpeeds());
+    for (int i = 0; i < 4; i++) {
+      states[i].angle = headings[i];
+    }
+    setModuleStates(states);
+    andromedaProfile.swerveKinematics.resetHeadings(headings);
+    stop();
+  }
+
+  /**
+   * Stops the swerve drive
+   */
+  public void stop() {
+    drive(new ChassisSpeeds());
+  }
+
   /* Characterization */
 
-  public void runSwerveCharacterization(double volts) {
+  public void runSwerveCharacterization(Measure<Voltage> volts) {
     for (AndromedaModule andromedaModule : modules) {
       andromedaModule.runCharacterization(volts);
     }
@@ -301,17 +313,5 @@ public class AndromedaSwerve extends SubsystemBase {
 
   public Command sysIdDynamic(SysIdRoutine.Direction direction) {
     return m_sysIdRoutine.dynamic(direction);
-  }
-
-  public Command getPathFindPath(Pose2d targetPose) {
-    PathConstraints constraints = new PathConstraints(
-        3, 4,
-        edu.wpi.first.math.util.Units.degreesToRadians(560), edu.wpi.first.math.util.Units.degreesToRadians(720));
-
-    return AutoBuilder.pathfindToPose(
-        targetPose,
-        constraints,
-        0.0,
-        0.0);
   }
 }
